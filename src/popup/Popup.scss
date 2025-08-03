@@ -12,7 +12,6 @@
   color: $text-primary;
 
   .header {
-    margin-block: 15px;
     box-sizing: content-box;
     display: flex;
     justify-content: space-between;
@@ -22,11 +21,12 @@
     color: $primary-contrast;
     padding: 0.5rem 1rem;
     border-radius: $border-radius;
+    margin-block: 15px;
 
     .title {
+      margin: 0;
       font-size: 1.5rem;
       font-weight: bold;
-      margin: 0;
       line-height: 1.2;
     }
 
@@ -80,23 +80,21 @@
     list-style: none;
     padding-left: 0;
     margin: 0;
+
     .prompt-item,
     .prompt-edit-item {
-      // Base item style
       background: #fff;
       border-radius: $border-radius;
-      padding: 1rem;
       padding-block: 0.25rem;
+      padding-inline: 1rem;
       border: 1px solid $secondary;
-      box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+      box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
 
       &.active-edit {
-        // Usa gli stessi stili del form creazione con qualche differenza minima
         @extend .form-shared-style;
-        padding: 1rem;
-
         border-color: $primary;
         box-shadow: 0 0 6px rgba($primary, 0.3);
+        padding: 1rem;
       }
 
       strong {
@@ -147,7 +145,7 @@
 .input-title {
   font-weight: normal;
   transition: font-weight 0.3s ease;
-  
+
   &:focus {
     font-weight: 600; // più grassetto quando scrivi
     outline: none;
@@ -155,6 +153,6 @@
   }
 
   &.editing {
-    font-weight: 600; // oppure mantieni grassetto anche fuori focus se vuoi
+    font-weight: 600; // mantieni grassetto anche fuori focus se vuoi
   }
 }
