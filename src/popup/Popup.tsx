@@ -1,6 +1,9 @@
 import { useEffect, useState } from "react"
 import type { Prompt } from "../types/Prompt"
-import { loadPrompts, savePrompts } from "../utils/storage"
+import { loadPrompts, savePrompts, loadSettings } from "../utils/storage"
+import SettingsPanel from "../settingsPanel/SettingsPanel"
+import Header from "../common/Header"
+import "./Popup.scss"
 
 export default function Popup() {
   const [prompts, setPrompts] = useState<Prompt[]>([])
@@ -10,10 +13,27 @@ export default function Popup() {
   const [editTitle, setEditTitle] = useState("")
   const [editText, setEditText] = useState("")
   const [showForm, setShowForm] = useState(false)
-  const [useClipboard, setUseClipboard] = useState(false)
+  const [useClipboard, setUseClipboard] = useState(true)
+  const [showSettings, setShowSettings] = useState(false)
 
   useEffect(() => {
+    loadSettings().then((s) => {
+      if (s?.useClipboard !== undefined) setUseClipboard(s.useClipboard)
+    })
+
     loadPrompts().then(setPrompts)
+
+    const listener = (
+      changes: { [key: string]: chrome.storage.StorageChange },
+      area: string
+    ) => {
+      if (area === "sync" && changes.useClipboard) {
+        setUseClipboard(changes.useClipboard.newValue)
+      }
+    }
+
+    chrome.storage.onChanged.addListener(listener)
+    return () => chrome.storage.onChanged.removeListener(listener)
   }, [])
 
   const saveEdit = () => {
@@ -52,136 +72,120 @@ export default function Popup() {
     if (editId === id) cancelEdit()
   }
 
-  // Funzione generica per inviare il messaggio al content script, gestendo la sostituzione col contenuto clipboard
-  const sendPrompt = async (action: "insertPrompt" | "overwritePrompt", text: string) => {
-    console.log(`Invio azione: ${action} con testo:`, text)
-    let finalText = text
-    if (useClipboard && text.includes("#clipboardcontent")) {
-      try {
-        const clipText = await navigator.clipboard.readText()
-        finalText = text.replaceAll("#clipboardcontent", clipText)
-        console.log("Sostituzione placeholder con appunti:", finalText)
-      } catch (err) {
-        console.error("Errore nella lettura clipboard:", err)
-      }
-    }
-
+  const sendPromptWithClipboard = async (action: "insertPrompt" | "overwritePrompt", text: string) => {
     chrome.tabs.query({ active: true, currentWindow: true }, (tabs) => {
       if (tabs[0]?.id) {
-        chrome.tabs.sendMessage(tabs[0].id, { action, text: finalText })
+        chrome.tabs.sendMessage(tabs[0].id, {
+          action,
+          text,
+          useClipboard
+        })
       }
     })
   }
 
   return (
-    <div style={{ padding: "1rem", width: "320px" }}>
-      <h2>Wassà</h2>
+    <div className="popup-container">
+      <Header
+        onToggleForm={() => setShowForm(!showForm)}
+        showForm={showForm}
+        onToggleSettings={() => setShowSettings(!showSettings)}
+        showSettings={showSettings}
+      />
 
-      <label style={{ display: "flex", alignItems: "center", marginBottom: "1rem" }}>
-        <input
-          type="checkbox"
-          checked={useClipboard}
-          onChange={(e) => setUseClipboard(e.target.checked)}
-          style={{ marginRight: "0.5rem" }}
+      {showSettings ? (
+        <SettingsPanel
+          onClose={() => setShowSettings(false)}
+          useClipboard={useClipboard}
+          setUseClipboard={setUseClipboard}
         />
-        Abilita inserimento appunti (#clipboardcontent)
-      </label>
-
-      <button onClick={() => setShowForm(!showForm)} style={{ width: "100%", marginBottom: "1rem" }}>
-        {showForm ? "Chiudi" : "Crea nuovo"}
-      </button>
-
-      {showForm && (
-        <div style={{ marginBottom: "1rem" }}>
-          <input
-            placeholder="Titolo"
-            value={newTitle}
-            onChange={(e) => setNewTitle(e.target.value)}
-            style={{ width: "100%", marginBottom: "0.5rem" }}
-          />
-          <textarea
-            placeholder="Testo del prompt"
-            value={newPrompt}
-            onChange={(e) => setNewPrompt(e.target.value)}
-            style={{ width: "100%", marginBottom: "0.5rem" }}
-          />
-          <button onClick={addPrompt} style={{ width: "100%" }}>
-            Salva prompt
-          </button>
-        </div>
-      )}
-
-      <ul style={{ listStyle: "none", padding: 0 }}>
-        {prompts.map((p) =>
-          editId === p.id ? (
-            <li key={p.id} style={{ marginBottom: "1rem" }}>
+      ) : (
+        <>
+          {showForm && (
+            <div className="new-prompt-form">
               <input
-                value={editTitle}
-                onChange={(e) => setEditTitle(e.target.value)}
-                style={{ width: "100%", marginBottom: "0.3rem" }}
-                autoFocus
+                placeholder="Titolo"
+                value={newTitle}
+                onChange={(e) => setNewTitle(e.target.value)}
+                className="input-title"
               />
               <textarea
-                value={editText}
-                onChange={(e) => setEditText(e.target.value)}
-                style={{ width: "100%", marginBottom: "0.3rem" }}
+                placeholder="Testo del prompt"
+                value={newPrompt}
+                onChange={(e) => setNewPrompt(e.target.value)}
+                className="textarea-text"
               />
-              <button onClick={saveEdit} style={{ marginRight: "0.5rem" }}>
-                Salva
+              <button onClick={addPrompt} className="btn-save-prompt">
+                Salva prompt
               </button>
-              <button onClick={cancelEdit}>Annulla</button>
-            </li>
-          ) : (
-            <li
-              key={p.id}
-              style={{
-                marginBottom: "0.7rem",
-                borderBottom: "1px solid #ddd",
-                paddingBottom: "0.5rem"
-              }}
-            >
-              <strong>{p.titolo}</strong>
-              <div style={{ color: "#888", fontSize: "0.95em", marginTop: "0.2rem", whiteSpace: "pre-line", lineHeight: 1.3 }}>
-                {p.testo.split("\n").slice(0, 2).join("\n")}
-                {p.testo.split("\n").length > 2 ? "…" : ""}
-              </div>
-              <div style={{ marginTop: "0.3rem" }}>
-                <button onClick={() => {
-                  console.log("Inserimento in coda del prompt:", p.testo);
-                  sendPrompt("insertPrompt", p.testo);
-                }}>➕ Coda</button>
+            </div>
+          )}
 
-                <button onClick={() => {
-                  console.log("Sovrascrittura del prompt:", p.testo);
-                  sendPrompt("overwritePrompt", p.testo);
-                }} style={{ marginLeft: "0.3rem" }}>
-                  ✏️ Sovrascrivi
-                </button>
-
-                <button
-                  onClick={() => {
-                    setEditId(p.id)
-                    setEditTitle(p.titolo)
-                    setEditText(p.testo)
-                  }}
-                  style={{ marginLeft: "0.3rem" }}
-                >
-                  Modifica
-                </button>
-
-                <button
-                  onClick={() => removePrompt(p.id)}
-                  style={{ marginLeft: "0.3rem", color: "red" }}
-                  title="Elimina"
-                >
-                  🗑
-                </button>
-              </div>
-
-            </li>
-          )
-        )}
-      </ul>
+          <ul className="prompt-list">
+            {prompts.map((p) =>
+              editId === p.id ? (
+                <li key={p.id} className="prompt-edit-item">
+                  <input
+                    value={editTitle}
+                    onChange={(e) => setEditTitle(e.target.value)}
+                    className="input-title"
+                    autoFocus
+                  />
+                  <textarea
+                    value={editText}
+                    onChange={(e) => setEditText(e.target.value)}
+                    className="textarea-text"
+                  />
+                  <button onClick={saveEdit} className="btn-save-edit" style={{ marginRight: "0.5rem" }}>
+                    Salva
+                  </button>
+                  <button onClick={cancelEdit} className="btn-cancel-edit">
+                    Annulla
+                  </button>
+                </li>
+              ) : (
+                <li key={p.id} className="prompt-item">
+                  <strong>{p.titolo}</strong>
+                  <div className="prompt-preview">
+                    {p.testo.split("\n").slice(0, 2).join("\n")}
+                    {p.testo.split("\n").length > 2 ? "…" : ""}
+                  </div>
+                  <div className="prompt-buttons">
+                    <button onClick={() => sendPromptWithClipboard("insertPrompt", p.testo)} className="btn-prompt-action">
+                      <div>➕</div>
+                      <div>Coda</div>
+                    </button>
+                    <button onClick={() => sendPromptWithClipboard("overwritePrompt", p.testo)} className="btn-prompt-action" style={{ marginLeft: "0.3rem" }}>
+                      <div>🔄</div>
+                      <div>Sovrascrivi</div>
+                    </button>
+                    <button
+                      onClick={() => {
+                        setEditId(p.id)
+                        setEditTitle(p.titolo)
+                        setEditText(p.testo)
+                      }}
+                      className="btn-prompt-action"
+                      style={{ marginLeft: "0.3rem" }}
+                    >
+                      <div>✏️</div>
+                      <div>Modifica</div>
+                    </button>
+                    <button
+                      onClick={() => removePrompt(p.id)}
+                      className="btn-delete"
+                      style={{ marginLeft: "0.3rem" }}
+                      title="Elimina"
+                    >
+                      🗑
+                    </button>
+                  </div>
+                </li>
+              )
+            )}
+          </ul>
+        </>
+      )}
     </div>
   )
 }

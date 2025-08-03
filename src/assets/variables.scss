@@ -1,0 +1,56 @@
+// === Variabili globali ===
+$primary: teal;
+$primary-contrast: #ffffff;
+$secondary: #e0f2f1;
+$background: #f5f5f5;
+$text-primary: #111;
+$text-secondary: #444;
+
+$border-radius: 4px;
+$spacing: 1rem;
+$spacing-sm: 0.5rem;
+$spacing-md: 1rem;
+
+$padding-md: 1rem;
+$font-size-base: 0.9rem;
+$transition: 0.2s ease;
+
+// === Utility (placeholders) ===
+%btn-base {
+  padding: 0.3rem 0.6rem;
+  font-size: $font-size-base;
+  cursor: pointer;
+  border: none;
+  border-radius: $border-radius;
+  transition: background $transition;
+}
+
+.btn-primary {
+  @extend %btn-base;
+  background: $primary;
+  color: $primary-contrast;
+  font-weight: bold;
+
+  &:hover {
+    // background: darken($primary, 10%);
+  }
+}
+
+.btn-secondary {
+  @extend %btn-base;
+  background: $primary-contrast;
+  color: $text-primary;
+
+  &:hover {
+    // background: darken($primary-contrast, 10%);
+  }
+}
+
+.input-base {
+  width: 100%;
+  font-size: $font-size-base;
+  padding: 0.4rem;
+  border: 1px solid #ccc;
+  border-radius: $border-radius;
+  color: $text-secondary;
+}
