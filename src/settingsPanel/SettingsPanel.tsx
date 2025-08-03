@@ -17,7 +17,6 @@ export default function SettingsPanel({
 
   return (
     <div className="settings-panel">
-      <h2 className="settings-title">Impostazioni</h2>
       <label className="settings-checkbox-label">
         <input
           type="checkbox"

@@ -4,8 +4,8 @@ interface HeaderProps {
   title?: string
   onToggleForm: () => void
   showForm: boolean
-  onToggleSettings: () => void  // cambia da onOpenSettings a onToggleSettings
-  showSettings: boolean         // passo anche lo stato showSettings
+  onToggleSettings: () => void
+  showSettings: boolean
 }
 
 export default function Header({
@@ -15,20 +15,24 @@ export default function Header({
   onToggleSettings,
   showSettings,
 }: HeaderProps) {
+  const settingsIcon = showSettings ? "❌" : "⚙️"  // puoi usare anche altre icone SVG
+
   return (
     <div className="header">
-      <h2 className="title">{title}</h2>
+      <h2 className="title">{showSettings ? "Impostazioni" : title}</h2>
       <div className="header-buttons">
-        <button onClick={onToggleForm} className="btn-create-toggle">
-          {showForm ? "Chiudi" : "Crea nuovo"}
-        </button>
+        {!showSettings && (
+          <button onClick={onToggleForm} className="btn-create-toggle">
+            {showForm ? "Chiudi" : "Crea nuovo"}
+          </button>
+        )}
         <button
           onClick={onToggleSettings}
           className="btn-settings"
           title="Impostazioni"
           aria-pressed={showSettings}
         >
-          ⚙️
+          {settingsIcon}
         </button>
       </div>
     </div>
