@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react"
+import { useEffect, useRef, useState } from "react"
 import type { Prompt } from "../types/Prompt"
 import { loadPrompts, savePrompts, loadSettings } from "../utils/storage"
 import SettingsPanel from "../settingsPanel/SettingsPanel"
@@ -15,6 +15,13 @@ export default function Popup() {
   const [showForm, setShowForm] = useState(false)
   const [useClipboard, setUseClipboard] = useState(true)
   const [showSettings, setShowSettings] = useState(false)
+  const editTextareaRef = useRef<HTMLTextAreaElement | null>(null)
+ const buttonNumberClass: string = "53"
+  useEffect(() => {
+    if (editId && editTextareaRef.current) {
+      autoResize(editTextareaRef.current)
+    }
+  }, [editId])
 
   useEffect(() => {
     loadSettings().then((s) => {
@@ -66,22 +73,44 @@ export default function Popup() {
   }
 
   const removePrompt = (id: string) => {
+    const promptToDelete = prompts.find((p) => p.id === id)
+    const conferma = confirm(`Vuoi davvero eliminare il prompt "${promptToDelete?.titolo}"?`)
+    if (!conferma) return
+
     const updated = prompts.filter((p) => p.id !== id)
     setPrompts(updated)
     savePrompts(updated)
     if (editId === id) cancelEdit()
   }
 
-  const sendPromptWithClipboard = async (action: "insertPrompt" | "overwritePrompt", text: string) => {
-    chrome.tabs.query({ active: true, currentWindow: true }, (tabs) => {
-      if (tabs[0]?.id) {
-        chrome.tabs.sendMessage(tabs[0].id, {
-          action,
-          text,
-          useClipboard
-        })
+  const autoResize = (el: HTMLTextAreaElement | null) => {
+    if (el) {
+      el.style.height = "auto"
+      el.style.height = `${el.scrollHeight}px`
+    }
+  }
+
+  const sendPromptWithClipboard = async (
+    action: "insertPrompt" | "overwritePrompt",
+    text: string
+  ) => {
+    try {
+      if (useClipboard) {
+        // Sostiuisci #clipboardcontent con il testo degli appunti
+        const clipboardText = await navigator.clipboard.readText()
+        text = text.replace(/#clipboardcontent/, clipboardText)
       }
-    })
+      chrome.tabs.query({ active: true, currentWindow: true }, (tabs) => {
+        if (tabs[0]?.id) {
+          chrome.tabs.sendMessage(tabs[0].id, {
+            action,
+            text: text
+          })
+        }
+      })
+    } catch (err) {
+      console.error("Errore nella lettura della clipboard:", err)
+    }
   }
 
   return (
@@ -102,20 +131,25 @@ export default function Popup() {
       ) : (
         <>
           {showForm && (
-            <div className="new-prompt-form">
+            <div className={`new-prompt-form ${showForm ? "active-form" : ""}`}>
+              <div className="form-label">🆕 Crea nuovo prompt</div>
               <input
                 placeholder="Titolo"
                 value={newTitle}
                 onChange={(e) => setNewTitle(e.target.value)}
-                className="input-title"
+                className={`input-title ${showForm ? "editing" : ""}`}
               />
               <textarea
                 placeholder="Testo del prompt"
                 value={newPrompt}
-                onChange={(e) => setNewPrompt(e.target.value)}
+                onChange={(e) => {
+                  setNewPrompt(e.target.value)
+                  autoResize(e.target)
+                }}
                 className="textarea-text"
+                rows={1}
               />
-              <button onClick={addPrompt} className="btn-save-prompt">
+              <button onClick={addPrompt} className={`button-${buttonNumberClass}`}>
                 Salva prompt
               </button>
             </div>
@@ -124,22 +158,27 @@ export default function Popup() {
           <ul className="prompt-list">
             {prompts.map((p) =>
               editId === p.id ? (
-                <li key={p.id} className="prompt-edit-item">
+                <li key={p.id} className="prompt-edit-item active-edit">
                   <input
                     value={editTitle}
                     onChange={(e) => setEditTitle(e.target.value)}
-                    className="input-title"
+                    className={`input-title ${editId ? "editing" : ""}`}
                     autoFocus
                   />
                   <textarea
+                    ref={editTextareaRef}
                     value={editText}
-                    onChange={(e) => setEditText(e.target.value)}
                     className="textarea-text"
+                    onChange={(e) => {
+                      setEditText(e.target.value)
+                      autoResize(e.target)
+                    }}
                   />
-                  <button onClick={saveEdit} className="btn-save-edit" style={{ marginRight: "0.5rem" }}>
+
+                  <button onClick={saveEdit} className={`button-${buttonNumberClass}`} style={{ marginRight: "0.5rem" }}>
                     Salva
                   </button>
-                  <button onClick={cancelEdit} className="btn-cancel-edit">
+                  <button onClick={cancelEdit} className={`button-${buttonNumberClass}`}>
                     Annulla
                   </button>
                 </li>
@@ -151,11 +190,11 @@ export default function Popup() {
                     {p.testo.split("\n").length > 2 ? "…" : ""}
                   </div>
                   <div className="prompt-buttons">
-                    <button onClick={() => sendPromptWithClipboard("insertPrompt", p.testo)} className="btn-prompt-action">
+                    <button onClick={() => sendPromptWithClipboard("insertPrompt", p.testo)} className={`button-${buttonNumberClass}`}>
                       <div>➕</div>
                       <div>Coda</div>
                     </button>
-                    <button onClick={() => sendPromptWithClipboard("overwritePrompt", p.testo)} className="btn-prompt-action" style={{ marginLeft: "0.3rem" }}>
+                    <button onClick={() => sendPromptWithClipboard("overwritePrompt", p.testo)} className={`button-${buttonNumberClass}`} style={{ marginLeft: "0.3rem" }}>
                       <div>🔄</div>
                       <div>Sovrascrivi</div>
                     </button>
@@ -165,16 +204,16 @@ export default function Popup() {
                         setEditTitle(p.titolo)
                         setEditText(p.testo)
                       }}
-                      className="btn-prompt-action"
+                      className={`button-${buttonNumberClass}`}
                       style={{ marginLeft: "0.3rem" }}
                     >
                       <div>✏️</div>
                       <div>Modifica</div>
                     </button>
                     <button
+                    style={{ marginLeft: "0.3rem", maxWidth: "30px" }}
                       onClick={() => removePrompt(p.id)}
-                      className="btn-delete"
-                      style={{ marginLeft: "0.3rem" }}
+                      className={`button-${buttonNumberClass}`}
                       title="Elimina"
                     >
                       🗑

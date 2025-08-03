@@ -1,4 +1,3 @@
-
 console.log("Content script statico caricato");
 
 /**
@@ -13,18 +12,25 @@ function insertTextAtEndOfTarget(targetId: string, text: string) {
     return;
   }
   target.focus();
-  const textNode = document.createTextNode(text);
-  target.appendChild(textNode);
+  const html = text.replace(/\n/g, "<br>");
+  const tempDiv = document.createElement("div");
+  tempDiv.innerHTML = html;
+
+  // Inserisce ogni nodo convertito
+  while (tempDiv.firstChild) {
+    target.appendChild(tempDiv.firstChild);
+  }
 
   const range = document.createRange();
-  range.setStartAfter(textNode);
-  range.collapse(true);
+  range.selectNodeContents(target);
+  range.collapse(false);
 
   const selection = window.getSelection();
   selection?.removeAllRanges();
   selection?.addRange(range);
-  console.log(`Testo inserito alla fine di #${targetId}: "${text}"`);
+  console.log(`Testo inserito alla fine di #${targetId}:`, text);
 }
+
 /**
  * Sovrascrive il contenuto di un elemento con un nuovo testo.
  * @param targetId ID dell'elemento da modificare.
@@ -39,36 +45,42 @@ function overwriteContent(targetId: string, newText: string) {
   target.focus();
   console.log("SOVRASCRITTURA CONTENUTO:");
   console.table([{ "vecchio contenuto": target.textContent, "nuovo contenuto": newText }]);
-  // Sostituisci il contenuto dell'elemento target con il nuovo testo
-  target.textContent = newText;
+
+  const html = newText.replace(/\n/g, "<br>");
+  target.innerHTML = html;
+
   console.log(`Nuovo contenuto di #${targetId} sovrascritto.`);
 }
 
-chrome.runtime.onMessage.addListener(async (request) => {
-  // Table log per visualizzare il messaggio ricevuto
+/**
+ * Aggiunge un listener per i messaggi dal popup.
+ * Quando riceve un messaggio, esegue l'azione specificata (inserisce o sovrascrive il testo).
+ * @param request Oggetto contenente l'azione e il testo da gestire.
+ * @returns {void}
+ * @description Questo listener è attivo finché il content script è in esecuzione.
+ * Può essere utilizzato per comunicare tra il popup e il content script.
+ */
+chrome.runtime.onMessage.addListener(async (request: { action: string; text?: string }) => {
+  if (!request || !request.action) {
+    console.warn("Richiesta non valida o senza azione.");
+    return;
+  }
   console.log("MESSAGGIO RICEVUTO DAL POPUP:");
   console.table([request]);
-  if ((request.action === "insertPrompt" || request.action === "overwritePrompt") && request.text) {
-    let textToInsert = request.text;
-    // Se è richiesta la sostituzione con il contenuto degli appunti e il testo contiene il placeholder #clipboardcontent
-    // allora leggo gli appunti e sostituisco il placeholder con il loro contenuto
-    if (request.useClipboard && textToInsert.includes("#clipboardcontent")) {
-      console.log("Rilevato #clipboardcontent, sostituendo con il contenuto degli appunti");
-      try {
-        const clipText = await navigator.clipboard.readText();
-        textToInsert = textToInsert.replaceAll("#clipboardcontent", clipText);
-      } catch (e) {
-        console.error("Errore nella lettura clipboard nel content script:", e);
-      }
+  if (request.text) {
+    const textToInsert = request.text;
+    switch (request.action) {
+      case "insertPrompt":
+        insertTextAtEndOfTarget("prompt-textarea", textToInsert);
+        break;
+      case "overwritePrompt":
+        overwriteContent("prompt-textarea", textToInsert);
+        break;
+      default:
+        console.warn(`Azione sconosciuta: ${request.action}`);
+        break;
     }
-
-    if (request.action === "insertPrompt") {
-      // Inserisce in coda
-      insertTextAtEndOfTarget("prompt-textarea", textToInsert);
-    } else {
-      // Sovrascrive il contenuto
-      overwriteContent("prompt-textarea", textToInsert);
-    }
+  } else {
+    console.warn("Richiesta senza testo da inserire.");
   }
 });
-

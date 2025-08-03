@@ -1,3 +1,25 @@
 body {
   width: 500px;
 }
+
+.header {
+  position: relative;
+  z-index: 10; // garantisce che l'header sia sopra altri elementi
+
+  .header-buttons {
+    position: relative;
+    z-index: 20; // sopra eventuali decorazioni o elementi ruotati
+
+    button {
+      position: relative;
+      z-index: 30;
+      pointer-events: auto; // forza la ricezione del click
+    }
+
+    // Se hai usato un effetto decorativo nei bottoni come ::after
+    button::after,
+    button::before {
+      pointer-events: none; // evita che pseudo-elementi blocchino il click
+    }
+  }
+}

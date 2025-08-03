@@ -16,19 +16,19 @@ export default function Header({
   showSettings,
 }: HeaderProps) {
   const settingsIcon = showSettings ? "❌" : "⚙️"  // puoi usare anche altre icone SVG
-
+ const buttonNumberClass = "53" // classe per il numero del bottone, se necessario
   return (
-    <div className="header">
+    <div className={`header button-${buttonNumberClass}`}>
       <h2 className="title">{showSettings ? "Impostazioni" : title}</h2>
       <div className="header-buttons">
         {!showSettings && (
-          <button onClick={onToggleForm} className="btn-create-toggle">
+          <button onClick={onToggleForm} className={`button-${buttonNumberClass}`}>
             {showForm ? "Chiudi" : "Crea nuovo"}
           </button>
         )}
         <button
           onClick={onToggleSettings}
-          className="btn-settings"
+          className={`button-${buttonNumberClass}`}
           title="Impostazioni"
           aria-pressed={showSettings}
         >

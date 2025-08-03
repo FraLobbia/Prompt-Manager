@@ -15,6 +15,8 @@ export default function SettingsPanel({
     onClose()
   }
 
+  const buttonNumberClass = "53" // classe per il numero del bottone, se necessario
+
   return (
     <div className="settings-panel">
       <label className="settings-checkbox-label">
@@ -28,10 +30,10 @@ export default function SettingsPanel({
       </label>
 
       <div className="settings-buttons">
-        <button className="btn" onClick={handleSave}>
+        <button className={`button-${buttonNumberClass}`} onClick={handleSave}>
           Salva
         </button>
-        <button className="btn btn-secondary" onClick={onClose}>
+        <button className={`button-${buttonNumberClass}`} onClick={onClose}>
           Annulla
         </button>
       </div>

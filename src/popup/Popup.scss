@@ -1,15 +1,24 @@
 @use "../assets/variables" as *;
 
+* {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
 .popup-container {
   font-family: system-ui, sans-serif;
   background: $background;
   color: $text-primary;
 
   .header {
+    margin-block: 15px;
+    box-sizing: content-box;
     display: flex;
     justify-content: space-between;
     align-items: flex-start;
     background: $primary;
+    width: 100% !important;
     color: $primary-contrast;
     padding: 0.5rem 1rem;
     border-radius: $border-radius;
@@ -33,13 +42,24 @@
     }
   }
 
-  .new-prompt-form {
+  // Stile comune a form creazione e modifica
+  .form-shared-style {
     background: #fff;
-    border: 1px solid $secondary;
     border-radius: $border-radius;
-    padding: 0.8rem;
+    padding: 1rem;
     margin: 1rem 0;
-    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+    border: 1.5px solid $primary;
+    box-shadow: 0 0 6px rgba($primary, 0.3);
+  }
+
+  .new-prompt-form {
+    @extend .form-shared-style;
+
+    .form-label {
+      font-weight: bold;
+      margin-bottom: 0.5rem;
+      color: $text-primary;
+    }
 
     .input-title,
     .textarea-text {
@@ -60,13 +80,24 @@
     list-style: none;
     padding-left: 0;
     margin: 0;
-
     .prompt-item,
     .prompt-edit-item {
+      // Base item style
       background: #fff;
-      border: 1px solid $secondary;
       border-radius: $border-radius;
       padding: 1rem;
+      padding-block: 0.25rem;
+      border: 1px solid $secondary;
+      box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+
+      &.active-edit {
+        // Usa gli stessi stili del form creazione con qualche differenza minima
+        @extend .form-shared-style;
+        padding: 1rem;
+
+        border-color: $primary;
+        box-shadow: 0 0 6px rgba($primary, 0.3);
+      }
 
       strong {
         font-size: 1rem;
@@ -110,5 +141,20 @@
         margin-bottom: 0.5rem;
       }
     }
+  }
+}
+
+.input-title {
+  font-weight: normal;
+  transition: font-weight 0.3s ease;
+  
+  &:focus {
+    font-weight: 600; // più grassetto quando scrivi
+    outline: none;
+    border-color: $primary;
+  }
+
+  &.editing {
+    font-weight: 600; // oppure mantieni grassetto anche fuori focus se vuoi
   }
 }
