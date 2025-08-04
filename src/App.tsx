@@ -12,10 +12,14 @@ import type { AppDispatch } from "./store/store";
 
 export function App() {
   const dispatch: ThunkDispatch<RootState, unknown, AnyAction> = useDispatch<AppDispatch>();
+  
+  const title = "Wassà";
   const [showSettings, setShowSettings] = useState(false);
   const [showForm, setShowForm] = useState(false);
   const [editId, setEditId] = useState<string | null>(null);
-
+/**
+ * Effettua il caricamento delle impostazioni e delle wassas all'avvio dell'app.
+ */
   useEffect(() => {
     dispatch(loadSettingsFromStorage());
     dispatch(loadWassasFromStorage());
@@ -24,6 +28,7 @@ export function App() {
   return (
     <div className="popup-container">
       <Header
+        title={title}
         showForm={showForm}
         showSettings={showSettings}
         onShowFormChange={setShowForm}
