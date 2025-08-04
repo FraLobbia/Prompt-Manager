@@ -1,33 +1,55 @@
-import React from "react"
+import { useState } from "react"
 
 interface HeaderProps {
   title?: string
-  onToggleForm: () => void
-  showForm: boolean
-  onToggleSettings: () => void
-  showSettings: boolean
+  onShowFormChange?: (show: boolean) => void
+  onShowSettingsChange?: (show: boolean) => void
 }
 
 export default function Header({
   title = "Wassà",
-  onToggleForm,
-  showForm,
-  onToggleSettings,
-  showSettings,
+  onShowFormChange,
+  onShowSettingsChange,
 }: HeaderProps) {
-  const settingsIcon = showSettings ? "❌" : "⚙️"  // puoi usare anche altre icone SVG
- const buttonNumberClass = "53" // classe per il numero del bottone, se necessario
+  const [showForm, setShowForm] = useState(false)
+  const [showSettings, setShowSettings] = useState(false)
+  
+  const handleToggleForm = () => {
+    const newShowForm = !showForm
+    setShowForm(newShowForm)
+    onShowFormChange?.(newShowForm)
+    // Se apriamo il form, chiudiamo le settings
+    if (newShowForm && showSettings) {
+      setShowSettings(false)
+      onShowSettingsChange?.(false)
+    }
+  }
+  
+  const handleToggleSettings = () => {
+    const newShowSettings = !showSettings
+    setShowSettings(newShowSettings)
+    onShowSettingsChange?.(newShowSettings)
+    // Se apriamo le settings, chiudiamo il form
+    if (newShowSettings && showForm) {
+      setShowForm(false)
+      onShowFormChange?.(false)
+    }
+  }
+
+  const settingsIcon = showSettings ? "❌" : "⚙️"
+  const buttonNumberClass = "53"
+  
   return (
     <div className={`header button-${buttonNumberClass}`}>
       <h2 className="title">{showSettings ? "Impostazioni" : title}</h2>
       <div className="header-buttons">
         {!showSettings && (
-          <button onClick={onToggleForm} className={`button-${buttonNumberClass}`}>
+          <button onClick={handleToggleForm} className={`button-${buttonNumberClass}`}>
             {showForm ? "Chiudi" : "Crea nuovo"}
           </button>
         )}
         <button
-          onClick={onToggleSettings}
+          onClick={handleToggleSettings}
           className={`button-${buttonNumberClass}`}
           title="Impostazioni"
           aria-pressed={showSettings}

@@ -1,10 +1,12 @@
-import { StrictMode } from "react"
 import { createRoot } from "react-dom/client"
 import "./index.scss"
-import Popup from "./popup/Popup"
+import { Provider } from "react-redux"
+import { store } from "./store/store"
+import { App } from "./App"
+import "./testClipboard" // Test per la persistenza clipboard
 
 createRoot(document.getElementById("root")!).render(
-  <StrictMode>
-    <Popup />
-  </StrictMode>
+  <Provider store={store}>
+    <App />
+  </Provider>
 )

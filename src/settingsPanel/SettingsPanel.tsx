@@ -1,21 +1,7 @@
-import { saveSettings } from "../utils/storage"
-import "./SettingsPanel.scss"
+import { useSettings } from "../store/hooks";
 
-export default function SettingsPanel({
-  onClose,
-  useClipboard,
-  setUseClipboard
-}: {
-  onClose: () => void,
-  useClipboard: boolean,
-  setUseClipboard: (val: boolean) => void
-}) {
-  const handleSave = () => {
-    saveSettings({ useClipboard })
-    onClose()
-  }
-
-  const buttonNumberClass = "53" // classe per il numero del bottone, se necessario
+export default function SettingsPanel() {
+  const { useClipboard, setUseClipboard } = useSettings();
 
   return (
     <div className="settings-panel">
@@ -28,15 +14,6 @@ export default function SettingsPanel({
         />
         Abilita inserimento appunti (#clipboardcontent)
       </label>
-
-      <div className="settings-buttons">
-        <button className={`button-${buttonNumberClass}`} onClick={handleSave}>
-          Salva
-        </button>
-        <button className={`button-${buttonNumberClass}`} onClick={onClose}>
-          Annulla
-        </button>
-      </div>
     </div>
-  )
+  );
 }
