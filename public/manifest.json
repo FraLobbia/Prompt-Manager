@@ -1,8 +1,8 @@
 {
   "manifest_version": 3,
-  "name": "Prompt Inserter",
+  "name": "Wassà Prompt Manager",
   "version": "1.0",
-  "description": "Estensione Chrome per inserire prompt testuali",
+  "description": "Estensione Chrome per inserire prompt testuali personalizzati",
   "permissions": [
     "storage",
     "tabs",
@@ -13,10 +13,7 @@
     "clipboardWrite"
   ],
   "action": {
-    "default_popup": "popup.html"
-  },
-  "background": {
-    "service_worker": "background.js"
+    "default_popup": "estensione.html"
   },
   "content_scripts": [
     {

@@ -18,3 +18,4 @@ export const store = configureStore({
 // Tipi per il dispatch e lo stato globale, utili per TypeScript
 export type RootState = ReturnType<typeof store.getState>
 export type AppDispatch = typeof store.dispatch
+

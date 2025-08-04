@@ -1,4 +1,3 @@
-
 import { useSettings, useWassas } from "../../store/hooks"
 import type { Wassa } from "../../types/Wassa"
 
@@ -7,88 +6,72 @@ interface WassaProps {
   onEdit?: (wassa: Wassa) => void
 }
 
-export default function Wassa({
-  prompt,
-  onEdit
-}: WassaProps) {
+export default function Wassa({ prompt, onEdit }: WassaProps) {
   const { useClipboard, buttonNumberClass } = useSettings()
   const { removeWassa } = useWassas()
-  
-  const { id, titolo, testo } = prompt
-  const anteprima = testo.split("\n").slice(0, 2).join("\n")
-  const hasMoreLines = testo.split("\n").length > 2
 
-  const sendWassaWithClipboard = async (
-    action: "insertWassa" | "overwriteWassa",
+  const { id, titolo, testo } = prompt
+  const lines = testo.split("\n")
+  const anteprima = lines.slice(0, 2).join("\n")
+  const hasMoreLines = lines.length > 2
+
+  const callContentScript = async (
+    action: "insert" | "overwrite",
     text: string
   ) => {
-    try {
-      if (useClipboard) {
-        // Sostituisci #clipboardcontent con il testo degli appunti
+    if (useClipboard) {
+      try {
         const clipboardText = await navigator.clipboard.readText()
         text = text.replace(/#clipboardcontent/, clipboardText)
+      } catch (err) {
+        console.error("Errore nella lettura della clipboard:", err)
       }
-      chrome.tabs.query({ active: true, currentWindow: true }, (tabs) => {
-        if (tabs[0]?.id) {
-          chrome.tabs.sendMessage(tabs[0].id, {
-            action,
-            text: text
-          })
-        }
-      })
-    } catch (err) {
-      console.error("Errore nella lettura della clipboard:", err)
     }
+
+    chrome.tabs.query({ active: true, currentWindow: true }, (tabs) => {
+      const tabId = tabs[0]?.id
+      if (tabId) {
+        chrome.tabs.sendMessage(tabId, { action, text })
+      }
+    })
   }
 
   const handleRemoveWassa = () => {
-    const conferma = confirm(`Vuoi davvero eliminare la wassa "${titolo}"?`)
-    if (!conferma) return
-    removeWassa(id)
+    if (confirm(`Vuoi davvero eliminare la wassa "${titolo}"?`)) {
+      removeWassa(id)
+    }
   }
 
+  const renderButton = (
+    onClick: () => void,
+    icon: string,
+    label?: string,
+    extraStyle?: React.CSSProperties,
+    title?: string
+  ) => (
+    <button
+      onClick={onClick}
+      className={`button-${buttonNumberClass}`}
+      style={{ marginLeft: "0.3rem", ...extraStyle }}
+      title={title}
+    >
+      <div>{icon}</div>
+      {label && <div>{label}</div>}
+    </button>
+  )
+
   return (
-    <li key={id} className="wassa-item">
+    <li className="wassa-item">
       <strong>{titolo}</strong>
       <div className="wassa-preview">
         {anteprima}
         {hasMoreLines ? "…" : ""}
       </div>
       <div className="wassa-buttons">
-        <button
-          onClick={() => sendWassaWithClipboard("insertWassa", testo)}
-          className={`button-${buttonNumberClass}`}
-        >
-          <div>➕</div>
-          <div>Coda</div>
-        </button>
-
-        <button
-          onClick={() => sendWassaWithClipboard("overwriteWassa", testo)}
-          className={`button-${buttonNumberClass}`}
-          style={{ marginLeft: "0.3rem" }}
-        >
-          <div>🔄</div>
-          <div>Sovrascrivi</div>
-        </button>
-
-        <button
-          onClick={() => onEdit?.(prompt)}
-          className={`button-${buttonNumberClass}`}
-          style={{ marginLeft: "0.3rem" }}
-        >
-          <div>✏️</div>
-          <div>Modifica</div>
-        </button>
-
-        <button
-          onClick={handleRemoveWassa}
-          className={`button-${buttonNumberClass}`}
-          style={{ marginLeft: "0.3rem", maxWidth: "30px" }}
-          title="Elimina"
-        >
-          🗑
-        </button>
+        {renderButton(() => callContentScript("insert", testo), "➕", "Coda", { marginLeft: "0" })}
+        {renderButton(() => callContentScript("overwrite", testo), "🔄", "Sovrascrivi")}
+        {renderButton(() => onEdit?.(prompt), "✏️", "Modifica")}
+        {renderButton(handleRemoveWassa, "🗑", undefined, { maxWidth: "30px" }, "Elimina")}
       </div>
     </li>
   )

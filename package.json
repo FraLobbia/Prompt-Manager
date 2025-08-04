@@ -1,5 +1,5 @@
 {
-  "name": "chrome-extension",
+  "name": "wassa-prompt-manager",
   "private": true,
   "version": "0.0.0",
   "type": "module",

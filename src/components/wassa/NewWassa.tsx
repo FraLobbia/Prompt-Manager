@@ -3,41 +3,45 @@ import { useWassas, useSettings } from "../../store/hooks"
 
 interface NewWassaFormProps {
     showForm: boolean
-    onFormClose?: () => void
+    onSubmit?: () => void
 }
 
-export default function NewWassaForm({
-    showForm,
-    onFormClose
-}: NewWassaFormProps) {
+export default function NewWassaForm({ showForm, onSubmit }: NewWassaFormProps) {
     const { addWassa } = useWassas()
     const { buttonNumberClass } = useSettings()
     const [newTitle, setNewTitle] = useState("")
-    const [NewWassa, setNewWassa] = useState("")
+    const [newWassa, setNewWassa] = useState("")
 
     const autoResize = (el: HTMLTextAreaElement | null) => {
-        if (el) {
-            el.style.height = "auto"
-            el.style.height = `${el.scrollHeight}px`
-        }
+        el?.style.setProperty("height", "auto")
+        el?.style.setProperty("height", `${el.scrollHeight}px`)
     }
 
-    const handleAddWassa = () => {
-        if (!newTitle.trim() || !NewWassa.trim()) return
-        
-        // Aggiungi wassa con Redux - il middleware salverà automaticamente
-        addWassa({
-            id: Date.now().toString(),
-            titolo: newTitle.trim(),
-            testo: NewWassa.trim()
-        })
-        
-        // Reset form
+    /**
+     * Resetta il form
+     */
+    const resetForm = () => {
         setNewTitle("")
         setNewWassa("")
-        
-        // Chiudi il form
-        onFormClose?.()
+        // Chiude il form tramite callback
+        onSubmit?.()
+    }
+
+    /**
+     * Gestisce l'aggiunta di una nuova wassa.
+     */
+    const handleAddWassa = () => {
+        const titolo = newTitle.trim()
+        const testo = newWassa.trim()
+        if (!titolo || !testo) return
+
+        addWassa({
+            id: Date.now().toString(),
+            titolo,
+            testo
+        })
+
+        resetForm()
     }
 
     return (
@@ -48,12 +52,12 @@ export default function NewWassaForm({
                 placeholder="Titolo"
                 value={newTitle}
                 onChange={(e: ChangeEvent<HTMLInputElement>) => setNewTitle(e.target.value)}
-                className={`input-title ${showForm ? "editing" : ""}`}
+                className="input-title"
             />
 
             <textarea
                 placeholder="Testo della wassa"
-                value={NewWassa}
+                value={newWassa}
                 onChange={(e: ChangeEvent<HTMLTextAreaElement>) => {
                     setNewWassa(e.target.value)
                     autoResize(e.target)

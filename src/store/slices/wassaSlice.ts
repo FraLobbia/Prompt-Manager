@@ -2,7 +2,7 @@
 
 import { createSlice, type PayloadAction } from "@reduxjs/toolkit"
 import type { Wassa } from "../../types/Wassa"
-import { saveWassas } from "../../utils/storage"
+import { saveWassas } from "../../persistence/storage"
 import type { AppDispatch } from "../store"
 
 // Stato iniziale

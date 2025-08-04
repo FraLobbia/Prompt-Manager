@@ -1,5 +1,5 @@
 import { createSlice, type PayloadAction} from "@reduxjs/toolkit";
-import { saveSettings } from "../../utils/storage";
+import { saveSettings } from "../../persistence/storage";
 import type { AppDispatch } from "../store";
 
 type SettingsState = {

@@ -1,11 +1,9 @@
-console.log("Content script statico caricato");
-
 /**
  * Inserisce del testo alla fine di un elemento target.
  * @param targetId ID dell'elemento in cui inserire il testo.
  * @param text Testo da inserire.
  */
-function insertTextAtEndOfTarget(targetId: string, text: string) {
+export function insertTextAtEndOfTarget(targetId: string, text: string) {
   const target = document.getElementById(targetId);
   if (!target || !target.isContentEditable) {
     console.warn(`Elemento #${targetId} non trovato o non è contenteditable`);
@@ -36,7 +34,7 @@ function insertTextAtEndOfTarget(targetId: string, text: string) {
  * @param targetId ID dell'elemento da modificare.
  * @param newText Nuovo testo da inserire.
  */
-function overwriteContent(targetId: string, newText: string) {
+export function overwriteContent(targetId: string, newText: string) {
   const target = document.getElementById(targetId);
   if (!target) {
     console.warn(`Elemento #${targetId} non trovato`);
@@ -51,36 +49,3 @@ function overwriteContent(targetId: string, newText: string) {
 
   console.log(`Nuovo contenuto di #${targetId} sovrascritto.`);
 }
-
-/**
- * Aggiunge un listener per i messaggi dal popup.
- * Quando riceve un messaggio, esegue l'azione specificata (inserisce o sovrascrive il testo).
- * @param request Oggetto contenente l'azione e il testo da gestire.
- * @returns {void}
- * @description Questo listener è attivo finché il content script è in esecuzione.
- * Può essere utilizzato per comunicare tra il popup e il content script.
- */
-chrome.runtime.onMessage.addListener(async (request: { action: string; text?: string }) => {
-  if (!request || !request.action) {
-    console.warn("Richiesta non valida o senza azione.");
-    return;
-  }
-  console.log("MESSAGGIO RICEVUTO DAL POPUP:");
-  console.table([request]);
-  if (request.text) {
-    const textToInsert = request.text;
-    switch (request.action) {
-      case "insert":
-        insertTextAtEndOfTarget("prompt-textarea", textToInsert);
-        break;
-      case "overwrite":
-        overwriteContent("prompt-textarea", textToInsert);
-        break;
-      default:
-        console.warn(`Azione sconosciuta: ${request.action}`);
-        break;
-    }
-  } else {
-    console.warn("Richiesta senza testo da inserire.");
-  }
-});

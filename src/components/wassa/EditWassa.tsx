@@ -7,65 +7,53 @@ interface EditWassaProps {
   onEditComplete?: () => void
 }
 
-export default function EditWassa({
-  prompt,
-  onEditComplete
-}: EditWassaProps) {
+export default function EditWassa({ prompt, onEditComplete }: EditWassaProps) {
   const { updateWassa } = useWassas()
   const { buttonNumberClass } = useSettings()
-  const [editTitle, setEditTitle] = useState(prompt.titolo)
-  const [editText, setEditText] = useState(prompt.testo)
-  const editTextareaRef = useRef<HTMLTextAreaElement | null>(null)
+  const [title, setTitle] = useState(prompt.titolo)
+  const [text, setText] = useState(prompt.testo)
+  const textareaRef = useRef<HTMLTextAreaElement>(null)
 
   useEffect(() => {
-    if (editTextareaRef.current) {
-      autoResize(editTextareaRef.current)
-    }
+    resizeTextarea()
   }, [])
 
-  const autoResize = (el: HTMLTextAreaElement | null) => {
+  const resizeTextarea = () => {
+    const el = textareaRef.current
     if (el) {
       el.style.height = "auto"
       el.style.height = `${el.scrollHeight}px`
     }
   }
 
-  const saveEdit = () => {
-    if (!editTitle.trim() || !editText.trim()) return
-    updateWassa({
-      id: prompt.id,
-      titolo: editTitle.trim(),
-      testo: editText.trim()
-    })
-    onEditComplete?.()
-  }
-
-  const cancelEdit = () => {
+  const handleSave = () => {
+    if (!title.trim() || !text.trim()) return
+    updateWassa({ id: prompt.id, titolo: title.trim(), testo: text.trim() })
     onEditComplete?.()
   }
 
   return (
-    <li key={prompt.id} className="wassa-edit-item active-edit">
+    <li className="wassa-edit-item active-edit">
       <input
-        value={editTitle}
-        onChange={(e: ChangeEvent<HTMLInputElement>) => setEditTitle(e.target.value)}
-        className={`input-title ${prompt.id ? "editing" : ""}`}
+        value={title}
+        onChange={(e: ChangeEvent<HTMLInputElement>) => setTitle(e.target.value)}
+        className="input-title editing"
         autoFocus
       />
       <textarea
-        ref={editTextareaRef}
-        value={editText}
+        ref={textareaRef}
+        value={text}
         className="textarea-text"
         onChange={(e: ChangeEvent<HTMLTextAreaElement>) => {
-          setEditText(e.target.value)
-          autoResize(e.target)
+          setText(e.target.value)
+          resizeTextarea()
         }}
       />
       <div className="wassa-buttons">
-        <button onClick={saveEdit} className={`button-${buttonNumberClass}`} style={{ marginRight: "0.5rem" }}>
+        <button onClick={handleSave} className={`button-${buttonNumberClass}`} style={{ marginRight: "0.5rem" }}>
           💾 Salva
         </button>
-        <button onClick={cancelEdit} className={`button-${buttonNumberClass}`}>
+        <button onClick={onEditComplete} className={`button-${buttonNumberClass}`}>
           ❌ Annulla
         </button>
       </div>

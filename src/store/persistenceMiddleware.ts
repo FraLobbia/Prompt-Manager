@@ -1,5 +1,5 @@
 import type { Middleware, AnyAction } from '@reduxjs/toolkit'
-import { saveWassas, saveSettings } from '../utils/storage'
+import { saveWassas, saveSettings } from '../persistence/storage'
 import type { Wassa } from '../types/Wassa'
 
 // Tipo per lo stato (per evitare dipendenze circolari)
