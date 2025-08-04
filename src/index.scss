@@ -2,7 +2,7 @@
 @use "./styles/variables" as *;
 
 body {
-  width: 500px;
+  width: 550px;
 }
 
 .d-flex-row {
@@ -18,7 +18,7 @@ body {
 .header {
   position: relative;
   z-index: 10; // garantisce che l'header sia sopra altri elementi
-
+ margin-inline: auto; // centra l'header
   .header-buttons {
     position: relative;
     z-index: 20; // sopra eventuali decorazioni o elementi ruotati

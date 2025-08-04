@@ -34,6 +34,7 @@ export default function SettingsPanel() {
       </label>
       <hr />
       <label className="settings-input-label">
+        <div className="d-flex-row"> 
         <h3>Classe CSS bottoni:</h3>
         <input
           type="text"
@@ -41,7 +42,9 @@ export default function SettingsPanel() {
           onChange={(e) => setButtonNumberClass(e.target.value)}
           className="settings-input"
           placeholder="es. 53"
-        />
+          style={{ marginInlineStart: "10px" }}
+          />
+          </div>
       </label>
 
       <hr />
