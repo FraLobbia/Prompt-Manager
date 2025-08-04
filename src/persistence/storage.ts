@@ -1,20 +1,24 @@
-import { setUseClipboard, setButtonNumberClass } from "../store/slices/settingsSlice"
-import { setWassas } from "../store/slices/wassaSlice"
-import type { Wassa } from "../types/Wassa"
-import type { Dispatch } from "redux"
+import { setUseClipboard, setButtonNumberClass } from "../store/slices/settingsSlice";
+import { setWassas } from "../store/slices/wassaSlice";
+import type { Wassa } from "../types/Wassa";
+import type { Dispatch } from "redux";
 
-export const saveWassas = async (wassas: Wassa[]) => {
-  await chrome.storage.sync.set({ wassas })
-}
+export const SETTINGS_KEY = "settings";
+
+// Wassas
+
+export const persistWassas = async (wassas: Wassa[]) => {
+  await chrome.storage.sync.set({ wassas });
+};
 
 export const loadWassas = async (): Promise<Wassa[]> => {
-  const result = await chrome.storage.sync.get("wassas")
-  return result.wassas || []
-}
+  const result = await chrome.storage.sync.get("wassas");
+  return result.wassas || [];
+};
 
-export const SETTINGS_KEY = "settings"
+// Settings
 
-export async function saveSettings(settings: { useClipboard: boolean; buttonNumberClass?: string }) {
+export async function persistSettings(settings: { useClipboard: boolean; buttonNumberClass?: string }) {
   return new Promise<void>((resolve) => {
     chrome.storage.sync.set({ [SETTINGS_KEY]: settings }, () => resolve());
   });
@@ -29,6 +33,11 @@ export async function loadSettings(): Promise<{ useClipboard?: boolean; buttonNu
   });
 }
 
+// Thunks Redux
+
+/**
+ * Carica le impostazioni dal chrome.storage e le imposta nello stato Redux
+ */
 export const loadSettingsFromStorage = () => async (dispatch: Dispatch) => {
   try {
     const settings = await loadSettings();
@@ -42,8 +51,11 @@ export const loadSettingsFromStorage = () => async (dispatch: Dispatch) => {
     dispatch(setUseClipboard(true));
     dispatch(setButtonNumberClass("53"));
   }
-}
+};
 
+/**
+ * Carica le wassas dal chrome.storage e le imposta nello stato Redux
+ */
 export const loadWassasFromStorage = () => async (dispatch: Dispatch) => {
   try {
     const wassas = await loadWassas();
@@ -51,4 +63,4 @@ export const loadWassasFromStorage = () => async (dispatch: Dispatch) => {
   } catch (error) {
     console.error("Errore nel caricamento delle wassas", error);
   }
-}
+};

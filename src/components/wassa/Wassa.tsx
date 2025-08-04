@@ -14,7 +14,10 @@ export default function Wassa({ prompt, onEdit }: WassaProps) {
   const lines = testo.split("\n")
   const anteprima = lines.slice(0, 2).join("\n")
   const hasMoreLines = lines.length > 2
-
+  /**
+   * Chiama lo script di contenuto per inserire o sovrascrivere il testo.
+   * Se `useClipboard` è abilitato, sostituisce "WassaTemplate" con il testo degli appunti.
+   */
   const callContentScript = async (
     action: "insert" | "overwrite",
     text: string
@@ -22,10 +25,12 @@ export default function Wassa({ prompt, onEdit }: WassaProps) {
     if (useClipboard) {
       try {
         const clipboardText = await navigator.clipboard.readText()
-        text = text.replace(/#clipboardcontent/, clipboardText)
+        text = text.replace(/WassaTemplate/, clipboardText)
       } catch (err) {
         console.error("Errore nella lettura della clipboard:", err)
       }
+    } else {
+      text = text.replace(/WassaTemplate/, " ")
     }
 
     chrome.tabs.query({ active: true, currentWindow: true }, (tabs) => {
@@ -37,7 +42,7 @@ export default function Wassa({ prompt, onEdit }: WassaProps) {
   }
 
   const handleRemoveWassa = () => {
-    if (confirm(`Vuoi davvero eliminare la wassa "${titolo}"?`)) {
+    if (confirm(`Vuoi davvero eliminare il wassà "${titolo}"?`)) {
       removeWassa(id)
     }
   }

@@ -46,7 +46,7 @@ export default function NewWassaForm({ showForm, onSubmit }: NewWassaFormProps) 
 
     return (
         <div className={`new-wassa-form ${showForm ? "active-form" : ""}`}>
-            <div className="form-label">🆕 Crea nuova wassa</div>
+            <h3 className="form-label">Crea un nuovo wassà</h3>
 
             <input
                 placeholder="Titolo"
@@ -56,7 +56,7 @@ export default function NewWassaForm({ showForm, onSubmit }: NewWassaFormProps) 
             />
 
             <textarea
-                placeholder="Testo della wassa"
+                placeholder="Testo del tuo wassà"
                 value={newWassa}
                 onChange={(e: ChangeEvent<HTMLTextAreaElement>) => {
                     setNewWassa(e.target.value)

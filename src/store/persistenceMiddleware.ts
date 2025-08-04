@@ -1,5 +1,5 @@
 import type { Middleware, AnyAction } from '@reduxjs/toolkit'
-import { saveWassas, saveSettings } from '../persistence/storage'
+import { persistWassas, persistSettings } from '../persistence/storage'
 import type { Wassa } from '../types/Wassa'
 
 // Tipo per lo stato (per evitare dipendenze circolari)
@@ -25,14 +25,14 @@ const persistenceMiddleware: Middleware<object, AppState> = (store) => (next) =>
   if (typedAction.type?.startsWith('wassas/') && 
       !typedAction.type.includes('setWassas')) {
     console.log('💾 Middleware: Salvando wassas automaticamente...')
-    saveWassas(state.wassas.wassas).catch(console.error)
+    persistWassas(state.wassas.wassas).catch(console.error)
   }
   
   // Salva le impostazioni se sono cambiate con azione auto
   if (typedAction.type === 'settings/updateUseClipboardAuto' || 
       typedAction.type === 'settings/updateButtonNumberClassAuto') {
     console.log('⚙️ Middleware: Salvando impostazioni automaticamente...')
-    saveSettings({ 
+    persistSettings({ 
       useClipboard: state.settings.useClipboard,
       buttonNumberClass: state.settings.buttonNumberClass 
     }).catch(console.error)

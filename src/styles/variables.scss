@@ -200,8 +200,8 @@ $transition: 0.2s ease;
 }
 
 input:not([type="checkbox"]), textarea {
-  @extend .button-53;
-  text-align: left;
+  // @extend .button-53;
+  // text-align: left;
 }
 
 .header {

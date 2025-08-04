@@ -1,8 +1,6 @@
-// src/features/wassas/wassasSlice.ts
-
 import { createSlice, type PayloadAction } from "@reduxjs/toolkit"
 import type { Wassa } from "../../types/Wassa"
-import { saveWassas } from "../../persistence/storage"
+import { persistWassas } from "../../persistence/storage"
 import type { AppDispatch } from "../store"
 
 // Stato iniziale
@@ -45,7 +43,7 @@ export const {
 export const updateWassas = (wassas: Wassa[]) => async (dispatch: AppDispatch) => {
   dispatch(setWassas(wassas));
   try {
-    await saveWassas(wassas);
+    await persistWassas(wassas);
   } catch (error) {
     console.error("Errore nel salvataggio delle wassas", error);
   }
@@ -55,7 +53,7 @@ export const addWassaAndSave = (wassa: Wassa) => async (dispatch: AppDispatch, g
   dispatch(addWassa(wassa));
   try {
     const state = getState();
-    await saveWassas(state.wassas.wassas);
+    await persistWassas(state.wassas.wassas);
   } catch (error) {
     console.error("Errore nel salvataggio della wassa", error);
   }

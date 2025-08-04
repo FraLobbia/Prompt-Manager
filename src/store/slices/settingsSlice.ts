@@ -1,5 +1,5 @@
 import { createSlice, type PayloadAction} from "@reduxjs/toolkit";
-import { saveSettings } from "../../persistence/storage";
+import { persistSettings } from "../../persistence/storage";
 import type { AppDispatch } from "../store";
 
 type SettingsState = {
@@ -44,7 +44,7 @@ export const updateUseClipboard = (value: boolean) => async (dispatch: AppDispat
   dispatch(setUseClipboard(value));
   try {
     console.log('💾 Salvando nel storage...');
-    await saveSettings({ useClipboard: value });
+    await persistSettings({ useClipboard: value });
     console.log('✅ Salvataggio completato');
   } catch (error) {
     console.error("Errore nel salvataggio delle impostazioni", error);
