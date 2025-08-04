@@ -1,6 +1,6 @@
 import { useState, useRef, useEffect, type ChangeEvent } from "react"
-import { useWassas, useSettings } from "../store/hooks"
-import type { Wassa } from "../types/Wassa"
+import { useWassas, useSettings } from "../../store/hooks"
+import type { Wassa } from "../../types/Wassa"
 
 interface EditWassaProps {
   prompt: Wassa

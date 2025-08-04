@@ -1,4 +1,4 @@
-import { useSettings } from "../store/hooks";
+import { useSettings } from "../../store/hooks";
 
 export default function SettingsPanel() {
   const { useClipboard, setUseClipboard, buttonNumberClass, setButtonNumberClass } = useSettings();

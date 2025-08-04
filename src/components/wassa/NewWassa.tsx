@@ -1,5 +1,5 @@
 import { useState, type ChangeEvent } from "react"
-import { useWassas, useSettings } from "../store/hooks"
+import { useWassas, useSettings } from "../../store/hooks"
 
 interface NewWassaFormProps {
     showForm: boolean

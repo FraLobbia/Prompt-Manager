@@ -2,11 +2,11 @@ import { useState } from "react"
 import SettingsPanel from "../settingsPanel/SettingsPanel"
 import Header from "../common/Header"
 import "./Popup.scss"
-import { usePrompts } from "../store/hooks"
-import Wassa from "../common/Wassa"
-import EditWassa from "../common/EditWassa"
-import NewWassa from "../common/NewWassa"
-import type { Wassa as WassaType } from "../types/Wassa"
+import { usePrompts } from "../../store/hooks"
+import Wassa from "../wassa/Wassa"
+import type { Wassa as WassaType } from "../../types/Wassa"
+import NewWassaForm from "../wassa/NewWassa"
+import EditWassa from "../wassa/EditWassa"
 
 export default function Popup() {
   const { prompts } = usePrompts()
@@ -28,7 +28,7 @@ export default function Popup() {
       ) : (
         <>
           {showForm && (
-            <NewWassa
+            <NewWassaForm
               showForm={showForm}
               onFormClose={() => setShowForm(false)}
             />

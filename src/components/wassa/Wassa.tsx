@@ -1,6 +1,6 @@
 
-import { useSettings, useWassas } from "../store/hooks"
-import type { Wassa } from "../types/Wassa"
+import { useSettings, useWassas } from "../../store/hooks"
+import type { Wassa } from "../../types/Wassa"
 
 interface WassaProps {
   prompt: Wassa

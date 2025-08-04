@@ -1,4 +1,4 @@
-import { useSettings } from "../store/hooks"
+import { useSettings } from "../../store/hooks"
 
 interface HeaderProps {
   title?: string

@@ -3,7 +3,7 @@ import { useDispatch } from "react-redux";
 import type { ThunkDispatch } from "@reduxjs/toolkit";
 import type { AnyAction } from "redux";
 import { loadUseClipboardFromStorage, loadWassasFromStorage } from "./utils/storage";
-import Popup from "./popup/Popup";
+import Popup from "./components/popup/Popup";
 import type { RootState } from "./store/store";
 import type { AppDispatch } from "./store/store";
 
