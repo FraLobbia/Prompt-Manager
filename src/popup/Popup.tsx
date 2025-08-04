@@ -17,6 +17,8 @@ export default function Popup() {
   return (
     <div className="popup-container">
       <Header
+        showForm={showForm}
+        showSettings={showSettings}
         onShowFormChange={setShowForm}
         onShowSettingsChange={setShowSettings}
       />

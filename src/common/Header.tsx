@@ -1,39 +1,36 @@
-import { useState } from "react"
 import { useSettings } from "../store/hooks"
 
 interface HeaderProps {
   title?: string
+  showForm?: boolean
+  showSettings?: boolean
   onShowFormChange?: (show: boolean) => void
   onShowSettingsChange?: (show: boolean) => void
 }
 
 export default function Header({
   title = "Wassà",
+  showForm = false,
+  showSettings = false,
   onShowFormChange,
   onShowSettingsChange,
 }: HeaderProps) {
   const { buttonNumberClass } = useSettings()
-  const [showForm, setShowForm] = useState(false)
-  const [showSettings, setShowSettings] = useState(false)
   
   const handleToggleForm = () => {
     const newShowForm = !showForm
-    setShowForm(newShowForm)
     onShowFormChange?.(newShowForm)
     // Se apriamo il form, chiudiamo le settings
     if (newShowForm && showSettings) {
-      setShowSettings(false)
       onShowSettingsChange?.(false)
     }
   }
   
   const handleToggleSettings = () => {
     const newShowSettings = !showSettings
-    setShowSettings(newShowSettings)
     onShowSettingsChange?.(newShowSettings)
     // Se apriamo le settings, chiudiamo il form
     if (newShowSettings && showForm) {
-      setShowForm(false)
       onShowFormChange?.(false)
     }
   }
