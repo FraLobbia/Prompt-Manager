@@ -1,14 +1,15 @@
 import type { Middleware, AnyAction } from '@reduxjs/toolkit'
-import { savePrompts, saveSettings } from '../utils/storage'
-import type { Prompt } from '../types/Prompt'
+import { saveWassas, saveSettings } from '../utils/storage'
+import type { Wassa } from '../types/Wassa'
 
 // Tipo per lo stato (per evitare dipendenze circolari)
 interface AppState {
-  prompts: {
-    prompts: Prompt[] 
+  wassas: {
+    wassas: Wassa[] 
   }
   settings: {
     useClipboard: boolean
+    buttonNumberClass: string
   }
 }
 
@@ -20,17 +21,21 @@ const persistenceMiddleware: Middleware<object, AppState> = (store) => (next) =>
   const state = store.getState()
   const typedAction = action as AnyAction
   
-  // Salva i prompt se sono cambiati (esclude il caricamento iniziale)
-  if (typedAction.type?.startsWith('prompts/') && 
-      !typedAction.type.includes('setPrompts')) {
-    console.log('💾 Middleware: Salvando prompt automaticamente...')
-    savePrompts(state.prompts.prompts).catch(console.error)
+  // Salva le wassas se sono cambiate (esclude il caricamento iniziale)
+  if (typedAction.type?.startsWith('wassas/') && 
+      !typedAction.type.includes('setWassas')) {
+    console.log('💾 Middleware: Salvando wassas automaticamente...')
+    saveWassas(state.wassas.wassas).catch(console.error)
   }
   
   // Salva le impostazioni se sono cambiate con azione auto
-  if (typedAction.type === 'settings/updateUseClipboardAuto') {
+  if (typedAction.type === 'settings/updateUseClipboardAuto' || 
+      typedAction.type === 'settings/updateButtonNumberClassAuto') {
     console.log('⚙️ Middleware: Salvando impostazioni automaticamente...')
-    saveSettings({ useClipboard: state.settings.useClipboard }).catch(console.error)
+    saveSettings({ 
+      useClipboard: state.settings.useClipboard,
+      buttonNumberClass: state.settings.buttonNumberClass 
+    }).catch(console.error)
   }
   
   return result

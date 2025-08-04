@@ -1,4 +1,5 @@
 import { useState } from "react"
+import { useSettings } from "../store/hooks"
 
 interface HeaderProps {
   title?: string
@@ -11,6 +12,7 @@ export default function Header({
   onShowFormChange,
   onShowSettingsChange,
 }: HeaderProps) {
+  const { buttonNumberClass } = useSettings()
   const [showForm, setShowForm] = useState(false)
   const [showSettings, setShowSettings] = useState(false)
   
@@ -37,7 +39,6 @@ export default function Header({
   }
 
   const settingsIcon = showSettings ? "❌" : "⚙️"
-  const buttonNumberClass = "53"
   
   return (
     <div className={`header button-${buttonNumberClass}`}>

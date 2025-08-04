@@ -52,7 +52,7 @@
     box-shadow: 0 0 6px rgba($primary, 0.3);
   }
 
-  .new-prompt-form {
+  .new-wassa-form {
     @extend .form-shared-style;
 
     .form-label {
@@ -67,13 +67,13 @@
       margin-bottom: 0.5rem;
     }
 
-    .btn-save-prompt {
+    .btn-save-wassa {
       @extend .btn-primary;
       width: 100%;
     }
   }
 
-  .prompt-list {
+  .wassa-list {
     display: flex;
     flex-direction: column;
     gap: 0.5rem;
@@ -81,8 +81,8 @@
     padding-left: 0;
     margin: 0;
 
-    .prompt-item,
-    .prompt-edit-item {
+    .wassa-item,
+    .wassa-edit-item {
       background: #fff;
       border-radius: $border-radius;
       padding-block: 0.25rem;
@@ -102,20 +102,20 @@
         color: $text-primary;
       }
 
-      .prompt-preview {
+      .wassa-preview {
         font-size: 0.85rem;
         color: $text-secondary;
         margin-top: 0.3rem;
         white-space: pre-line;
       }
 
-      .prompt-buttons {
+      .wassa-buttons {
         margin-top: 0.5rem;
         display: flex;
         gap: 0.4rem;
         flex-wrap: wrap;
 
-        .btn-prompt-action,
+        .btn-wassa-action,
         .btn-delete,
         .btn-save-edit,
         .btn-cancel-edit {

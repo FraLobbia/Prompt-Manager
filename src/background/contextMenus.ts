@@ -1,38 +1,38 @@
 // src/background/contextMenus.ts
 
-import type { Prompt } from "../types/Prompt"
-import { loadPrompts } from "../utils/storage"
+import type { Wassa } from "../types/Wassa"
+import { loadWassas } from "../utils/storage"
 
 export const setupContextMenu = async () => {
   chrome.contextMenus.removeAll()
 
-  const prompts: Prompt[] = await loadPrompts()
+  const wassas: Wassa[] = await loadWassas()
 
   chrome.contextMenus.create({
     id: "root",
-    title: "Inserisci Prompt",
+    title: "Inserisci Wassa",
     contexts: ["editable"]
   })
 
-  prompts.forEach((prompt) => {
+  wassas.forEach((wassa) => {
     chrome.contextMenus.create({
-      id: `prompt-${prompt.id}`,
+      id: `wassa-${wassa.id}`,
       parentId: "root",
-      title: prompt.titolo,
+      title: wassa.titolo,
       contexts: ["editable"]
     })
   })
 
   chrome.contextMenus.onClicked.addListener((info, tab) => {
-    if (!info.menuItemId.toString().startsWith("prompt-")) return
+    if (!info.menuItemId.toString().startsWith("wassa-")) return
 
-    const promptId = info.menuItemId.toString().replace("prompt-", "")
-    const prompt = prompts.find((p) => p.id === promptId)
-    if (!prompt) return
+    const wassaId = info.menuItemId.toString().replace("wassa-", "")
+    const wassa = wassas.find((w) => w.id === wassaId)
+    if (!wassa) return
 
     chrome.tabs.sendMessage(tab!.id!, {
-      action: "insertPrompt",
-      text: prompt.testo
+      action: "insertWassa",
+      text: wassa.testo
     })
   })
 }

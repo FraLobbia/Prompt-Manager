@@ -4,10 +4,12 @@ import type { AppDispatch } from "../store";
 
 type SettingsState = {
   useClipboard: boolean;
+  buttonNumberClass: string;
 };
 
 const initialState: SettingsState = {
   useClipboard: true, // valore di default
+  buttonNumberClass: "53", // valore di default
 };
 
 export const settingsSlice = createSlice({
@@ -17,14 +19,24 @@ export const settingsSlice = createSlice({
     setUseClipboard(state, action: PayloadAction<boolean>) {
       state.useClipboard = action.payload;
     },
-    // Azione che triggera il middleware per il salvataggio automatico
     updateUseClipboardAuto(state, action: PayloadAction<boolean>) {
       state.useClipboard = action.payload;
+    },
+    setButtonNumberClass(state, action: PayloadAction<string>) {
+      state.buttonNumberClass = action.payload;
+    },
+    updateButtonNumberClassAuto(state, action: PayloadAction<string>) {
+      state.buttonNumberClass = action.payload;
     },
   },
 });
 
-export const { setUseClipboard, updateUseClipboardAuto } = settingsSlice.actions;
+export const { 
+  setUseClipboard, 
+  updateUseClipboardAuto, 
+  setButtonNumberClass, 
+  updateButtonNumberClassAuto 
+} = settingsSlice.actions;
 
 // Thunk che aggiorna lo stato e salva la configurazione in chrome.storage
 export const updateUseClipboard = (value: boolean) => async (dispatch: AppDispatch) => {

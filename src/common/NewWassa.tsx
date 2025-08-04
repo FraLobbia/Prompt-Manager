@@ -1,20 +1,19 @@
 import { useState, type ChangeEvent } from "react"
-import { usePrompts } from "../store/hooks"
+import { useWassas, useSettings } from "../store/hooks"
 
-interface NewPromptFormProps {
+interface NewWassaFormProps {
     showForm: boolean
-    buttonNumberClass?: string
     onFormClose?: () => void
 }
 
-export default function NewPromptForm({
+export default function NewWassaForm({
     showForm,
-    buttonNumberClass = "default",
     onFormClose
-}: NewPromptFormProps) {
-    const { addPrompt } = usePrompts()
+}: NewWassaFormProps) {
+    const { addWassa } = useWassas()
+    const { buttonNumberClass } = useSettings()
     const [newTitle, setNewTitle] = useState("")
-    const [newPrompt, setNewPrompt] = useState("")
+    const [NewWassa, setNewWassa] = useState("")
 
     const autoResize = (el: HTMLTextAreaElement | null) => {
         if (el) {
@@ -23,27 +22,27 @@ export default function NewPromptForm({
         }
     }
 
-    const handleAddPrompt = () => {
-        if (!newTitle.trim() || !newPrompt.trim()) return
+    const handleAddWassa = () => {
+        if (!newTitle.trim() || !NewWassa.trim()) return
         
-        // Aggiungi prompt con Redux - il middleware salverà automaticamente
-        addPrompt({
+        // Aggiungi wassa con Redux - il middleware salverà automaticamente
+        addWassa({
             id: Date.now().toString(),
             titolo: newTitle.trim(),
-            testo: newPrompt.trim()
+            testo: NewWassa.trim()
         })
         
         // Reset form
         setNewTitle("")
-        setNewPrompt("")
+        setNewWassa("")
         
         // Chiudi il form
         onFormClose?.()
     }
 
     return (
-        <div className={`new-prompt-form ${showForm ? "active-form" : ""}`}>
-            <div className="form-label">🆕 Crea nuovo prompt</div>
+        <div className={`new-wassa-form ${showForm ? "active-form" : ""}`}>
+            <div className="form-label">🆕 Crea nuova wassa</div>
 
             <input
                 placeholder="Titolo"
@@ -53,10 +52,10 @@ export default function NewPromptForm({
             />
 
             <textarea
-                placeholder="Testo del prompt"
-                value={newPrompt}
+                placeholder="Testo della wassa"
+                value={NewWassa}
                 onChange={(e: ChangeEvent<HTMLTextAreaElement>) => {
-                    setNewPrompt(e.target.value)
+                    setNewWassa(e.target.value)
                     autoResize(e.target)
                 }}
                 className="textarea-text"
@@ -64,10 +63,10 @@ export default function NewPromptForm({
             />
 
             <button
-                onClick={handleAddPrompt}
+                onClick={handleAddWassa}
                 className={`button-${buttonNumberClass}`}
             >
-                Salva prompt
+                Salva wassa
             </button>
         </div>
     )

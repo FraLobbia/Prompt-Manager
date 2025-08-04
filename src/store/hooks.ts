@@ -1,8 +1,8 @@
 import { useSelector, useDispatch } from 'react-redux'
 import type { RootState } from './store'
-import { updateUseClipboardAuto } from './slices/settingsSlice'
-import { addPrompt, removePrompt, updatePrompt } from './slices/promptSlice'
-import type { Prompt } from '../types/Prompt'
+import { updateUseClipboardAuto, updateButtonNumberClassAuto } from './slices/settingsSlice'
+import { addWassa, removeWassa, updateWassa } from './slices/wassaSlice'
+import type { Wassa } from '../types/Wassa'
 
 // Hook per settings con persistenza automatica via middleware
 export function useSettings() {
@@ -12,24 +12,41 @@ export function useSettings() {
   return {
     // Stato
     useClipboard: settings.useClipboard,
+    buttonNumberClass: settings.buttonNumberClass,
     
     // Azioni che triggherano il middleware per il salvataggio automatico
     setUseClipboard: (value: boolean) => dispatch(updateUseClipboardAuto(value)),
+    setButtonNumberClass: (value: string) => dispatch(updateButtonNumberClassAuto(value)),
   }
 }
 
-// Hook per prompt con persistenza automatica via middleware
-export function usePrompts() {
-  const prompts = useSelector((state: RootState) => state.prompts.prompts)
+// Hook per wassas con persistenza automatica via middleware
+export function useWassas() {
+  const wassas = useSelector((state: RootState) => state.wassas.wassas)
   const dispatch = useDispatch()
 
   return {
     // Stato
-    prompts,
+    wassas,
     
     // Azioni che triggherano il middleware per il salvataggio automatico
-    addPrompt: (prompt: Prompt) => dispatch(addPrompt(prompt)),
-    removePrompt: (id: string) => dispatch(removePrompt(id)),
-    updatePrompt: (prompt: Prompt) => dispatch(updatePrompt(prompt)),
+    addWassa: (wassa: Wassa) => dispatch(addWassa(wassa)),
+    removeWassa: (id: string) => dispatch(removeWassa(id)),
+    updateWassa: (wassa: Wassa) => dispatch(updateWassa(wassa)),
+  }
+}
+
+// Hook di compatibilità - mantiene l'interfaccia precedente
+export function usePrompts() {
+  const wassaHook = useWassas()
+  
+  return {
+    // Stato - mappa wassas a prompts per compatibilità
+    prompts: wassaHook.wassas,
+    
+    // Azioni che mantengono i nomi precedenti per compatibilità
+    addPrompt: wassaHook.addWassa,
+    removePrompt: wassaHook.removeWassa,
+    updatePrompt: wassaHook.updateWassa,
   }
 }

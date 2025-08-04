@@ -3,18 +3,16 @@ import SettingsPanel from "../settingsPanel/SettingsPanel"
 import Header from "../common/Header"
 import "./Popup.scss"
 import { usePrompts } from "../store/hooks"
-import PromptItem from "../common/PromptItem"
-import PromptEditItem from "../common/PromptEditItem"
-import NewPromptForm from "../common/NewpromptForm"
-import type { Prompt } from "../types/Prompt"
+import Wassa from "../common/Wassa"
+import EditWassa from "../common/EditWassa"
+import NewWassa from "../common/NewWassa"
+import type { Wassa as WassaType } from "../types/Wassa"
 
 export default function Popup() {
   const { prompts } = usePrompts()
   const [showForm, setShowForm] = useState(false)
   const [showSettings, setShowSettings] = useState(false)
   const [editId, setEditId] = useState<string | null>(null)
-
-  const buttonNumberClass: string = "53"
 
   return (
     <div className="popup-container">
@@ -28,31 +26,28 @@ export default function Popup() {
       ) : (
         <>
           {showForm && (
-            <NewPromptForm
+            <NewWassa
               showForm={showForm}
-              buttonNumberClass={buttonNumberClass}
               onFormClose={() => setShowForm(false)}
             />
           )}
 
-          <ul className="prompt-list">
-            {prompts.map((p : Prompt) =>
-            // Se id del prompt in editing è uguale a quello corrente
+          <ul className="wassa-list">
+            {prompts.map((p : WassaType) =>
+            // Se id della wassa in editing è uguale a quello corrente
               editId === p.id ? (
-                // mostra PromptEditItem
-                <PromptEditItem
+                // mostra EditWassa
+                <EditWassa
                   key={p.id}
                   prompt={p}
-                  buttonNumberClass={buttonNumberClass}
                   onEditComplete={() => setEditId(null)}
                 />
               ) : (
-                // Altrimenti mostra PromptItem
-                <PromptItem
+                // Altrimenti mostra Wassa
+                <Wassa
                   key={p.id}
                   prompt={p}
-                  buttonNumberClass={buttonNumberClass}
-                  onEdit={(prompt) => setEditId(prompt.id)}
+                  onEdit={(wassa) => setEditId(wassa.id)}
                 />
               )
             )}

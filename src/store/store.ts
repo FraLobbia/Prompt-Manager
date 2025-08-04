@@ -1,14 +1,14 @@
 // src/app/store.ts
 
 import { configureStore } from '@reduxjs/toolkit'
-import promptsReducer from './slices/promptSlice' // Importo il reducer dei prompt
+import wassasReducer from './slices/wassaSlice' // Importo il reducer delle wassas
 import settingsReducer from './slices/settingsSlice' // Importo il reducer delle impostazioni
 import persistenceMiddleware from './persistenceMiddleware' // Middleware per persistenza automatica
 
 // Configuro lo store Redux con i reducers e middleware
 export const store = configureStore({
   reducer: {
-    prompts: promptsReducer,
+    wassas: wassasReducer,
     settings: settingsReducer,
   },
   middleware: (getDefaultMiddleware) =>

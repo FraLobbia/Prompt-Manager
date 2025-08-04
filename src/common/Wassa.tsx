@@ -1,32 +1,25 @@
 
-import { useSettings, usePrompts } from "../store/hooks"
+import { useSettings, useWassas } from "../store/hooks"
+import type { Wassa } from "../types/Wassa"
 
-interface Prompt {
-  id: string
-  titolo: string
-  testo: string
+interface WassaProps {
+  prompt: Wassa
+  onEdit?: (wassa: Wassa) => void
 }
 
-interface PromptItemProps {
-  prompt: Prompt
-  buttonNumberClass?: string
-  onEdit?: (prompt: Prompt) => void
-}
-
-export default function PromptItem({
+export default function Wassa({
   prompt,
-  buttonNumberClass = "default",
   onEdit
-}: PromptItemProps) {
-  const { useClipboard } = useSettings()
-  const { removePrompt } = usePrompts()
+}: WassaProps) {
+  const { useClipboard, buttonNumberClass } = useSettings()
+  const { removeWassa } = useWassas()
   
   const { id, titolo, testo } = prompt
   const anteprima = testo.split("\n").slice(0, 2).join("\n")
   const hasMoreLines = testo.split("\n").length > 2
 
-  const sendPromptWithClipboard = async (
-    action: "insertPrompt" | "overwritePrompt",
+  const sendWassaWithClipboard = async (
+    action: "insertWassa" | "overwriteWassa",
     text: string
   ) => {
     try {
@@ -48,22 +41,22 @@ export default function PromptItem({
     }
   }
 
-  const handleRemovePrompt = () => {
-    const conferma = confirm(`Vuoi davvero eliminare il prompt "${titolo}"?`)
+  const handleRemoveWassa = () => {
+    const conferma = confirm(`Vuoi davvero eliminare la wassa "${titolo}"?`)
     if (!conferma) return
-    removePrompt(id)
+    removeWassa(id)
   }
 
   return (
-    <li key={id} className="prompt-item">
+    <li key={id} className="wassa-item">
       <strong>{titolo}</strong>
-      <div className="prompt-preview">
+      <div className="wassa-preview">
         {anteprima}
         {hasMoreLines ? "…" : ""}
       </div>
-      <div className="prompt-buttons">
+      <div className="wassa-buttons">
         <button
-          onClick={() => sendPromptWithClipboard("insertPrompt", testo)}
+          onClick={() => sendWassaWithClipboard("insertWassa", testo)}
           className={`button-${buttonNumberClass}`}
         >
           <div>➕</div>
@@ -71,7 +64,7 @@ export default function PromptItem({
         </button>
 
         <button
-          onClick={() => sendPromptWithClipboard("overwritePrompt", testo)}
+          onClick={() => sendWassaWithClipboard("overwriteWassa", testo)}
           className={`button-${buttonNumberClass}`}
           style={{ marginLeft: "0.3rem" }}
         >
@@ -89,7 +82,7 @@ export default function PromptItem({
         </button>
 
         <button
-          onClick={handleRemovePrompt}
+          onClick={handleRemoveWassa}
           className={`button-${buttonNumberClass}`}
           style={{ marginLeft: "0.3rem", maxWidth: "30px" }}
           title="Elimina"

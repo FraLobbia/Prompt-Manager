@@ -70,10 +70,12 @@ chrome.runtime.onMessage.addListener(async (request: { action: string; text?: st
   if (request.text) {
     const textToInsert = request.text;
     switch (request.action) {
-      case "insertPrompt":
+      case "insertWassa":
+      case "insertPrompt": // Compatibilità
         insertTextAtEndOfTarget("prompt-textarea", textToInsert);
         break;
-      case "overwritePrompt":
+      case "overwriteWassa":
+      case "overwritePrompt": // Compatibilità
         overwriteContent("prompt-textarea", textToInsert);
         break;
       default:

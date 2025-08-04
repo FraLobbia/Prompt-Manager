@@ -1,24 +1,18 @@
 import { useState, useRef, useEffect, type ChangeEvent } from "react"
-import { usePrompts } from "../store/hooks"
+import { useWassas, useSettings } from "../store/hooks"
+import type { Wassa } from "../types/Wassa"
 
-interface Prompt {
-  id: string
-  titolo: string
-  testo: string
-}
-
-interface PromptEditItemProps {
-  prompt: Prompt
-  buttonNumberClass?: string
+interface EditWassaProps {
+  prompt: Wassa
   onEditComplete?: () => void
 }
 
-export default function PromptEditItem({
+export default function EditWassa({
   prompt,
-  buttonNumberClass = "default",
   onEditComplete
-}: PromptEditItemProps) {
-  const { updatePrompt } = usePrompts()
+}: EditWassaProps) {
+  const { updateWassa } = useWassas()
+  const { buttonNumberClass } = useSettings()
   const [editTitle, setEditTitle] = useState(prompt.titolo)
   const [editText, setEditText] = useState(prompt.testo)
   const editTextareaRef = useRef<HTMLTextAreaElement | null>(null)
@@ -38,7 +32,7 @@ export default function PromptEditItem({
 
   const saveEdit = () => {
     if (!editTitle.trim() || !editText.trim()) return
-    updatePrompt({
+    updateWassa({
       id: prompt.id,
       titolo: editTitle.trim(),
       testo: editText.trim()
@@ -51,7 +45,7 @@ export default function PromptEditItem({
   }
 
   return (
-    <li key={prompt.id} className="prompt-edit-item active-edit">
+    <li key={prompt.id} className="wassa-edit-item active-edit">
       <input
         value={editTitle}
         onChange={(e: ChangeEvent<HTMLInputElement>) => setEditTitle(e.target.value)}
@@ -67,7 +61,7 @@ export default function PromptEditItem({
           autoResize(e.target)
         }}
       />
-      <div className="prompt-buttons">
+      <div className="wassa-buttons">
         <button onClick={saveEdit} className={`button-${buttonNumberClass}`} style={{ marginRight: "0.5rem" }}>
           💾 Salva
         </button>
