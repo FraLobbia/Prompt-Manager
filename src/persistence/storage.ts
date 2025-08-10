@@ -8,6 +8,7 @@ import type { Dispatch } from "redux";
 /** Chiavi di storage */
 export const SETTINGS_KEY = "settings";
 export const WASSAS_KEY = "wassas";
+const WASSA_SETS_KEY = "wassaSets"
 
 /** ------------------------
  *  Adattatori Settings
@@ -138,6 +139,16 @@ export async function persistSettings(settings: Settings | Partial<Settings>) {
   return new Promise<void>((resolve) => {
     chrome.storage.sync.set({ [SETTINGS_KEY]: plain }, () => resolve());
   });
+}
+
+export async function persistWassaSets(payload: "LOAD" | any) {
+  if (payload === "LOAD") {
+    const raw = await chrome.storage?.local.get(WASSA_SETS_KEY)
+    return raw?.[WASSA_SETS_KEY] ?? []
+  } else {
+    await chrome.storage?.local.set({ [WASSA_SETS_KEY]: payload })
+    return true
+  }
 }
 
 /** ------------------------

@@ -3,7 +3,7 @@ import { useDispatch } from 'react-redux'
 import { exportBackup, importBackup } from '../../utils/utils'
 
 export default function SettingsPanel() {
-  const { clipboardReplace, setClipboardReplace, buttonNumberClass, setButtonNumberClass } = useSettings()
+  const { clipboardReplace, setClipboardReplace, buttonNumberClass, setButtonNumberClass, navigate } = useSettings()
   const dispatch = useDispatch()
 
   const onExport = exportBackup
@@ -21,6 +21,17 @@ export default function SettingsPanel() {
 
   return (
     <div className="settings-panel">
+
+      <h3>Sets</h3>
+      <div className="d-flex-row">
+        <button onClick={() => navigate("newSet")} className={`button-${buttonNumberClass}`}>
+          Nuovo Set
+        </button>
+        <button onClick={() => navigate("chooseSet")} className={`button-${buttonNumberClass}`}>
+          Scegli Set
+        </button>
+      </div>
+
       <label className="settings-checkbox-label">
         <input
           type="checkbox"

@@ -10,10 +10,6 @@ import SettingsPanel from "./components/settingsPanel/SettingsPanel"
 import WassaList from "./components/wassa/WassaList"
 import NewWassaForm from "./components/wassa/NewWassa"
 
-// Placeholder temporanei per view non ancora implementate
-function NewSetPlaceholder() {
-  return <div>{/* TODO: <NewSetForm /> */}Nuovo Set – componente mancante</div>
-}
 function EditWassaPlaceholder() {
   return <div>{/* TODO: <EditWassaForm /> */}Modifica Wassa – componente mancante</div>
 }
@@ -24,6 +20,8 @@ function EditSetPlaceholder() {
 import type { RootState } from "./store/store"
 import type { AppDispatch } from "./store/store"
 import { useSettings } from "./store/hooks"
+import WassaSetForm from "./components/wassaset/WassaSetForm"
+import WassaSetList from "./components/wassaset/WassaSetList"
 
 export function App() {
   const dispatch: ThunkDispatch<RootState, unknown, AnyAction> = useDispatch<AppDispatch>()
@@ -54,13 +52,16 @@ export function App() {
         return <NewWassaForm onSubmit={() => navigate("activeSet")} />
 
       case "newSet":
-        return <NewSetPlaceholder />
+        return <WassaSetForm />
 
       case "editWassa":
         return <EditWassaPlaceholder />
 
       case "editSet":
         return <EditSetPlaceholder />
+      
+        case "chooseSet":
+          return <WassaSetList />
 
       default: {
         // Se la view non è ancora stata caricata (es. inizializzazione), evita di renderizzare fallback arbitrari

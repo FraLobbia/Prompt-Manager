@@ -25,7 +25,8 @@ export type Views =
   | "newWassa"
   | "newSet"
   | "editWassa"
-  | "editSet";
+  | "editSet"
+  | "chooseSet";
 
 /** Stato iniziale di default */
 export const initialState: Settings = {
