@@ -5,18 +5,18 @@ import type { WassaSet } from "../../types/WassaSet"
 interface WassaSetFormProps {
   onSubmit?: () => void
   /** modalità edit: se passato, inizializzo i campi e faccio update invece di add */
-  initial?: WassaSet
+  editingSet?: WassaSet
 }
 
-export default function WassaSetForm({ onSubmit, initial }: WassaSetFormProps) {
+export default function WassaSetForm({ onSubmit, editingSet }: WassaSetFormProps) {
   const { buttonNumberClass, navigate } = useSettings()
   const { addWassaSetAndSave, updateWassaSetAndSave } = useWassaSets()
   const { wassas } = useWassas() // elenco globale
 
-  const [title, setTitle] = useState(initial?.titolo ?? "")
-  const [description, setDescription] = useState(initial?.descrizione ?? "")
+  const [title, setTitle] = useState(editingSet?.titolo ?? "")
+  const [description, setDescription] = useState(editingSet?.descrizione ?? "")
   const [selectedIds, setSelectedIds] = useState<string[]>(
-    (initial?.wassasID ?? []).map(String)
+    (editingSet?.wassasID ?? []).map(String)
   )
 
   const autoResize = (el: HTMLTextAreaElement | null) => {
@@ -38,13 +38,13 @@ export default function WassaSetForm({ onSubmit, initial }: WassaSetFormProps) {
     const ids = selectedIds.map(id => Number(id)).filter(n => !Number.isNaN(n))
 
     const set: WassaSet = {
-      id: initial?.id ?? `set-${Date.now()}`,
+      id: editingSet?.id ?? `set-${Date.now()}`,
       titolo,
       descrizione,
       wassasID: ids,
     }
 
-    if (initial) {
+    if (editingSet) {
       updateWassaSetAndSave(set)
     } else {
       addWassaSetAndSave(set)
@@ -59,7 +59,7 @@ export default function WassaSetForm({ onSubmit, initial }: WassaSetFormProps) {
 
   return (
     <div className="new-wassa-form active-form">
-      <h3 className="form-label">{initial ? "Modifica set" : "Crea un nuovo set"}</h3>
+      <h3 className="form-label">{editingSet ? "Modifica set" : "Crea un nuovo set"}</h3>
 
       <input
         placeholder="Titolo del set *"
@@ -134,7 +134,7 @@ export default function WassaSetForm({ onSubmit, initial }: WassaSetFormProps) {
         style={{ marginTop: "0.75rem" }}
         disabled={!title.trim()}
       >
-        {initial ? "Salva modifiche" : "Salva set"}
+        {editingSet ? "Salva modifiche" : "Salva set"}
       </button>
     </div>
   )
