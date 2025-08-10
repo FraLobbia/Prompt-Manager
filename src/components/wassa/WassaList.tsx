@@ -1,31 +1,19 @@
-import type { Dispatch, SetStateAction } from "react"
-import { usePrompts } from "../../store/hooks"
+import { useState } from "react"
+import { useWassas } from "../../store/hooks"
 import Wassa from "./Wassa"
-import type { Wassa as WassaType } from "../../types/Wassa"
 import EditWassa from "./EditWassa"
 
-interface HomeProps {
-  editId: string | null
-  setEditId: Dispatch<SetStateAction<string | null>>
-}
+export default function WassaList() {
+  const { wassas } = useWassas()
+  const [editId, setEditId] = useState<string | null>(null)
 
-export default function Home({ editId, setEditId }: HomeProps) {
-  const { prompts } = usePrompts()
   return (
     <ul className="wassa-list">
-      {prompts.map((p: WassaType) =>
+      {wassas.map((p) =>
         editId === p.id ? (
-          <EditWassa
-            key={p.id}
-            prompt={p}
-            onEditComplete={() => setEditId(null)}
-          />
+          <EditWassa key={p.id} prompt={p} onEditComplete={() => setEditId(null)} />
         ) : (
-          <Wassa
-            key={p.id}
-            prompt={p}
-            onEdit={(wassa) => setEditId(wassa.id)}
-          />
+          <Wassa key={p.id} prompt={p} onEdit={(wassa) => setEditId(wassa.id)} />
         )
       )}
     </ul>

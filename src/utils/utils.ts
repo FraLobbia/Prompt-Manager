@@ -1,6 +1,6 @@
 import { loadSettings, loadWassas, persistSettings, persistWassas } from "../persistence/storage";
 import { setWassas } from "../store/slices/wassaSlice";
-import { setUseClipboard, setButtonNumberClass } from "../store/slices/settingsSlice";
+import { setClipboardReplace, setButtonNumberClass } from "../store/slices/settingsSlice";
 import type { Dispatch } from "redux";
 
 export async function exportBackup() {
@@ -25,7 +25,7 @@ export async function importBackup(file: File, dispatch: Dispatch) {
         const { settings, wassas } = JSON.parse(text);
         if (settings) {
           await persistSettings(settings);
-          dispatch(setUseClipboard(settings.useClipboard ?? true));
+          dispatch(setClipboardReplace(settings.clipboardReplace ?? true));
           dispatch(setButtonNumberClass(settings.buttonNumberClass ?? "53"));
         }
         if (wassas) {

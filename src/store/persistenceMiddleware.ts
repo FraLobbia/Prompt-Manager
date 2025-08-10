@@ -1,43 +1,74 @@
-import type { Middleware, AnyAction } from '@reduxjs/toolkit'
+import type { Middleware } from '@reduxjs/toolkit'
 import { persistWassas, persistSettings } from '../persistence/storage'
 import type { Wassa } from '../types/Wassa'
+import type { Settings } from '../types/Settings'
 
-// Tipo per lo stato (per evitare dipendenze circolari)
-interface AppState {
-  wassas: {
-    wassas: Wassa[] 
+
+// Estrae l'array di Wassa indipendentemente dallo shape del slice, senza usare `any`
+function getWassasList(wassasSlice: unknown): Wassa[] {
+  if (Array.isArray(wassasSlice)) {
+    return wassasSlice as Wassa[]
   }
-  settings: {
-    useClipboard: boolean
-    buttonNumberClass: string
+  if (typeof wassasSlice === 'object' && wassasSlice !== null) {
+    const maybe = (wassasSlice as { wassas?: unknown }).wassas
+    if (Array.isArray(maybe)) return maybe as Wassa[]
+  }
+  return []
+}
+
+// Debounce tipata correttamente (niente any, niente errori di contravarianza)
+function createDebounced<A extends unknown[]>(
+  fn: (...args: A) => void,
+  ms = 150
+) {
+  let t: ReturnType<typeof setTimeout> | undefined
+  let lastArgs: A | null = null
+
+  return (...args: A) => {
+    lastArgs = args
+    if (t) clearTimeout(t)
+    t = setTimeout(() => {
+      fn(...(lastArgs as A))
+      lastArgs = null
+    }, ms)
   }
 }
 
-// Middleware per la persistenza automatica
-const persistenceMiddleware: Middleware<object, AppState> = (store) => (next) => (action: unknown) => {
+const persistSettingsDebounced = createDebounced((settings: Settings) => {
+  persistSettings(settings).catch(console.error)
+})
+
+const persistWassasDebounced = createDebounced((list: Wassa[]) => {
+  persistWassas(list).catch(console.error)
+})
+
+type LocalState = {
+  settings: Settings
+  wassas: Wassa[] | { wassas: Wassa[] }
+}
+
+const persistenceMiddleware: Middleware = (store) => (next) => (action: unknown) => {
+  const prevState = store.getState() as LocalState
+  const prevSettingsRef = prevState.settings
+  const prevWassasRef = prevState.wassas
+
   const result = next(action)
-  
-  // Dopo ogni azione, salva lo stato aggiornato
-  const state = store.getState()
-  const typedAction = action as AnyAction
-  
-  // Salva le wassas se sono cambiate (esclude il caricamento iniziale)
-  if (typedAction.type?.startsWith('wassas/') && 
-      !typedAction.type.includes('setWassas')) {
-    console.log('💾 Middleware: Salvando wassas automaticamente...')
-    persistWassas(state.wassas.wassas).catch(console.error)
+
+  const nextState = store.getState() as LocalState
+  const nextSettingsRef = nextState.settings
+  const nextWassasRef = nextState.wassas
+
+  // Se cambia il riferimento del slice settings, persisti tutto lo slice
+  if (prevSettingsRef !== nextSettingsRef) {
+    persistSettingsDebounced(nextSettingsRef)
   }
-  
-  // Salva le impostazioni se sono cambiate con azione auto
-  if (typedAction.type === 'settings/updateUseClipboardAuto' || 
-      typedAction.type === 'settings/updateButtonNumberClassAuto') {
-    console.log('⚙️ Middleware: Salvando impostazioni automaticamente...')
-    persistSettings({ 
-      useClipboard: state.settings.useClipboard,
-      buttonNumberClass: state.settings.buttonNumberClass 
-    }).catch(console.error)
+
+  // Se cambia il riferimento del slice wassas, persisti la lista
+  if (prevWassasRef !== nextWassasRef) {
+    const list = getWassasList(nextWassasRef)
+    persistWassasDebounced(list)
   }
-  
+
   return result
 }
 

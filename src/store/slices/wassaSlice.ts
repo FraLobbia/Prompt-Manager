@@ -17,14 +17,16 @@ const wassasSlice = createSlice({
   initialState,
   reducers: {
     setWassas(state, action: PayloadAction<Wassa[]>) {
-      state.wassas = action.payload
+      state.wassas = action.payload.map(w => ({ ...w }))
     },
     addWassa(state, action: PayloadAction<Wassa>) {
-      state.wassas.push(action.payload)
+      const w = action.payload
+      state.wassas.push({ ...w })
     },
     updateWassa(state, action: PayloadAction<Wassa>) {
-      const index = state.wassas.findIndex(w => w.id === action.payload.id)
-      if (index !== -1) state.wassas[index] = action.payload
+      const next = { ...action.payload }
+      const index = state.wassas.findIndex(w => w.id === next.id)
+      if (index !== -1) state.wassas[index] = next
     },
     removeWassa(state, action: PayloadAction<string>) {
       state.wassas = state.wassas.filter(w => w.id !== action.payload)

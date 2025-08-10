@@ -1,7 +1,8 @@
 {
   "settings": {
-    "buttonNumberClass": "53",
-    "useClipboard": true
+    "view": "settings",
+    "clipboardReplace": false,
+    "buttonNumberClass": "53"
   },
   "wassas": [
     {
@@ -13,6 +14,11 @@
       "id": "1754341156748",
       "testo": "Valuta il seguente prompt e suggeriscimi 3 varianti più performanti: \nWassatemplate",
       "titolo": "3 varianti più performanti"
+    },
+    {
+      "id": "1754820914850",
+      "testo": "Restituiscimi il/i componente/i completo/i e funzionante/i, aggiornato/i con tutte le ultime modifiche discusse. Includi tutto il codice necessario, con commenti chiari e dettagliati che spieghino scopo, logica interna e interazioni con gli altri moduli dell’applicazione. Mantieni la coerenza con lo stile e le convenzioni già usate nel progetto. \n\nWassaTemplate",
+      "titolo": "Aggiorna componente con ultime modifiche"
     }
   ]
 }

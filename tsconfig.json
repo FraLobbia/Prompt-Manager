@@ -5,6 +5,8 @@
     { "path": "./tsconfig.node.json" }
   ],
    "compilerOptions": {
-    "types": ["chrome"]
+    "types": ["chrome"],
+     "erasableSyntaxOnly": false,
+     "noImplicitAny": false
   }
 }

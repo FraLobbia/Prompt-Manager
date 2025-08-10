@@ -7,30 +7,33 @@ interface WassaProps {
 }
 
 export default function Wassa({ prompt, onEdit }: WassaProps) {
-  const { useClipboard, buttonNumberClass } = useSettings()
+  const { clipboardReplace, buttonNumberClass } = useSettings()
   const { removeWassa } = useWassas()
 
   const { id, titolo, testo } = prompt
   const lines = testo.split("\n")
   const anteprima = lines.slice(0, 2).join("\n")
   const hasMoreLines = lines.length > 2
+
   /**
-   * Chiama lo script di contenuto per inserire o sovrascrivere il testo.
-   * Se `useClipboard` è abilitato, sostituisce "WassaTemplate" con il testo degli appunti.
+   * Invia al content script un'azione di inserimento/sovrascrittura.
+   * Se `clipboardReplace` è attivo, sostituisce tutte le occorrenze di "WassaTemplate"
+   * con il contenuto degli appunti.
    */
   const callContentScript = async (
     action: "insert" | "overwrite",
     text: string
   ) => {
-    if (useClipboard) {
+    if (clipboardReplace) {
       try {
         const clipboardText = await navigator.clipboard.readText()
-        text = text.replace(/WassaTemplate/, clipboardText)
+        // sostituisci TUTTE le occorrenze
+        text = text.replaceAll("WassaTemplate", clipboardText)
       } catch (err) {
         console.error("Errore nella lettura della clipboard:", err)
       }
     } else {
-      text = text.replace(/WassaTemplate/, " ")
+      text = text.replaceAll("WassaTemplate", " ")
     }
 
     chrome.tabs.query({ active: true, currentWindow: true }, (tabs) => {
