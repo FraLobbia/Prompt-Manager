@@ -1,14 +1,16 @@
 // src/persistence/storage.ts
 import { hydrateFromStorage } from "../store/slices/settingsSlice";
 import { setWassas } from "../store/slices/wassaSlice";
+import { setWassaSets } from "../store/slices/wassaSetsSlice";
 import { Settings, initialState } from "../types/Settings";
 import type { Wassa } from "../types/Wassa";
+import type { WassaSet } from "../types/WassaSet";
 import type { Dispatch } from "redux";
 
 /** Chiavi di storage */
 export const SETTINGS_KEY = "settings";
 export const WASSAS_KEY = "wassas";
-const WASSA_SETS_KEY = "wassaSets"
+export const WASSA_SETS_KEY = "wassaSets"
 
 /** ------------------------
  *  Adattatori Settings
@@ -141,15 +143,24 @@ export async function persistSettings(settings: Settings | Partial<Settings>) {
   });
 }
 
-export async function persistWassaSets(payload: "LOAD" | any) {
-  if (payload === "LOAD") {
-    const raw = await chrome.storage?.local.get(WASSA_SETS_KEY)
-    return raw?.[WASSA_SETS_KEY] ?? []
-  } else {
-    await chrome.storage?.local.set({ [WASSA_SETS_KEY]: payload })
-    return true
-  }
-}
+/** ------------------------
+ *  Wassa Sets
+ *  ------------------------ */
+
+/**
+ * Persisti i WassaSet nello storage (uniforme alle altre persist*).
+ */
+export const persistWassaSets = async (sets: WassaSet[]) => {
+  await chrome.storage.sync.set({ [WASSA_SETS_KEY]: sets });
+};
+
+/**
+ * Carica i WassaSet dallo storage (uniforme alle altre load*).
+ */
+export const loadWassaSets = async (): Promise<WassaSet[]> => {
+  const result = await chrome.storage.sync.get(WASSA_SETS_KEY);
+  return (result[WASSA_SETS_KEY] as WassaSet[]) || [];
+};
 
 /** ------------------------
  *  Thunks Redux
@@ -204,5 +215,17 @@ export const loadWassasFromStorage = () => async (dispatch: Dispatch) => {
     dispatch(setWassas(wassas));
   } catch (error) {
     console.error("Errore nel caricamento delle wassas", error);
+  }
+};
+
+/**
+ * Carica i WassaSet dalla memoria e li inserisce nello stato tramite dispatch.
+ */
+export const loadWassaSetsFromStorage = () => async (dispatch: Dispatch) => {
+  try {
+    const sets = await loadWassaSets();
+    dispatch(setWassaSets(sets));
+  } catch (error) {
+    console.error("Errore nel caricamento dei WassaSet", error);
   }
 };

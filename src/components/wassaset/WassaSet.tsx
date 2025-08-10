@@ -1,85 +1,61 @@
-import { useSettings, useWassas } from "../../store/hooks"
-import type { Wassa } from "../../types/Wassa"
+import { useSettings, useWassaSets } from "../../store/hooks"
+import type { WassaSet } from "../../types/WassaSet"
 
-interface WassaProps {
-  prompt: Wassa
-  onEdit?: (wassa: Wassa) => void
-}
+export default function WassaSet({wassaSet
+}: {
+  wassaSet: WassaSet
+}) {
+  const { activeSet, buttonNumberClass, setActiveSet, navigate } = useSettings()
+  const { removeWassaSetAndSave } = useWassaSets()
 
-export default function Wassa({ prompt, onEdit }: WassaProps) {
-  const { clipboardReplace, buttonNumberClass } = useSettings()
-  const { removeWassa } = useWassas()
-
-  const { id, titolo, testo } = prompt
-  const lines = testo.split("\n")
-  const anteprima = lines.slice(0, 2).join("\n")
-  const hasMoreLines = lines.length > 2
-
-  /**
-   * Invia al content script un'azione di inserimento/sovrascrittura.
-   * Se `clipboardReplace` è attivo, sostituisce tutte le occorrenze di "WassaTemplate"
-   * con il contenuto degli appunti.
-   */
-  const callContentScript = async (
-    action: "insert" | "overwrite",
-    text: string
-  ) => {
-    if (clipboardReplace) {
-      try {
-        const clipboardText = await navigator.clipboard.readText()
-        // sostituisci TUTTE le occorrenze
-        text = text.replaceAll("WassaTemplate", clipboardText)
-      } catch (err) {
-        console.error("Errore nella lettura della clipboard:", err)
-      }
-    } else {
-      text = text.replaceAll("WassaTemplate", " ")
-    }
-
-    chrome.tabs.query({ active: true, currentWindow: true }, (tabs) => {
-      const tabId = tabs[0]?.id
-      if (tabId) {
-        chrome.tabs.sendMessage(tabId, { action, text })
-      }
-    })
+  const handleMakeActive = () => {
+    setActiveSet({ id: wassaSet.id, titolo: wassaSet.titolo, descrizione: wassaSet.descrizione, wassasID: wassaSet.wassas?.map(w => Number(w.id)) ?? [] })
+    navigate("activeSet")
   }
 
-  const handleRemoveWassa = () => {
-    if (confirm(`Vuoi davvero eliminare il wassà "${titolo}"?`)) {
-      removeWassa(id)
-    }
+  const handleEdit = () => {
+    navigate("editSet")
   }
 
-  const renderButton = (
-    onClick: () => void,
-    icon: string,
-    label?: string,
-    extraStyle?: React.CSSProperties,
-    title?: string
-  ) => (
-    <button
-      onClick={onClick}
-      className={`button-${buttonNumberClass}`}
-      style={{ marginLeft: "0.3rem", ...extraStyle }}
-      title={title}
-    >
-      <div>{icon}</div>
-      {label && <div>{label}</div>}
-    </button>
-  )
+  const handleRemove = () => {
+    if (confirm(`Vuoi davvero eliminare il set "${wassaSet.titolo}"?`)) {
+      removeWassaSetAndSave(wassaSet.id)
+    }
+  }
 
   return (
     <li className="wassa-item">
-      <strong>{titolo}</strong>
-      <div className="wassa-preview">
-        {anteprima}
-        {hasMoreLines ? "…" : ""}
+      <div className="wassa-list__header">
+        <strong>{wassaSet.titolo}</strong>
+        {wassaSet.descrizione && <div className="muted">{wassaSet.descrizione}</div>}
+        <div className="muted">Wassà nel set: {wassaSet.wassas?.length}</div>
       </div>
-      <div className="wassa-buttons">
-        {renderButton(() => callContentScript("insert", testo), "➕", "Coda", { marginLeft: "0" })}
-        {renderButton(() => callContentScript("overwrite", testo), "🔄", "Sovrascrivi")}
-        {renderButton(() => onEdit?.(prompt), "✏️", "Modifica")}
-        {renderButton(handleRemoveWassa, "🗑", undefined, { maxWidth: "30px" }, "Elimina")}
+
+      {wassaSet.wassas && wassaSet.wassas.length > 0 && (
+        <ul className="wassa-list__inner">
+          {wassaSet.wassas.map(w => (
+            <li key={String(w.id)} className="wassa-list__inner-item">
+              <span className="wassa-title">{w.titolo}</span>
+            </li>
+          ))}
+        </ul>
+      )}
+
+      <div className="wassa-buttons" style={{ marginTop: "0.5rem" }}>
+        <button
+          className={`button-${buttonNumberClass} ${wassaSet.id === activeSet?.id ? "active" : ""}`}
+          onClick={handleMakeActive}
+          disabled={wassaSet.id === activeSet?.id}
+        >
+          <span>{wassaSet.id === activeSet?.id ? "Attivo" : "✅ Rendi attivo"}</span>
+        </button>
+        <button className={`button-${buttonNumberClass}`} onClick={handleEdit} style={{ marginLeft: "0.3rem" }}>
+          <div>✏️</div>
+          <div>Modifica</div>
+        </button>
+        <button className={`button-${buttonNumberClass}`} onClick={handleRemove} style={{ marginLeft: "0.3rem" }} title="Elimina">
+          <div>🗑</div>
+        </button>
       </div>
     </li>
   )

@@ -3,7 +3,7 @@ import { useEffect } from "react"
 import { useDispatch } from "react-redux"
 import type { ThunkDispatch } from "@reduxjs/toolkit"
 import type { AnyAction } from "redux"
-import { loadSettingsFromStorage, loadWassasFromStorage } from "./persistence/storage"
+import { loadSettingsFromStorage, loadWassasFromStorage, loadWassaSetsFromStorage } from "./persistence/storage"
 
 import Header from "./components/common/Header"
 import SettingsPanel from "./components/settingsPanel/SettingsPanel"
@@ -22,6 +22,7 @@ import type { AppDispatch } from "./store/store"
 import { useSettings } from "./store/hooks"
 import WassaSetForm from "./components/wassaset/WassaSetForm"
 import WassaSetList from "./components/wassaset/WassaSetList"
+// no need to import slice-level loader; we use the storage-level uniform thunk
 
 export function App() {
   const dispatch: ThunkDispatch<RootState, unknown, AnyAction> = useDispatch<AppDispatch>()
@@ -33,6 +34,7 @@ export function App() {
   useEffect(() => {
     dispatch(loadSettingsFromStorage())
     dispatch(loadWassasFromStorage())
+  dispatch(loadWassaSetsFromStorage())
   }, [dispatch])
 
   /**

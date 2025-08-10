@@ -1,7 +1,9 @@
 import { createSlice, type PayloadAction } from "@reduxjs/toolkit"
-import type { AppDispatch } from "../store"
+import type { ThunkAction } from "@reduxjs/toolkit"
+import type { AnyAction } from "redux"
+import type { RootState } from "../store"
 import type { WassaSet } from "../../types/WassaSet"
-import { persistWassaSets } from "../../persistence/storage"
+import { persistWassaSets, loadWassaSets } from "../../persistence/storage"
 
 // Stato
 interface WassaSetsState {
@@ -92,50 +94,58 @@ export default wassaSetsSlice.reducer
 
 // ---------------- Thunk + persistenza ----------------
 
-export const loadWassaSets = () => async (dispatch: AppDispatch) => {
-  try {
-    const sets = await persistWassaSets("LOAD")
-    if (Array.isArray(sets)) dispatch(setWassaSets(sets as WassaSet[]))
-  } catch (err) {
-    console.error("Errore nel caricamento dei WassaSet", err)
+export const hydrateWassaSets = (): ThunkAction<Promise<void>, RootState, unknown, AnyAction> =>
+  async (dispatch) => {
+    try {
+  const sets = await loadWassaSets()
+      if (Array.isArray(sets)) dispatch(setWassaSets(sets as WassaSet[]))
+    } catch (err) {
+      console.error("Errore nel caricamento dei WassaSet", err)
+    }
   }
-}
 
-export const saveWassaSets = () => async (_dispatch: AppDispatch, getState: () => { wassaSets: WassaSetsState }) => {
-  try {
-    const { sets } = getState().wassaSets
-    await persistWassaSets(sets)
-  } catch (err) {
-    console.error("Errore nel salvataggio dei WassaSet", err)
+export const saveWassaSets = (): ThunkAction<Promise<void>, RootState, unknown, AnyAction> =>
+  async (_dispatch, getState) => {
+    try {
+      const { sets } = getState().wassaSets
+      await persistWassaSets(sets)
+    } catch (err) {
+      console.error("Errore nel salvataggio dei WassaSet", err)
+    }
   }
-}
 
-export const addWassaSetAndSave = (set: WassaSet) => async (dispatch: AppDispatch) => {
-  dispatch(addWassaSet(set))
-  await dispatch(saveWassaSets())
-}
+export const addWassaSetAndSave = (set: WassaSet): ThunkAction<Promise<void>, RootState, unknown, AnyAction> =>
+  async (dispatch) => {
+    dispatch(addWassaSet(set))
+    await dispatch(saveWassaSets())
+  }
 
-export const updateWassaSetAndSave = (set: WassaSet) => async (dispatch: AppDispatch) => {
-  dispatch(updateWassaSet(set))
-  await dispatch(saveWassaSets())
-}
+export const updateWassaSetAndSave = (set: WassaSet): ThunkAction<Promise<void>, RootState, unknown, AnyAction> =>
+  async (dispatch) => {
+    dispatch(updateWassaSet(set))
+    await dispatch(saveWassaSets())
+  }
 
-export const removeWassaSetAndSave = (setId: string) => async (dispatch: AppDispatch) => {
-  dispatch(removeWassaSet(setId))
-  await dispatch(saveWassaSets())
-}
+export const removeWassaSetAndSave = (setId: string): ThunkAction<Promise<void>, RootState, unknown, AnyAction> =>
+  async (dispatch) => {
+    dispatch(removeWassaSet(setId))
+    await dispatch(saveWassaSets())
+  }
 
-export const addWassaIdsToSetAndSave = (setId: string, wassaIds: number[]) => async (dispatch: AppDispatch) => {
-  dispatch(addWassaIdsToSet({ setId, wassaIds }))
-  await dispatch(saveWassaSets())
-}
+export const addWassaIdsToSetAndSave = (setId: string, wassaIds: number[]): ThunkAction<Promise<void>, RootState, unknown, AnyAction> =>
+  async (dispatch) => {
+    dispatch(addWassaIdsToSet({ setId, wassaIds }))
+    await dispatch(saveWassaSets())
+  }
 
-export const removeWassaIdFromSetAndSave = (setId: string, wassaId: number) => async (dispatch: AppDispatch) => {
-  dispatch(removeWassaIdFromSet({ setId, wassaId }))
-  await dispatch(saveWassaSets())
-}
+export const removeWassaIdFromSetAndSave = (setId: string, wassaId: number): ThunkAction<Promise<void>, RootState, unknown, AnyAction> =>
+  async (dispatch) => {
+    dispatch(removeWassaIdFromSet({ setId, wassaId }))
+    await dispatch(saveWassaSets())
+  }
 
-export const replaceWassaIdsInSetAndSave = (setId: string, wassaIds: number[]) => async (dispatch: AppDispatch) => {
-  dispatch(replaceWassaIdsInSet({ setId, wassaIds }))
-  await dispatch(saveWassaSets())
-}
+export const replaceWassaIdsInSetAndSave = (setId: string, wassaIds: number[]): ThunkAction<Promise<void>, RootState, unknown, AnyAction> =>
+  async (dispatch) => {
+    dispatch(replaceWassaIdsInSet({ setId, wassaIds }))
+    await dispatch(saveWassaSets())
+  }

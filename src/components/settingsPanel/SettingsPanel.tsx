@@ -1,10 +1,11 @@
-import { useSettings } from '../../store/hooks'
+import { useSettings, useWassaSets } from '../../store/hooks'
 import { useDispatch } from 'react-redux'
 import { exportBackup, importBackup } from '../../utils/utils'
 
 export default function SettingsPanel() {
-  const { clipboardReplace, setClipboardReplace, buttonNumberClass, setButtonNumberClass, navigate } = useSettings()
+  const { activeSet, clipboardReplace, setClipboardReplace, buttonNumberClass, setButtonNumberClass, navigate } = useSettings()
   const dispatch = useDispatch()
+  const { wassaSets } = useWassaSets()
 
   const onExport = exportBackup
   const onImport = async (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -21,32 +22,37 @@ export default function SettingsPanel() {
 
   return (
     <div className="settings-panel">
-
-      <h3>Sets</h3>
-      <div className="d-flex-row">
-        <button onClick={() => navigate("newSet")} className={`button-${buttonNumberClass}`}>
-          Nuovo Set
-        </button>
-        <button onClick={() => navigate("chooseSet")} className={`button-${buttonNumberClass}`}>
-          Scegli Set
-        </button>
+      <div id='sets'>
+        <h3>Sets di Wassà</h3>
+        <p>Set attuale: <strong>{activeSet?.titolo || 'Nessun set attivo'}</strong></p>
+        <p>Set disponibili: <strong>{wassaSets.length}</strong></p>
+        <br />
+        <div className="d-flex-row">
+          <button onClick={() => navigate("newSet")} className={`button-${buttonNumberClass}`}>
+            Nuovo set
+          </button>
+          <button onClick={() => navigate("chooseSet")} className={`button-${buttonNumberClass}`}>
+            Scegli set attivo
+          </button>
+        </div>
       </div>
 
-      <label className="settings-checkbox-label">
-        <input
-          type="checkbox"
-          checked={clipboardReplace}
-          onChange={(e) => setClipboardReplace(e.target.checked)}
-          className="settings-checkbox"
-        />
-        <span>
-          Abilita sostituzione <strong>"WassaTemplate"</strong> con gli appunti
-        </span>
-      </label>
-
       <hr />
+      
+      <div id='general-settings'>
+        <label className="settings-checkbox-label">
+          <input
+            type="checkbox"
+            checked={clipboardReplace}
+            onChange={(e) => setClipboardReplace(e.target.checked)}
+            className="settings-checkbox"
+          />
+          <span>
+            Abilita sostituzione <strong>"WassaTemplate"</strong> con gli appunti
+          </span>
+        </label>
 
-      <label className="settings-input-label">
+        <label className="settings-input-label">
         <div className="d-flex-row">
           <h3>Classe CSS bottoni:</h3>
           <input
@@ -60,10 +66,13 @@ export default function SettingsPanel() {
         </div>
       </label>
 
+      </div>
+
       <hr />
 
       <div className="settings-backup-buttons">
         <h3>Backup</h3>
+        <br />
         <div className="d-flex-row">
           <button className={`button-${buttonNumberClass}`} onClick={onExport}>
             Esporta json

@@ -1,12 +1,14 @@
-import { loadSettings, loadWassas, persistSettings, persistWassas } from "../persistence/storage";
+import { loadSettings, loadWassas, persistSettings, persistWassas, loadWassaSets, persistWassaSets } from "../persistence/storage";
 import { setWassas } from "../store/slices/wassaSlice";
+import { setWassaSets } from "../store/slices/wassaSetsSlice";
 import { setClipboardReplace, setButtonNumberClass } from "../store/slices/settingsSlice";
 import type { Dispatch } from "redux";
 
 export async function exportBackup() {
   const settings = await loadSettings();
   const wassas = await loadWassas();
-  const backup = { settings, wassas };
+  const wassaSets = await loadWassaSets();
+  const backup = { settings, wassas, wassaSets };
   const blob = new Blob([JSON.stringify(backup, null, 2)], { type: "application/json" });
   const url = URL.createObjectURL(blob);
   const a = document.createElement("a");
@@ -22,7 +24,7 @@ export async function importBackup(file: File, dispatch: Dispatch) {
     reader.onload = async (event) => {
       try {
         const text = event.target?.result as string;
-        const { settings, wassas } = JSON.parse(text);
+        const { settings, wassas, wassaSets } = JSON.parse(text);
         if (settings) {
           await persistSettings(settings);
           dispatch(setClipboardReplace(settings.clipboardReplace ?? true));
@@ -31,6 +33,10 @@ export async function importBackup(file: File, dispatch: Dispatch) {
         if (wassas) {
           await persistWassas(wassas);
           dispatch(setWassas(wassas));
+        }
+        if (wassaSets) {
+          await persistWassaSets(wassaSets);
+          dispatch(setWassaSets(wassaSets));
         }
         resolve();
       } catch (error) {

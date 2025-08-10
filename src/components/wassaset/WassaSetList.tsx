@@ -1,4 +1,6 @@
 import { useResolvedWassaSets } from "../../store/hooks"
+import type { WassaSet as WassaSetType } from "../../types/WassaSet"
+import WassaSet from "./WassaSet"
 
 export default function WassaSetList() {
   const { resolvedWassaSets } = useResolvedWassaSets()
@@ -9,24 +11,8 @@ export default function WassaSetList() {
 
   return (
     <ul className="wassa-list">
-      {resolvedWassaSets.map(set => (
-        <li key={set.id} className="wassa-list__item">
-          <div className="wassa-list__header">
-            <strong>{set.titolo}</strong>
-            {set.descrizione && <div className="muted">{set.descrizione}</div>}
-            <div className="muted">Wassà nel set: {set.wassas.length}</div>
-          </div>
-
-          {set.wassas.length > 0 && (
-            <ul className="wassa-list__inner">
-              {set.wassas.map(w => (
-                <li key={String(w.id)} className="wassa-list__inner-item">
-                  <span className="wassa-title">{w.titolo}</span>
-                </li>
-              ))}
-            </ul>
-          )}
-        </li>
+      {resolvedWassaSets.map((set : WassaSetType) => (
+        <WassaSet key={set.id} wassaSet={set} />
       ))}
     </ul>
   )

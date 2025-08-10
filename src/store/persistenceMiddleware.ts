@@ -1,7 +1,8 @@
 import type { Middleware } from '@reduxjs/toolkit'
-import { persistWassas, persistSettings } from '../persistence/storage'
+import { persistWassas, persistSettings, persistWassaSets } from '../persistence/storage'
 import type { Wassa } from '../types/Wassa'
 import type { Settings } from '../types/Settings'
+import type { WassaSet } from '../types/WassaSet'
 
 
 // Estrae l'array di Wassa indipendentemente dallo shape del slice, senza usare `any`
@@ -12,6 +13,18 @@ function getWassasList(wassasSlice: unknown): Wassa[] {
   if (typeof wassasSlice === 'object' && wassasSlice !== null) {
     const maybe = (wassasSlice as { wassas?: unknown }).wassas
     if (Array.isArray(maybe)) return maybe as Wassa[]
+  }
+  return []
+}
+
+// Estrae l'array di WassaSet indipendentemente dallo shape del slice
+function getWassaSetsList(wassaSetsSlice: unknown): WassaSet[] {
+  if (Array.isArray(wassaSetsSlice)) {
+    return wassaSetsSlice as WassaSet[]
+  }
+  if (typeof wassaSetsSlice === 'object' && wassaSetsSlice !== null) {
+    const maybe = (wassaSetsSlice as { sets?: unknown }).sets
+    if (Array.isArray(maybe)) return maybe as WassaSet[]
   }
   return []
 }
@@ -42,21 +55,29 @@ const persistWassasDebounced = createDebounced((list: Wassa[]) => {
   persistWassas(list).catch(console.error)
 })
 
+const persistWassaSetsDebounced = createDebounced((sets: WassaSet[]) => {
+  // usa storage.local come definito negli adapter
+  persistWassaSets(sets).catch(console.error)
+})
+
 type LocalState = {
   settings: Settings
   wassas: Wassa[] | { wassas: Wassa[] }
+  wassaSets: WassaSet[] | { sets: WassaSet[] }
 }
 
 const persistenceMiddleware: Middleware = (store) => (next) => (action: unknown) => {
   const prevState = store.getState() as LocalState
   const prevSettingsRef = prevState.settings
   const prevWassasRef = prevState.wassas
+  const prevWassaSetsRef = prevState.wassaSets
 
   const result = next(action)
 
   const nextState = store.getState() as LocalState
   const nextSettingsRef = nextState.settings
   const nextWassasRef = nextState.wassas
+  const nextWassaSetsRef = nextState.wassaSets
 
   // Se cambia il riferimento del slice settings, persisti tutto lo slice
   if (prevSettingsRef !== nextSettingsRef) {
@@ -67,6 +88,12 @@ const persistenceMiddleware: Middleware = (store) => (next) => (action: unknown)
   if (prevWassasRef !== nextWassasRef) {
     const list = getWassasList(nextWassasRef)
     persistWassasDebounced(list)
+  }
+
+  // Se cambia il riferimento del slice wassaSets, persisti i set
+  if (prevWassaSetsRef !== nextWassaSetsRef) {
+    const sets = getWassaSetsList(nextWassaSetsRef)
+    persistWassaSetsDebounced(sets)
   }
 
   return result
