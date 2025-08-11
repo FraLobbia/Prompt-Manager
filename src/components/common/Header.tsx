@@ -1,68 +1,70 @@
 import { useSettings } from "../../store/hooks"
+import { getIcon, ICON_KEY } from "../../constants/icons"
+import { VIEWS } from "../../constants/views"
 
-type HeaderProps = {
-  title: string
-}
-
-export default function Header({ title }: HeaderProps) {
+export default function Header() {
   const { view, navigate, buttonNumberClass } = useSettings()
 
-  const getConfig = () => {
+  /**
+   * Ritorna la configurazione del titolo e dei bottoni per l'header
+   * in base alla vista corrente.
+   */
+  const getConfig = (): HeaderConfig => {
     switch (view) {
-      case "settings":
+      case VIEWS.settings:
         return {
           title: "Impostazioni",
           buttons: [
-            { label: "❌", action: () => navigate("activeSet") },
+            { label: getIcon(ICON_KEY.close), action: () => navigate(VIEWS.activeSet) },
           ],
         }
-  case "newPrompt":
+      case VIEWS.newPrompt:
         return {
           title: "Nuovo Prompt",
           buttons: [
-            { label: "❌", action: () => navigate("activeSet") },
-            { label: "⚙️", action: () => navigate("settings") },
+            { label: getIcon(ICON_KEY.close), action: () => navigate(VIEWS.activeSet) },
+            { label: getIcon(ICON_KEY.settings), action: () => navigate(VIEWS.settings) },
           ],
         }
-      case "newSet":
+      case VIEWS.newSet:
         return {
           title: "Nuovo Set",
           buttons: [
-            { label: "❌", action: () => navigate("chooseSet") },
-            { label: "⚙️", action: () => navigate("settings") },
+            { label: getIcon(ICON_KEY.close), action: () => navigate(VIEWS.chooseSet) },
+            { label: getIcon(ICON_KEY.settings), action: () => navigate(VIEWS.settings) },
           ],
         }
-  case "editPrompt":
+      case VIEWS.editPrompt:
         return {
           title: "Modifica Prompt",
           buttons: [
-            { label: "❌", action: () => navigate("activeSet") },
+            { label: getIcon(ICON_KEY.close), action: () => navigate(VIEWS.activeSet) },
           ],
         }
-      case "editSet":
+      case VIEWS.editSet:
         return {
           title: "Modifica Set",
           buttons: [
-            { label: "❌", action: () => navigate("chooseSet") },
+            { label: getIcon(ICON_KEY.close), action: () => navigate(VIEWS.chooseSet) },
           ],
         }
-      case "chooseSet":
+      case VIEWS.chooseSet:
         return {
           title: "Scegli Set",
           buttons: [
-            { label: "Crea Set", action: () => navigate("newSet") },
-            { label: "❌", action: () => navigate("activeSet") },
-            { label: "⚙️", action: () => navigate("settings") },
+            { label: "Crea Set", action: () => navigate(VIEWS.newSet) },
+            { label: getIcon(ICON_KEY.close), action: () => navigate(VIEWS.activeSet) },
+            { label: getIcon(ICON_KEY.settings), action: () => navigate(VIEWS.settings) },
           ],
         }
-      case "activeSet":
+      case VIEWS.activeSet:
       default:
         return {
-          title,
+          title: "Prompt Manager",
           buttons: [
-            { label: "Crea Prompt", action: () => navigate("newPrompt") },
-            { label: "Cambia Set", action: () => navigate("chooseSet") },
-            { label: "⚙️", action: () => navigate("settings") },
+            { label: "Crea Prompt", action: () => navigate(VIEWS.newPrompt) },
+            { label: "Cambia Set", action: () => navigate(VIEWS.chooseSet) },
+            { label: getIcon(ICON_KEY.settings), action: () => navigate(VIEWS.settings) },
           ],
         }
     }
@@ -88,3 +90,15 @@ export default function Header({ title }: HeaderProps) {
     </div>
   )
 }
+type HeaderConfig = {
+  title: string
+  buttons: HeaderButton[]
+}
+
+type HeaderButton = {
+  // React.ReactNode: Tutto ciò che può essere renderizzato come etichetta
+  // del bottone quindi può essere un'icona, un testo o un componente React.
+  label: React.ReactNode
+  action: () => void
+}
+

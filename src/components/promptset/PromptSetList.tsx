@@ -1,17 +1,20 @@
-import { useResolvedPromptSets } from "../../store/hooks"
-import type { ResolvedPromptSet } from "../../store/selectors/promptSelectors"
 import PromptSet from "./PromptSet.tsx"
+import type { PromptSet as IPromptSet } from "../../types/PromptSet"
+import { useSelector } from "react-redux"
+import { promptSelectors } from "../../store/selectors/promptSelectors.ts";
+
 
 export default function PromptSetList() {
-  /** ######## Stato globale ######## */
-  const { resolvedPromptSets } = useResolvedPromptSets()
+  // Seleziona i PromptSet risolti dallo stato
+  // I PromptSet risolti hanno i Prompt risolti
+  // (oggetti completi invece che solo id)
+  const promptSets: IPromptSet[] = useSelector(promptSelectors.selectResolvedPromptSets);
 
   return (
     <ul className="prompt-set-list">
-      {resolvedPromptSets
-        .map((set: ResolvedPromptSet) => (
-          <PromptSet key={set.id} promptSet={set} />
-        ))}
+      {promptSets.map((set: IPromptSet) => (
+        <PromptSet key={set.id} promptSet={set} />
+      ))}
     </ul>
   )
 }

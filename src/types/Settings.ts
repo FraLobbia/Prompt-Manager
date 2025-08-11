@@ -1,3 +1,4 @@
+import type { ViewValue } from "../constants/views";
 export class Settings {
   view: Views;
   clipboardReplace: boolean;
@@ -17,14 +18,7 @@ export class Settings {
   }
 }
 
-export type Views =
-  | "settings"
-  | "activeSet"
-  | "newPrompt"
-  | "newSet"
-  | "editPrompt"
-  | "editSet"
-  | "chooseSet";
+export type Views = ViewValue;
 
 /** Stato iniziale di default */
 export const initialState: Settings = {

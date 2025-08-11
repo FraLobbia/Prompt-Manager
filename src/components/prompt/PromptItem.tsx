@@ -1,5 +1,6 @@
 import { useSettings, usePrompts } from "../../store/hooks"
 import type { Prompt } from "../../types/Prompt"
+import { getIcon, ICON_KEY } from "../../constants/icons"
 
 export default function PromptItem({ prompt, onEdit }: PromptItemProps) {
   const { clipboardReplace, buttonNumberClass } = useSettings()
@@ -42,23 +43,23 @@ export default function PromptItem({ prompt, onEdit }: PromptItemProps) {
 
   const buttons: ButtonCfg[] = [
     {
-      icon: "➕",
+      icon: getIcon(ICON_KEY.add),
       label: "Coda",
       action: () => callContentScript("insert", testo),
       style: { marginLeft: "0" },
     },
     {
-      icon: "🔄",
+      icon: getIcon(ICON_KEY.overwrite),
       label: "Sovrascrivi",
       action: () => callContentScript("overwrite", testo),
     },
     {
-      icon: "✏️",
+      icon: getIcon(ICON_KEY.edit),
       label: "Modifica",
       action: () => onEdit?.(prompt),
     },
     {
-      icon: "🗑",
+      icon: getIcon(ICON_KEY.delete),
       action: handleRemove,
       title: "Elimina",
       style: { maxWidth: "30px" },

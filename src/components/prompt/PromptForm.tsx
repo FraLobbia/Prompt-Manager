@@ -1,6 +1,8 @@
 import { useEffect, useRef, useState, type ChangeEvent } from "react"
 import { usePrompts, useSettings } from "../../store/hooks"
 import type { Prompt } from "../../types/Prompt"
+import { getIcon, ICON_KEY } from "../../constants/icons"
+import { VIEWS } from "../../constants/views"
 
 type PromptFormProps =
   | { mode: "new"; onComplete?: () => void }
@@ -46,15 +48,15 @@ export default function PromptForm(props: PromptFormProps) {
     } else {
       addPrompt({ id: Date.now().toString(), titolo: trimmedTitle, testo: trimmedText })
       resetNew()
-      navigate("activeSet")
+      navigate(VIEWS.activeSet)
     }
   }
 
   type Btn = { label: string; action: () => void }
   const buttons: Btn[] = isEdit
     ? [
-        { label: "💾 Salva", action: handleSave },
-        { label: "❌ Annulla", action: onComplete ?? (() => {}) },
+        { label: `${getIcon(ICON_KEY.save)} Salva`, action: handleSave },
+        { label: `${getIcon(ICON_KEY.close)} Annulla`, action: onComplete ?? (() => {}) },
       ]
     : [{ label: "Salva prompt", action: handleSave }]
 

@@ -9,6 +9,7 @@ import Header from "./components/common/Header"
 import SettingsPanel from "./components/settingsPanel/SettingsPanel"
 import PromptList from "./components/prompt/PromptList"
 import PromptForm from "./components/prompt/PromptForm"
+import { VIEWS } from "./constants/views"
 
 function EditPromptPlaceholder() {
   return <div>{/* TODO: <EditForm /> */}Modifica Prompt – componente mancante</div>
@@ -30,9 +31,9 @@ export function App() {
 
   /** Carica le impostazioni e i prompt/set dallo storage all'avvio dell'app. */
   useEffect(() => {
-  dispatch(loadSettingsFromStorage())
-  dispatch(loadPromptsFromStorage())
-  dispatch(loadPromptSetsFromStorage())
+    dispatch(loadSettingsFromStorage())
+    dispatch(loadPromptsFromStorage())
+    dispatch(loadPromptSetsFromStorage())
   }, [dispatch])
 
   /**
@@ -47,14 +48,14 @@ export function App() {
       case "activeSet":
         return <PromptList />
 
-  case "newPrompt":
+      case "newPrompt":
         // dopo il submit torna alla vista principale
-        return <PromptForm mode="new" onComplete={() => navigate("activeSet")} />
+        return <PromptForm mode="new" onComplete={() => navigate(VIEWS.activeSet)} />
 
       case "newSet":
         return <PromptSetForm />
 
-  case "editPrompt":
+      case "editPrompt":
         return <EditPromptPlaceholder />
 
       case "editSet":
@@ -72,7 +73,7 @@ export function App() {
 
   return (
     <div className="popup-container">
-  <Header title="Prompt" />
+      <Header />
       {renderView()}
     </div>
   )

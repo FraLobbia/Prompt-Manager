@@ -1,6 +1,7 @@
 import { useSettings } from '../../store/hooks'
 import { useDispatch } from 'react-redux'
 import { exportBackup, importBackup } from '../../utils/utils'
+import { getIcon, ICON_KEY } from '../../constants/icons'
 
 export default function SettingsPanel() {
   const { clipboardReplace, setClipboardReplace, buttonNumberClass, setButtonNumberClass } = useSettings()
@@ -58,10 +59,10 @@ export default function SettingsPanel() {
         <br />
         <div className="d-flex-row">
           <button className={`button-${buttonNumberClass}`} onClick={onExport}>
-            Esporta json
+            {getIcon(ICON_KEY.save)} Esporta json
           </button>
           <label className="import-button-label">
-            <span className={`button-${buttonNumberClass}`}>Importa json</span>
+            <span className={`button-${buttonNumberClass}`}>{getIcon(ICON_KEY.add)} Importa json</span>
             <input type="file" accept=".json" onChange={onImport} style={{ display: "none" }} />
           </label>
         </div>

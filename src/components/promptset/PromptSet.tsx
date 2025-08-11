@@ -1,19 +1,19 @@
-import { useSettings, usePromptSets, usePrompts } from "../../store/hooks"
-import { DEFAULT_PROMPT_SET_ID } from "../../types/PromptSet"
-import type { ResolvedPromptSet } from "../../store/selectors/promptSelectors"
+import { useSettings, usePromptSets } from "../../store/hooks"
+import { DEFAULT_PROMPT_SET_ID, type PromptSet } from "../../types/PromptSet"
+import { getIcon, ICON_KEY } from "../../constants/icons"
+import { VIEWS } from "../../constants/views"
 
-export default function PromptSet({ promptSet }: { promptSet: ResolvedPromptSet }) {
+export default function PromptSet({ promptSet }: { promptSet: PromptSet }) {
   const { activeSet, buttonNumberClass, setActiveSet, navigate } = useSettings()
   const { removePromptSetAndSave } = usePromptSets()
-  const { prompts } = usePrompts();
 
   const handleMakeActive = () => {
     setActiveSet(promptSet.id)
-    navigate("activeSet")
+    navigate(VIEWS.activeSet)
   }
 
   const handleEdit = () => {
-    navigate("editSet")
+    navigate(VIEWS.editSet)
   }
 
   const handleRemove = () => {
@@ -34,17 +34,17 @@ export default function PromptSet({ promptSet }: { promptSet: ResolvedPromptSet 
 
   const buttons: ButtonCfg[] = [
     {
-      label: promptSet.id === activeSet ? "✅ Attivo" : "Rendi attivo",
+      label: promptSet.id === activeSet ? `${getIcon(ICON_KEY.active)} Attivo` : "Rendi attivo",
       action: handleMakeActive,
       disabled: promptSet.id === activeSet,
       className: promptSet.id === activeSet ? "active" : "",
     },
     {
-      label: "✏️ Modifica",
+      label: `${getIcon(ICON_KEY.edit)} Modifica`,
       action: handleEdit,
     },
     {
-      label: "🗑",
+      label: getIcon(ICON_KEY.delete),
       action: handleRemove,
       disabled: promptSet.id === DEFAULT_PROMPT_SET_ID,
       title: promptSet.id === DEFAULT_PROMPT_SET_ID ? "Non puoi eliminare il set di default" : "Elimina",
@@ -60,7 +60,7 @@ export default function PromptSet({ promptSet }: { promptSet: ResolvedPromptSet 
             <p className="muted">Set di default.</p>
             <p className="muted">
               Mostra i prompt di tutti i set.
-              <span>({prompts.length})</span>
+              <span>({promptSet.prompts?.length})</span>
             </p>
           </>
         ) : (
