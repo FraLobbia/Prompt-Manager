@@ -31,7 +31,7 @@ $transition: 0.2s ease;
   color: $primary-contrast;
   font-weight: bold;
 }
-.prompt-buttons, .wassa-buttons {
+.prompt-buttons, .prompt-buttons {
   display: flex;
   flex-wrap: nowrap;
   gap: 0.4rem;
@@ -41,8 +41,8 @@ $transition: 0.2s ease;
 
 .prompt-buttons .button-19,
 .prompt-buttons .button-53,
-.wassa-buttons .button-19,
-.wassa-buttons .button-53 {
+.prompt-buttons .button-19,
+.prompt-buttons .button-53 {
   flex: 1 1 0;        // grow = 1, shrink = 1, basis = 0 => si ridimensionano equamente
   min-width: 70px;    // non si restringono troppo
   white-space: nowrap;
