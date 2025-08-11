@@ -1,31 +1,41 @@
-import { useState, useMemo } from "react"
-import { useSettings, usePrompts, useAppSelector } from "../../store/hooks"
-import PromptItem from "./PromptItem.tsx"
-import PromptForm from "./PromptForm.tsx"
-import { DEFAULT_PROMPT_SET_ID } from "../../types/PromptSet"
-import type { Prompt } from "../../types/Prompt"
+import { useState, useMemo } from "react"                         
+import { useSettings, useResolvedPromptSets, usePrompts } from "../../store/hooks" 
+import PromptItem from "./PromptItem"                               
+import PromptForm from "./PromptForm"                            
+import type { Prompt } from "../../types/Prompt"                   // tipo del set risolto
+import { DEFAULT_PROMPT_SET_ID, type PromptSet } from "../../types/PromptSet"       // id “speciale” per mostrare TUTTI i prompt
 
 export default function PromptList() {
-  const { prompts } = usePrompts()
-  const { activeSet } = useSettings()
-  const promptSets = useAppSelector((s) => s.promptSets?.sets ?? [])
-  const [editId, setEditId] = useState<string | null>(null)
+  /* ######## Stato globale ######## */
+  const { resolvedPromptSets } = useResolvedPromptSets()            // tutti i set già con .prompts risolti
+  const { activeSet } = useSettings()                               // id del set attivo (string), può essere DEFAULT_PROMPT_SET_ID
+  const { prompts } = usePrompts()                                  // lista completa dei prompt (serve per il caso “tutti i prompt”)
 
-  const activeIds = useMemo(() => {
-    const set = promptSets.find(s => s.id === activeSet)
-    const ids = set?.promptIds ?? []
-    return new Set(ids.map(String))
-  }, [promptSets, activeSet])
+  /* ######## Stato locale ######## */
+  const [editId, setEditId] = useState<string | null>(null)         // gestisce la riga in edit inline
 
-  const visible = useMemo<Prompt[]>(() => {
-    if (activeSet === DEFAULT_PROMPT_SET_ID) return prompts
-    return prompts.filter((p: Prompt) => activeIds.has(String(p.id)))
-  }, [prompts, activeIds, activeSet])
+  /* ######## Calcolo del set attivo (se non è il “default all”) ######## */
+  const activeSetObj: PromptSet | undefined = useMemo(
+    () => resolvedPromptSets.find(s => s.id === activeSet),
+    [resolvedPromptSets, activeSet]
+  )
 
+  /* ######## Lista visibile ########
+     - Se activeSet è il “default” → mostra TUTTI i prompt
+     - Altrimenti → mostra i prompt del set attivo risolto
+     - Se il set non esiste o non ha prompt → array vuoto
+  */
+  const visible: Prompt[] = useMemo(() => {
+    if (activeSet === DEFAULT_PROMPT_SET_ID) return prompts         // caso “tutti i prompt”
+    return activeSetObj?.prompts ?? []                              // caso “set specifico”
+  }, [activeSet, prompts, activeSetObj])
+
+  /* ######## Vuoto ######## */
   if (visible.length === 0) {
     return <p className="prompt-list__empty">Il set attivo non contiene prompt.</p>
   }
 
+  /* ######## Render ######## */
   return (
     <ul className="prompt-list">
       {visible.map((p: Prompt) =>

@@ -4,7 +4,7 @@ export interface PromptSet {
   id: string
   titolo: string
   descrizione: string
-  promptIds: string[]
+  promptIds?: string[]
   prompts?: Prompt[]
 }
 

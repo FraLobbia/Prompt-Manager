@@ -1,10 +1,11 @@
-import { useSettings, usePromptSets } from "../../store/hooks"
+import { useSettings, usePromptSets, usePrompts } from "../../store/hooks"
 import { DEFAULT_PROMPT_SET_ID } from "../../types/PromptSet"
 import type { ResolvedPromptSet } from "../../store/selectors/promptSelectors"
 
 export default function PromptSet({ promptSet }: { promptSet: ResolvedPromptSet }) {
   const { activeSet, buttonNumberClass, setActiveSet, navigate } = useSettings()
   const { removePromptSetAndSave } = usePromptSets()
+  const { prompts } = usePrompts();
 
   const handleMakeActive = () => {
     setActiveSet(promptSet.id)
@@ -52,12 +53,15 @@ export default function PromptSet({ promptSet }: { promptSet: ResolvedPromptSet 
 
   return (
     <li className="prompt-item">
-      <div className="prompt-list__header">
+      <div className="prompt-list__header mb-1 pt-2">
         <strong>{promptSet.titolo}</strong>
         {isDefaultSet ? (
           <>
             <p className="muted">Set di default.</p>
-            <p className="muted"> Mostra i prompt di tutti i set.</p>
+            <p className="muted">
+              Mostra i prompt di tutti i set.
+              <span>({prompts.length})</span>
+            </p>
           </>
         ) : (
           <>
@@ -78,7 +82,8 @@ export default function PromptSet({ promptSet }: { promptSet: ResolvedPromptSet 
       )}
 
       <div className="prompt-buttons mt-3">
-        {(isDefaultSet ? [buttons[0]] : buttons).map((btn, i) => (
+        {(isDefaultSet ? 
+        [buttons[0]] : buttons).map((btn, i) => (
           <button
             key={i}
             onClick={btn.action}

@@ -1,4 +1,4 @@
-// Scala spacing (puoi modificarla a piacere)
+// ---- Scala spacing ----
 $spacers: (
   1: 0.25rem, // 4px
   2: 0.5rem,  // 8px
@@ -7,31 +7,42 @@ $spacers: (
   5: 3rem     // 48px
 );
 
-// Funzione helper
+// ---- Direzioni: abbreviazione -> proprietà CSS ----
+$dirs: (
+  a: (),                    // all
+  x: (left, right),         // asse X
+  y: (top, bottom),         // asse Y
+  t: (top),                 // top
+  b: (bottom),              // bottom
+  l: (left),                // left
+  r: (right)                // right
+);
+
+// Helper per leggere la scala
 @function spacer($key) {
   @return map-get($spacers, $key);
 }
 
-// Mixin generico
-@mixin space($type, $dir, $size) {
+// Mixin generico: margin/padding + direzione/i + valore
+@mixin space($type, $dirAbbr, $size) {
   $prop: if($type == 'm', margin, padding);
+  $sides: map-get($dirs, $dirAbbr);
 
-  @if $dir == 'a' {
+  // 'a' = tutti i lati
+  @if length($sides) == 0 {
     #{$prop}: spacer($size);
-  } @else if $dir == 'x' {
-    #{$prop}-left: spacer($size);
-    #{$prop}-right: spacer($size);
-  } @else if $dir == 'y' {
-    #{$prop}-top: spacer($size);
-    #{$prop}-bottom: spacer($size);
   } @else {
-    #{$prop}-#{$dir}: spacer($size);
+    @each $side in $sides {
+      #{$prop}-#{$side}: spacer($size);
+    }
   }
 }
 
-// Generazione classi
-@each $abbr, $prop in ('m': margin, 'p': padding) {
-  @each $dirAbbr in ('a', 't', 'b', 'l', 'r', 'x', 'y') {
+// ---- Generazione classi tipo Bootstrap ----
+// m = margin, p = padding
+@each $abbr, $prop in (m: margin, p: padding) {
+  // a,t,b,l,r,x,y
+  @each $dirAbbr, $sides in $dirs {
     @each $sizeKey, $value in $spacers {
       .#{$abbr}#{$dirAbbr}-#{$sizeKey} {
         @include space($abbr, $dirAbbr, $sizeKey);

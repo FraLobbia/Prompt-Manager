@@ -3,17 +3,15 @@ import type { ResolvedPromptSet } from "../../store/selectors/promptSelectors"
 import PromptSet from "./PromptSet.tsx"
 
 export default function PromptSetList() {
+  /** ######## Stato globale ######## */
   const { resolvedPromptSets } = useResolvedPromptSets()
 
-  if (!resolvedPromptSets || resolvedPromptSets.length === 0) {
-    return <p className="prompt-list__empty">Nessun set disponibile.</p>
-  }
-
   return (
-    <ul className="prompt-list">
-      {resolvedPromptSets.map((set: ResolvedPromptSet) => (
-        <PromptSet key={set.id} promptSet={set} />
-      ))}
+    <ul className="prompt-set-list">
+      {resolvedPromptSets
+        .map((set: ResolvedPromptSet) => (
+          <PromptSet key={set.id} promptSet={set} />
+        ))}
     </ul>
   )
 }

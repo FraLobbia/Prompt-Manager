@@ -1,12 +1,10 @@
-import { useSettings, usePromptSets } from '../../store/hooks'
+import { useSettings } from '../../store/hooks'
 import { useDispatch } from 'react-redux'
 import { exportBackup, importBackup } from '../../utils/utils'
 
 export default function SettingsPanel() {
-  const { activeSet, clipboardReplace, setClipboardReplace, buttonNumberClass, setButtonNumberClass, navigate } = useSettings()
+  const { clipboardReplace, setClipboardReplace, buttonNumberClass, setButtonNumberClass } = useSettings()
   const dispatch = useDispatch()
-  const { promptSets } = usePromptSets()
-  const active = promptSets.find(s => s.id === activeSet)
 
   const onExport = exportBackup
   const onImport = async (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -23,22 +21,6 @@ export default function SettingsPanel() {
 
   return (
     <div className="settings-panel">
-      <div id='sets'>
-  <h3>Sets di Prompt</h3>
-  <p>Set attuale: <strong>{active?.titolo || 'Nessun set attivo'}</strong></p>
-  <p>Set disponibili: <strong>{promptSets.length}</strong></p>
-        <br />
-        <div className="d-flex-row">
-          <button onClick={() => navigate("newSet")} className={`button-${buttonNumberClass}`}>
-            Nuovo set
-          </button>
-          <button onClick={() => navigate("chooseSet")} className={`button-${buttonNumberClass}`}>
-            Scegli set attivo
-          </button>
-        </div>
-      </div>
-
-      <hr />
       
       <div id='general-settings'>
         <label className="settings-checkbox-label">
@@ -54,18 +36,18 @@ export default function SettingsPanel() {
         </label>
 
         <label className="settings-input-label">
-        <div className="d-flex-row">
-          <h3>Classe CSS bottoni:</h3>
-          <input
-            type="text"
-            value={buttonNumberClass}
-            onChange={(e) => setButtonNumberClass(e.target.value)}
-            className="settings-input"
-            placeholder="es. 53"
-            style={{ marginInlineStart: '10px' }}
-          />
-        </div>
-      </label>
+          <div className="d-flex-row">
+            <h3>Classe CSS bottoni:</h3>
+            <input
+              type="text"
+              value={buttonNumberClass}
+              onChange={(e) => setButtonNumberClass(e.target.value)}
+              className="settings-input"
+              placeholder="es. 53"
+              style={{ marginInlineStart: '10px' }}
+            />
+          </div>
+        </label>
 
       </div>
 
