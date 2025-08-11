@@ -1,22 +1,21 @@
 import { useState, type ChangeEvent } from "react"
-import { useSettings, useWassaSets, useWassas } from "../../store/hooks"
-import type { WassaSet } from "../../types/WassaSet"
+import { useSettings, usePromptSets, usePrompts } from "../../store/hooks"
+import type { PromptSet } from "../../types/PromptSet"
 
-interface WassaSetFormProps {
+interface PromptSetFormProps {
   onSubmit?: () => void
-  /** modalità edit: se passato, inizializzo i campi e faccio update invece di add */
-  editingSet?: WassaSet
+  editingSet?: PromptSet
 }
 
-export default function WassaSetForm({ onSubmit, editingSet }: WassaSetFormProps) {
+export default function PromptSetForm({ onSubmit, editingSet }: PromptSetFormProps) {
   const { buttonNumberClass, navigate } = useSettings()
-  const { addWassaSetAndSave, updateWassaSetAndSave } = useWassaSets()
-  const { wassas } = useWassas() // elenco globale
+  const { addPromptSetAndSave, updatePromptSetAndSave } = usePromptSets()
+  const { prompts } = usePrompts()
 
   const [title, setTitle] = useState(editingSet?.titolo ?? "")
   const [description, setDescription] = useState(editingSet?.descrizione ?? "")
   const [selectedIds, setSelectedIds] = useState<string[]>(
-    (editingSet?.wassasID ?? []).map(String)
+    (editingSet?.promptIds ?? []).map(String)
   )
 
   const autoResize = (el: HTMLTextAreaElement | null) => {
@@ -35,30 +34,30 @@ export default function WassaSetForm({ onSubmit, editingSet }: WassaSetFormProps
     const titolo = title.trim()
     if (!titolo) return
     const descrizione = description.trim()
-    const ids = selectedIds.map(id => String(id)).filter(Boolean) 
+    const ids = selectedIds.map((id) => String(id)).filter(Boolean)
 
-    const set: WassaSet = {
+    const set: PromptSet = {
       id: editingSet?.id ?? `set-${Date.now()}`,
       titolo,
       descrizione,
-      wassasID: ids,
+      promptIds: ids,
     }
 
     if (editingSet) {
-      updateWassaSetAndSave(set)
+      updatePromptSetAndSave(set)
     } else {
-      addWassaSetAndSave(set)
+      addPromptSetAndSave(set)
     }
 
     resetForm()
     navigate("activeSet")
   }
 
-  const total = wassas?.length ?? 0
+  const total = prompts?.length ?? 0
   const listSize = Math.min(8, Math.max(3, total || 3))
 
   return (
-    <div className="new-wassa-form active-form">
+    <div className="new-prompt-form active-form">
       <h3 className="form-label">{editingSet ? "Modifica set" : "Crea un nuovo set"}</h3>
 
       <input
@@ -83,27 +82,27 @@ export default function WassaSetForm({ onSubmit, editingSet }: WassaSetFormProps
 
       <div className="divider" style={{ margin: "0.5rem 0" }} />
 
-      <h4 className="form-subtitle">Aggiungi wassà esistenti (opzionale)</h4>
+      <h4 className="form-subtitle">Aggiungi prompt esistenti (opzionale)</h4>
 
-      {(!total) ? (
-        <p className="hint">Non ci sono wassà salvati. Creane qualcuno e poi torna qui.</p>
+      {!total ? (
+        <p className="hint">Non ci sono prompt salvati. Creane qualcuno e poi torna qui.</p>
       ) : (
         <div className="d-flex-column">
           <select
-            id="wassa-select"
+            id="prompt-select"
             multiple
             size={listSize}
             value={selectedIds}
             onChange={(e) => {
-              const opts = Array.from(e.target.selectedOptions).map(o => o.value)
+              const opts = Array.from(e.target.selectedOptions).map((o) => o.value)
               setSelectedIds(opts)
             }}
             className="multiselect"
-            aria-label="Seleziona uno o più wassà"
+            aria-label="Seleziona uno o più prompt"
           >
-            {wassas!.map(w => (
-              <option key={String((w).id)} value={String((w).id)}>
-                {(w).titolo}
+            {prompts!.map((p) => (
+              <option key={String(p.id)} value={String(p.id)}>
+                {p.titolo}
               </option>
             ))}
           </select>
@@ -112,7 +111,7 @@ export default function WassaSetForm({ onSubmit, editingSet }: WassaSetFormProps
             <button
               type="button"
               className={`button-${buttonNumberClass}`}
-              onClick={() => setSelectedIds((wassas ?? []).map(w => String((w).id)))}
+              onClick={() => setSelectedIds((prompts ?? []).map((p) => String(p.id)))}
             >
               Seleziona tutti
             </button>

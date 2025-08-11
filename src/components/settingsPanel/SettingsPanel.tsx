@@ -1,12 +1,12 @@
-import { useSettings, useWassaSets } from '../../store/hooks'
+import { useSettings, usePromptSets } from '../../store/hooks'
 import { useDispatch } from 'react-redux'
 import { exportBackup, importBackup } from '../../utils/utils'
 
 export default function SettingsPanel() {
   const { activeSet, clipboardReplace, setClipboardReplace, buttonNumberClass, setButtonNumberClass, navigate } = useSettings()
   const dispatch = useDispatch()
-  const { wassaSets } = useWassaSets()
-  const active = wassaSets.find(s => s.id === activeSet)
+  const { promptSets } = usePromptSets()
+  const active = promptSets.find(s => s.id === activeSet)
 
   const onExport = exportBackup
   const onImport = async (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -24,9 +24,9 @@ export default function SettingsPanel() {
   return (
     <div className="settings-panel">
       <div id='sets'>
-  <h3>Sets di Wassà</h3>
+  <h3>Sets di Prompt</h3>
   <p>Set attuale: <strong>{active?.titolo || 'Nessun set attivo'}</strong></p>
-  <p>Set disponibili: <strong>{wassaSets.length}</strong></p>
+  <p>Set disponibili: <strong>{promptSets.length}</strong></p>
         <br />
         <div className="d-flex-row">
           <button onClick={() => navigate("newSet")} className={`button-${buttonNumberClass}`}>
@@ -49,7 +49,7 @@ export default function SettingsPanel() {
             className="settings-checkbox"
           />
           <span>
-            Abilita sostituzione <strong>"WassaTemplate"</strong> con gli appunti
+            Abilita sostituzione <strong>"PromptTemplate"</strong> (compatibile anche con "PromptTemplate") con gli appunti
           </span>
         </label>
 

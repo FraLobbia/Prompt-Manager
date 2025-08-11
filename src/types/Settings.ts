@@ -20,9 +20,9 @@ export class Settings {
 export type Views =
   | "settings"
   | "activeSet"
-  | "newWassa"
+  | "newPrompt"
   | "newSet"
-  | "editWassa"
+  | "editPrompt"
   | "editSet"
   | "chooseSet";
 

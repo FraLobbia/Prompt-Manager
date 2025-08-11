@@ -3,19 +3,19 @@ import type { AppDispatch, RootState } from "./store"
 
 import { setActiveSet, setView, setButtonNumberClass, setClipboardReplace } from "./slices/settingsSlice"
 
-import { addWassa, removeWassa, updateWassa } from "./slices/wassaSlice"
-import type { Wassa } from "../types/Wassa"
-import type { WassaSet } from "../types/WassaSet"
+import { addPrompt, removePrompt, updatePrompt } from "./slices/promptSlice"
+import type { Prompt } from "../types/Prompt"
+import type { PromptSet } from "../types/PromptSet"
 
 import {
-  addWassaSetAndSave,
-  updateWassaSetAndSave,
-  removeWassaSetAndSave,
-  addWassaIdsToSetAndSave,
-  removeWassaIdFromSetAndSave,
-  replaceWassaIdsInSetAndSave,
-} from "./slices/wassaSetsSlice"
-import { selectResolvedWassaSets } from "./selectors/wassaSelectors"
+  addPromptSetAndSave,
+  updatePromptSetAndSave,
+  removePromptSetAndSave,
+  addPromptIdsToSetAndSave,
+  removePromptIdFromSetAndSave,
+  replacePromptIdsInSetAndSave,
+} from "./slices/promptSetsSlice"
+import { selectResolvedPromptSets } from "./selectors/promptSelectors"
 
 
 export const useAppDispatch = () => useDispatch<AppDispatch>()
@@ -41,54 +41,43 @@ export function useSettings() {
   }
 }
 
-// ---------------- Wassa (singoli) ----------------
-export function useWassas() {
-  const wassas = useAppSelector((state) => state.wassas.wassas)
+// ---------------- Prompts (singoli) ----------------
+export function usePrompts() {
+  const prompts = useAppSelector((state) => state.prompts.prompts)
   const dispatch = useAppDispatch()
   return {
-    wassas,
-    addWassa: (w: Wassa) => dispatch(addWassa(w)),
-    removeWassa: (id: string) => dispatch(removeWassa(id)),
-    updateWassa: (w: Wassa) => dispatch(updateWassa(w)),
+    prompts,
+    addPrompt: (p: Prompt) => dispatch(addPrompt(p)),
+    removePrompt: (id: string) => dispatch(removePrompt(id)),
+    updatePrompt: (p: Prompt) => dispatch(updatePrompt(p)),
   }
 }
 
-// ---------------- WassaSets (per ID) ----------------
-export const useWassaSets = () => {
+// ---------------- PromptSets (per ID) ----------------
+export const usePromptSets = () => {
   const dispatch = useAppDispatch()
-  const wassaSets = useAppSelector((s) => s.wassaSets?.sets ?? [])
+  const promptSets = useAppSelector((s) => s.promptSets?.sets ?? [])
 
   // Espongo sia i thunk originali *AndSave che helper comodi
   return {
-    wassaSets,
+  promptSets,
 
     // Thunk diretti
-    addWassaSetAndSave: (set: WassaSet) => dispatch(addWassaSetAndSave(set)),
-    updateWassaSetAndSave: (set: WassaSet) => dispatch(updateWassaSetAndSave(set)),
-    removeWassaSetAndSave: (id: string) => dispatch(removeWassaSetAndSave(id)),
-  addWassaIdsToSetAndSave: (setId: string, ids: string[]) => dispatch(addWassaIdsToSetAndSave(setId, ids)),
-  removeWassaIdFromSetAndSave: (setId: string, id: string) => dispatch(removeWassaIdFromSetAndSave(setId, id)),
-  replaceWassaIdsInSetAndSave: (setId: string, ids: string[]) => dispatch(replaceWassaIdsInSetAndSave(setId, ids)),
+    addPromptSetAndSave: (set: PromptSet) => dispatch(addPromptSetAndSave(set)),
+    updatePromptSetAndSave: (set: PromptSet) => dispatch(updatePromptSetAndSave(set)),
+    removePromptSetAndSave: (id: string) => dispatch(removePromptSetAndSave(id)),
+    addPromptIdsToSetAndSave: (setId: string, ids: string[]) => dispatch(addPromptIdsToSetAndSave(setId, ids)),
+    removePromptIdFromSetAndSave: (setId: string, id: string) => dispatch(removePromptIdFromSetAndSave(setId, id)),
+    replacePromptIdsInSetAndSave: (setId: string, ids: string[]) => dispatch(replacePromptIdsInSetAndSave(setId, ids)),
 
     // Helper sintetici
-  addWassaIdToSet: (setId: string, id: string) => dispatch(addWassaIdsToSetAndSave(setId, [id])),
-  replaceWassaIdsInSet: (setId: string, ids: string[]) => dispatch(replaceWassaIdsInSetAndSave(setId, ids)),
+    addPromptIdToSet: (setId: string, id: string) => dispatch(addPromptIdsToSetAndSave(setId, [id])),
+    replacePromptIdsInSet: (setId: string, ids: string[]) => dispatch(replacePromptIdsInSetAndSave(setId, ids)),
   }
 }
 
 // Set risolti (ID -> oggetti) per il rendering
-export const useResolvedWassaSets = () => {
-  const sets = useSelector(selectResolvedWassaSets)
-  return { resolvedWassaSets: sets }
-}
-
-// Alias compatibilità
-export function usePrompts() {
-  const wassaHook = useWassas()
-  return {
-    prompts: wassaHook.wassas,
-    addPrompt: wassaHook.addWassa,
-    removePrompt: wassaHook.removeWassa,
-    updatePrompt: wassaHook.updateWassa,
-  }
+export const useResolvedPromptSets = () => {
+  const sets = useSelector(selectResolvedPromptSets)
+  return { resolvedPromptSets: sets }
 }

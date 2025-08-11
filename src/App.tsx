@@ -3,15 +3,15 @@ import { useEffect } from "react"
 import { useDispatch } from "react-redux"
 import type { ThunkDispatch } from "@reduxjs/toolkit"
 import type { AnyAction } from "redux"
-import { loadSettingsFromStorage, loadWassasFromStorage, loadWassaSetsFromStorage } from "./persistence/storage"
+import { loadSettingsFromStorage, loadPromptsFromStorage, loadPromptSetsFromStorage } from "./persistence/storage"
 
 import Header from "./components/common/Header"
 import SettingsPanel from "./components/settingsPanel/SettingsPanel"
-import WassaList from "./components/wassa/WassaList"
-import WassaForm from "./components/wassa/WassaForm"
+import PromptList from "./components/prompt/PromptList"
+import PromptForm from "./components/prompt/PromptForm"
 
-function EditWassaPlaceholder() {
-  return <div>{/* TODO: <EditWassaForm /> */}Modifica Wassa – componente mancante</div>
+function EditPromptPlaceholder() {
+  return <div>{/* TODO: <EditForm /> */}Modifica Prompt – componente mancante</div>
 }
 function EditSetPlaceholder() {
   return <div>{/* TODO: <EditSetForm /> */}Modifica Set – componente mancante</div>
@@ -20,21 +20,19 @@ function EditSetPlaceholder() {
 import type { RootState } from "./store/store"
 import type { AppDispatch } from "./store/store"
 import { useSettings } from "./store/hooks"
-import WassaSetForm from "./components/wassaset/WassaSetForm"
-import WassaSetList from "./components/wassaset/WassaSetList"
+import PromptSetForm from "./components/promptset/PromptSetForm"
+import PromptSetList from "./components/promptset/PromptSetList"
 // no need to import slice-level loader; we use the storage-level uniform thunk
 
 export function App() {
   const dispatch: ThunkDispatch<RootState, unknown, AnyAction> = useDispatch<AppDispatch>()
   const { view, navigate } = useSettings()
 
-  /**
-   * Carica le impostazioni e le wassas dallo storage all'avvio dell'app.
-   */
+  /** Carica le impostazioni e i prompt/set dallo storage all'avvio dell'app. */
   useEffect(() => {
-    dispatch(loadSettingsFromStorage())
-    dispatch(loadWassasFromStorage())
-    dispatch(loadWassaSetsFromStorage())
+  dispatch(loadSettingsFromStorage())
+  dispatch(loadPromptsFromStorage())
+  dispatch(loadPromptSetsFromStorage())
   }, [dispatch])
 
   /**
@@ -47,23 +45,23 @@ export function App() {
         return <SettingsPanel />
 
       case "activeSet":
-        return <WassaList />
+        return <PromptList />
 
-      case "newWassa":
+  case "newPrompt":
         // dopo il submit torna alla vista principale
-        return <WassaForm mode="new" onComplete={() => navigate("activeSet")} />
+        return <PromptForm mode="new" onComplete={() => navigate("activeSet")} />
 
       case "newSet":
-        return <WassaSetForm />
+        return <PromptSetForm />
 
-      case "editWassa":
-        return <EditWassaPlaceholder />
+  case "editPrompt":
+        return <EditPromptPlaceholder />
 
       case "editSet":
         return <EditSetPlaceholder />
 
       case "chooseSet":
-        return <WassaSetList />
+        return <PromptSetList />
 
       default: {
         // Se la view non è ancora stata caricata (es. inizializzazione), evita di renderizzare fallback arbitrari
@@ -74,7 +72,7 @@ export function App() {
 
   return (
     <div className="popup-container">
-      <Header title="Wassà" />
+  <Header title="Prompt" />
       {renderView()}
     </div>
   )

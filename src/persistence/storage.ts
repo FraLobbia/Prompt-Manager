@@ -1,16 +1,18 @@
 // src/persistence/storage.ts
 import { hydrateFromStorage } from "../store/slices/settingsSlice";
-import { setWassas } from "../store/slices/wassaSlice";
-import { setWassaSets } from "../store/slices/wassaSetsSlice";
+import { setPrompts } from "../store/slices/promptSlice";
+import { setPromptSets } from "../store/slices/promptSetsSlice";
 import { Settings, initialState } from "../types/Settings";
-import type { Wassa } from "../types/Wassa";
-import type { WassaSet } from "../types/WassaSet";
+import type { Prompt } from "../types/Prompt";
+import type { PromptSet } from "../types/PromptSet";
 import type { Dispatch } from "redux";
 
 /** Chiavi di storage */
 export const SETTINGS_KEY = "settings";
-export const WASSAS_KEY = "wassas";
-export const WASSA_SETS_KEY = "wassaSets"
+// New canonical keys
+export const PROMPTS_KEY = "prompts";
+export const PROMPT_SETS_KEY = "promptSets";
+
 
 /** ------------------------
  *  Adattatori Settings
@@ -21,7 +23,7 @@ export const WASSA_SETS_KEY = "wassaSets"
  * Serve a convertire le impostazioni in un formato adatto per lo storage.
  */
 type StoredSettings = {
-  view: Settings["view"];
+  view: Settings["view"] | "newPrompt" | "editPrompt";
   clipboardReplace: boolean;
   buttonNumberClass: string;
   activeSet?: string; // solo ID
@@ -68,8 +70,16 @@ function fromStored(obj: Partial<StoredSettings> | undefined): Settings {
     return undefined
   })()
 
+  const view = ((): Settings["view"] => {
+    const v = obj.view ?? initialState.view
+    // map legacy views
+    if (v === "newPrompt") return "newPrompt"
+    if (v === "editPrompt") return "editPrompt"
+    return v as Settings["view"]
+  })()
+
   return {
-    view: obj.view ?? initialState.view,
+    view,
     clipboardReplace:
       obj.clipboardReplace ?? obj.useClipboard ?? initialState.clipboardReplace,
     buttonNumberClass: obj.buttonNumberClass ?? initialState.buttonNumberClass,
@@ -94,24 +104,25 @@ function mergeSettings(base: Settings, patch: Partial<Settings>): Settings {
 }
 
 /** ------------------------
- *  Wassas
+ *  Prompts
  *  ------------------------ */
 
 /**
- * Persisti le wassas nello storage.
- * @param wassas Le wassas da persistere
+ * Persisti i prompt nello storage.
+ * @param prompts I prompt da persistere
  */
-export const persistWassas = async (wassas: Wassa[]) => {
-  await chrome.storage.sync.set({ [WASSAS_KEY]: wassas });
+export const persistPrompts = async (prompts: Prompt[]) => {
+  await chrome.storage.sync.set({ [PROMPTS_KEY]: prompts });
 };
 
 /**
- * Carica le wassas dallo storage.
- * @returns Le wassas caricate
+ * Carica i prompt dallo storage.
+ * @returns I prompt caricati
  */
-export const loadWassas = async (): Promise<Wassa[]> => {
-  const result = await chrome.storage.sync.get(WASSAS_KEY);
-  return (result[WASSAS_KEY] as Wassa[]) || [];
+export const loadPrompts = async (): Promise<Prompt[]> => {
+  const result = await chrome.storage.sync.get([PROMPTS_KEY, PROMPTS_KEY]);
+  // Preferisci la chiave nuova, fallback alla legacy
+  return (result[PROMPTS_KEY] as Prompt[]) || (result[PROMPTS_KEY] as Prompt[]) || [];
 };
 
 /** ------------------------
@@ -155,22 +166,22 @@ export async function persistSettings(settings: Settings | Partial<Settings>) {
 }
 
 /** ------------------------
- *  Wassa Sets
+ *  Prompt Sets
  *  ------------------------ */
 
 /**
- * Persisti i WassaSet nello storage (uniforme alle altre persist*).
+ * Persisti i PromptSet nello storage (uniforme alle altre persist*).
  */
-export const persistWassaSets = async (sets: WassaSet[]) => {
-  await chrome.storage.sync.set({ [WASSA_SETS_KEY]: sets });
+export const persistPromptSets = async (sets: PromptSet[]) => {
+  await chrome.storage.sync.set({ [PROMPT_SETS_KEY]: sets });
 };
 
 /**
- * Carica i WassaSet dallo storage (uniforme alle altre load*).
+ * Carica i PromptSet dallo storage (uniforme alle altre load*).
  */
-export const loadWassaSets = async (): Promise<WassaSet[]> => {
-  const result = await chrome.storage.sync.get(WASSA_SETS_KEY);
-  return (result[WASSA_SETS_KEY] as WassaSet[]) || [];
+export const loadPromptSets = async (): Promise<PromptSet[]> => {
+  const result = await chrome.storage.sync.get([PROMPT_SETS_KEY, PROMPT_SETS_KEY]);
+  return (result[PROMPT_SETS_KEY] as PromptSet[]) || (result[PROMPT_SETS_KEY] as PromptSet[]) || [];
 };
 
 /** ------------------------
@@ -216,27 +227,27 @@ export const loadSettingsFromStorage = () => async (dispatch: Dispatch) => {
 };
 
 /**
- * Carica le wassas dalla memoria di archiviazione e le inserisce nello stato tramite dispatch.
+ * Carica le prompts dalla memoria di archiviazione e le inserisce nello stato tramite dispatch.
  *
- * @returns {Function} Una funzione thunk che effettua il dispatch delle wassas caricate.
+ * @returns {Function} Una funzione thunk che effettua il dispatch delle prompts caricate.
  */
-export const loadWassasFromStorage = () => async (dispatch: Dispatch) => {
+export const loadPromptsFromStorage = () => async (dispatch: Dispatch) => {
   try {
-    const wassas = await loadWassas();
-    dispatch(setWassas(wassas));
+  const prompts = await loadPrompts();
+  dispatch(setPrompts(prompts));
   } catch (error) {
-    console.error("Errore nel caricamento delle wassas", error);
+  console.error("Errore nel caricamento dei prompt", error);
   }
 };
 
 /**
- * Carica i WassaSet dalla memoria e li inserisce nello stato tramite dispatch.
+ * Carica i PromptSet dalla memoria e li inserisce nello stato tramite dispatch.
  */
-export const loadWassaSetsFromStorage = () => async (dispatch: Dispatch) => {
+export const loadPromptSetsFromStorage = () => async (dispatch: Dispatch) => {
   try {
-    const sets = await loadWassaSets();
-    dispatch(setWassaSets(sets));
+  const sets = await loadPromptSets();
+  dispatch(setPromptSets(sets));
   } catch (error) {
-    console.error("Errore nel caricamento dei WassaSet", error);
+  console.error("Errore nel caricamento dei PromptSet", error);
   }
 };

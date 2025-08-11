@@ -5,7 +5,7 @@
     "buttonNumberClass": "53",
     "activeSet": "default"
   },
-  "wassas": [
+  "prompts": [
     {
       "id": "1754341092723",
       "testo": "Obiettivo\nEffettua un refactoring del seguente codice mantenendone intatta la funzionalità applicativa.\n\nRequisiti\nQualità del codice\n\nMigliora leggibilità, manutenibilità e struttura.\n\nRispetta le best practice moderne (es. DRY, KISS, SRP).\n\nMantieni commenti preesistenti con esattezza.\n\nUtilizza nomi chiari, descrittivi e semanticamente corretti per funzioni e variabili.\n\nVincoli\n\nNon modificare la logica di business.\n\nNon aggiungere librerie, import o strutture non autorizzate.\n\nCondizioni per modifiche opzionali\nPrima di applicare qualunque delle seguenti modifiche:\n\nRinominare variabili o funzioni.\n\nEstrarre codice in moduli o file separati.\n\nIntrodurre librerie esterne, helper o nuove dipendenze.\n\nAggiungere import o utility non presenti.\n\nDevi chiedere esplicita approvazione.\n\nPer ogni proposta, specifica:\n\nMotivazione tecnica basata su principi di progettazione.\n\nDescrizione chiara della modifica.\n\nDirectory esatta in cui posizionare file o moduli eventualmente suggeriti.\n\nOutput richiesto\nFornisci la risposta seguendo questa struttura:\n\nAnalisi sintetica del codice\n\nEvidenzia criticità rilevate (senza alterare la logica).\n\nProposte di modifica (se necessarie)\n\nElenca modifiche opzionali, giustifica ciascuna secondo best practice.\n\nRichiedi conferma prima di applicarle.\n\nRefactoring (solo dopo approvazione)\n\nCodice completo e coerente, ben indentato.\n\nCommenti mantenuti fedelmente.\n\nNessuna alterazione funzionale.\n\nNote finali\nNon inventare o semplificare concetti tecnici.\n\nSe ci sono elementi ambigui o mancano contesti, chiedi chiarimenti prima di procedere.\n\nSe hai dubbi sulla struttura del progetto o sull’intento di una parte del codice, esplicitali chiaramente.\n\nWassaTemplate",
@@ -22,16 +22,18 @@
       "titolo": "Aggiorna componente con ultime modifiche"
     }
   ],
-  "wassaSets": [
-     {
+  "promptSets": [
+    {
       "descrizione": "",
       "id": "default",
+      "promptIds": [],
       "titolo": "Default",
       "wassasID": []
     },
     {
       "descrizione": "rtbrwtbngs",
       "id": "set-1754841778869",
+      "promptIds": [],
       "titolo": "rgbvetrb",
       "wassasID": [
         1754341092723,
@@ -41,6 +43,7 @@
     {
       "descrizione": "trgnbsf hb",
       "id": "set-1754841787631",
+      "promptIds": [],
       "titolo": "ergbtrgsn",
       "wassasID": [
         1754341156748

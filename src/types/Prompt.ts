@@ -1,5 +1,4 @@
-
-export interface Wassa {
+export interface Prompt {
   id: string
   titolo: string
   testo: string

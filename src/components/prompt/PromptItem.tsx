@@ -1,19 +1,14 @@
-import { useSettings, useWassas } from "../../store/hooks"
-import type { Wassa } from "../../types/Wassa"
+import { useSettings, usePrompts } from "../../store/hooks"
+import type { Prompt } from "../../types/Prompt"
 
-export default function Wassa({ prompt, onEdit }: WassaProps) {
+export default function PromptItem({ prompt, onEdit }: PromptItemProps) {
   const { clipboardReplace, buttonNumberClass } = useSettings()
-  const { removeWassa } = useWassas()
+  const { removePrompt } = usePrompts()
   const { id, titolo, testo } = prompt
   const lines = testo.split("\n")
   const anteprima = lines.slice(0, 2).join("\n")
   const hasMoreLines = lines.length > 2
 
-  /**
-   * Invia al content script un'azione di inserimento/sovrascrittura.
-   * Se `clipboardReplace` è attivo, sostituisce tutte le occorrenze di "WassaTemplate"
-   * con il contenuto degli appunti.
-   */
   const callContentScript = async (
     action: "insert" | "overwrite",
     text: string
@@ -21,13 +16,14 @@ export default function Wassa({ prompt, onEdit }: WassaProps) {
     if (clipboardReplace) {
       try {
         const clipboardText = await navigator.clipboard.readText()
-        // sostituisci TUTTE le occorrenze
-        text = text.replaceAll("WassaTemplate", clipboardText)
+        text = text.replaceAll("PromptTemplate", clipboardText)
+                   .replaceAll("PromptTemplate", clipboardText)
       } catch (err) {
         console.error("Errore nella lettura della clipboard:", err)
       }
     } else {
-      text = text.replaceAll("WassaTemplate", " ")
+      text = text.replaceAll("PromptTemplate", " ")
+                 .replaceAll("PromptTemplate", " ")
     }
 
     chrome.tabs.query({ active: true, currentWindow: true }, (tabs) => {
@@ -37,17 +33,13 @@ export default function Wassa({ prompt, onEdit }: WassaProps) {
       }
     })
   }
-  /**
-   * Rimuove il wassà corrente.
-   */
-  const handleRemoveWassa = () => {
-    if (confirm(`Vuoi davvero eliminare il wassà "${titolo}"?`)) {
-      removeWassa(id)
+
+  const handleRemove = () => {
+    if (confirm(`Vuoi davvero eliminare il prompt "${titolo}"?`)) {
+      removePrompt(id)
     }
   }
-  /**
-   * Button configuration
-   */
+
   const buttons: ButtonCfg[] = [
     {
       icon: "➕",
@@ -67,20 +59,20 @@ export default function Wassa({ prompt, onEdit }: WassaProps) {
     },
     {
       icon: "🗑",
-      action: handleRemoveWassa,
+      action: handleRemove,
       title: "Elimina",
       style: { maxWidth: "30px" },
     },
   ]
 
   return (
-    <li className="wassa-item">
+    <li className="prompt-item">
       <strong>{titolo}</strong>
-      <div className="wassa-preview">
+      <div className="prompt-preview">
         {anteprima}
         {hasMoreLines ? "…" : ""}
       </div>
-      <div className="wassa-buttons">
+      <div className="prompt-buttons">
         {buttons.map((btn, i) => (
           <button
             key={i}
@@ -106,7 +98,7 @@ type ButtonCfg = {
   style?: React.CSSProperties
 }
 
-interface WassaProps {
-  prompt: Wassa
-  onEdit?: (wassa: Wassa) => void
+interface PromptItemProps {
+  prompt: Prompt
+  onEdit?: (prompt: Prompt) => void
 }

@@ -30,12 +30,8 @@ $transition: 0.2s ease;
   background: $primary;
   color: $primary-contrast;
   font-weight: bold;
-
-  &:hover {
-    // background: darken($primary, 10%);
-  }
 }
-.wassa-buttons {
+.prompt-buttons, .wassa-buttons {
   display: flex;
   flex-wrap: nowrap;
   gap: 0.4rem;
@@ -43,6 +39,8 @@ $transition: 0.2s ease;
   width: 100%;
 }
 
+.prompt-buttons .button-19,
+.prompt-buttons .button-53,
 .wassa-buttons .button-19,
 .wassa-buttons .button-53 {
   flex: 1 1 0;        // grow = 1, shrink = 1, basis = 0 => si ridimensionano equamente
@@ -199,18 +197,15 @@ $transition: 0.2s ease;
   padding-block: 0.25rem;
 }
 
-input:not([type="checkbox"]), textarea {
-  // @extend .button-53;
-  // text-align: left;
-}
+// input:not([type="checkbox"]), textarea {
+//   @extend .button-53;
+//   text-align: left;
+// }
 
 .header {
   // transform: none !important;
   // transition: none !important;
   &:hover {
    cursor: default !important;
-  }
-  &:after {
-    // content: none !important;
   }
 }

@@ -1,30 +1,30 @@
 import type { Middleware } from '@reduxjs/toolkit'
-import { persistWassas, persistSettings, persistWassaSets } from '../persistence/storage'
-import type { Wassa } from '../types/Wassa'
+import { persistPrompts, persistSettings, persistPromptSets } from '../persistence/storage'
+import type { Prompt } from '../types/Prompt'
 import type { Settings } from '../types/Settings'
-import type { WassaSet } from '../types/WassaSet'
+import type { PromptSet } from '../types/PromptSet'
 
 
-// Estrae l'array di Wassa indipendentemente dallo shape del slice, senza usare `any`
-function getWassasList(wassasSlice: unknown): Wassa[] {
-  if (Array.isArray(wassasSlice)) {
-    return wassasSlice as Wassa[]
+// Estrae l'array di Prompt indipendentemente dallo shape del slice, senza usare `any`
+function getPromptsList(promptsSlice: unknown): Prompt[] {
+  if (Array.isArray(promptsSlice)) {
+    return promptsSlice as unknown as Prompt[]
   }
-  if (typeof wassasSlice === 'object' && wassasSlice !== null) {
-    const maybe = (wassasSlice as { wassas?: unknown }).wassas
-    if (Array.isArray(maybe)) return maybe as Wassa[]
+  if (typeof promptsSlice === 'object' && promptsSlice !== null) {
+    const maybe = (promptsSlice as { prompts?: unknown }).prompts
+    if (Array.isArray(maybe)) return maybe as Prompt[]
   }
   return []
 }
 
-// Estrae l'array di WassaSet indipendentemente dallo shape del slice
-function getWassaSetsList(wassaSetsSlice: unknown): WassaSet[] {
-  if (Array.isArray(wassaSetsSlice)) {
-    return wassaSetsSlice as WassaSet[]
+// Estrae l'array di PromptSet indipendentemente dallo shape del slice
+function getPromptSetsList(promptSetsSlice: unknown): PromptSet[] {
+  if (Array.isArray(promptSetsSlice)) {
+    return promptSetsSlice as PromptSet[]
   }
-  if (typeof wassaSetsSlice === 'object' && wassaSetsSlice !== null) {
-    const maybe = (wassaSetsSlice as { sets?: unknown }).sets
-    if (Array.isArray(maybe)) return maybe as WassaSet[]
+  if (typeof promptSetsSlice === 'object' && promptSetsSlice !== null) {
+    const maybe = (promptSetsSlice as { sets?: unknown }).sets
+    if (Array.isArray(maybe)) return maybe as PromptSet[]
   }
   return []
 }
@@ -51,49 +51,49 @@ const persistSettingsDebounced = createDebounced((settings: Settings) => {
   persistSettings(settings).catch(console.error)
 })
 
-const persistWassasDebounced = createDebounced((list: Wassa[]) => {
-  persistWassas(list).catch(console.error)
+const persistPromptsDebounced = createDebounced((list: Prompt[]) => {
+  persistPrompts(list).catch(console.error)
 })
 
-const persistWassaSetsDebounced = createDebounced((sets: WassaSet[]) => {
+const persistPromptSetsDebounced = createDebounced((sets: PromptSet[]) => {
   // usa storage.local come definito negli adapter
-  persistWassaSets(sets).catch(console.error)
+  persistPromptSets(sets).catch(console.error)
 })
 
 type LocalState = {
   settings: Settings
-  wassas: Wassa[] | { wassas: Wassa[] }
-  wassaSets: WassaSet[] | { sets: WassaSet[] }
+  prompts: Prompt[] | { prompts: Prompt[] }
+  promptSets: PromptSet[] | { sets: PromptSet[] }
 }
 
 const persistenceMiddleware: Middleware = (store) => (next) => (action: unknown) => {
   const prevState = store.getState() as LocalState
   const prevSettingsRef = prevState.settings
-  const prevWassasRef = prevState.wassas
-  const prevWassaSetsRef = prevState.wassaSets
+  const prevPromptsRef = prevState.prompts
+  const prevPromptSetsRef = prevState.promptSets
 
   const result = next(action)
 
   const nextState = store.getState() as LocalState
   const nextSettingsRef = nextState.settings
-  const nextWassasRef = nextState.wassas
-  const nextWassaSetsRef = nextState.wassaSets
+  const nextPromptsRef = nextState.prompts
+  const nextPromptSetsRef = nextState.promptSets
 
   // Se cambia il riferimento del slice settings, persisti tutto lo slice
   if (prevSettingsRef !== nextSettingsRef) {
     persistSettingsDebounced(nextSettingsRef)
   }
 
-  // Se cambia il riferimento del slice wassas, persisti la lista
-  if (prevWassasRef !== nextWassasRef) {
-    const list = getWassasList(nextWassasRef)
-    persistWassasDebounced(list)
+  // Se cambia il riferimento del slice prompts, persisti la lista
+  if (prevPromptsRef !== nextPromptsRef) {
+    const list = getPromptsList(nextPromptsRef)
+    persistPromptsDebounced(list)
   }
 
-  // Se cambia il riferimento del slice wassaSets, persisti i set
-  if (prevWassaSetsRef !== nextWassaSetsRef) {
-    const sets = getWassaSetsList(nextWassaSetsRef)
-    persistWassaSetsDebounced(sets)
+  // Se cambia il riferimento del slice promptSets, persisti i set
+  if (prevPromptSetsRef !== nextPromptSetsRef) {
+    const sets = getPromptSetsList(nextPromptSetsRef)
+    persistPromptSetsDebounced(sets)
   }
 
   return result

@@ -1,6 +1,6 @@
 {
   "manifest_version": 3,
-  "name": "Wassà Prompt Manager",
+  "name": "Prompt Manager",
   "version": "1.0",
   "description": "Estensione Chrome per inserire prompt testuali personalizzati",
   "permissions": [

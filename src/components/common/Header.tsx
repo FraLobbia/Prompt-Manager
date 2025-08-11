@@ -16,9 +16,9 @@ export default function Header({ title }: HeaderProps) {
             { label: "❌", action: () => navigate("activeSet") },
           ],
         }
-      case "newWassa":
+  case "newPrompt":
         return {
-          title: "Nuovo Wassà",
+          title: "Nuovo Prompt",
           buttons: [
             { label: "❌", action: () => navigate("activeSet") },
             { label: "⚙️", action: () => navigate("settings") },
@@ -32,9 +32,9 @@ export default function Header({ title }: HeaderProps) {
             { label: "⚙️", action: () => navigate("settings") },
           ],
         }
-      case "editWassa":
+  case "editPrompt":
         return {
-          title: "Modifica Wassa",
+          title: "Modifica Prompt",
           buttons: [
             { label: "❌", action: () => navigate("activeSet") },
           ],
@@ -60,7 +60,7 @@ export default function Header({ title }: HeaderProps) {
         return {
           title,
           buttons: [
-            { label: "Crea Wassà", action: () => navigate("newWassa") },
+            { label: "Crea Prompt", action: () => navigate("newPrompt") },
             { label: "Cambia Set", action: () => navigate("chooseSet") },
             { label: "⚙️", action: () => navigate("settings") },
           ],

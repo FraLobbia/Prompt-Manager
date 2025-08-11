@@ -1,25 +1,24 @@
 import { useEffect, useRef, useState, type ChangeEvent } from "react"
-import { useWassas, useSettings } from "../../store/hooks"
-import type { Wassa } from "../../types/Wassa"
+import { usePrompts, useSettings } from "../../store/hooks"
+import type { Prompt } from "../../types/Prompt"
 
-type WassaFormProps =
+type PromptFormProps =
   | { mode: "new"; onComplete?: () => void }
-  | { mode: "edit"; wassa: Wassa; onComplete?: () => void }
+  | { mode: "edit"; prompt: Prompt; onComplete?: () => void }
 
-export default function WassaForm(props: WassaFormProps) {
+export default function PromptForm(props: PromptFormProps) {
   const isEdit = props.mode === "edit"
-  const wassa = isEdit ? (props as Extract<WassaFormProps, { mode: "edit" }>).wassa : undefined
+  const prompt = isEdit ? (props as Extract<PromptFormProps, { mode: "edit" }>).prompt : undefined
   const onComplete = props.onComplete
 
-  const { addWassa, updateWassa } = useWassas()
+  const { addPrompt, updatePrompt } = usePrompts()
   const { buttonNumberClass, navigate } = useSettings()
 
-  const [title, setTitle] = useState(isEdit ? wassa!.titolo : "")
-  const [text, setText] = useState(isEdit ? wassa!.testo : "")
+  const [title, setTitle] = useState(isEdit ? prompt!.titolo : "")
+  const [text, setText] = useState(isEdit ? prompt!.testo : "")
   const textareaRef = useRef<HTMLTextAreaElement>(null)
 
   useEffect(() => {
-    // autoresize on mount and when content changes
     resizeTextarea()
   }, [text])
 
@@ -41,32 +40,27 @@ export default function WassaForm(props: WassaFormProps) {
     const trimmedText = text.trim()
     if (!trimmedTitle || !trimmedText) return
 
-    if (isEdit && wassa) {
-      // update existing
-      updateWassa({ id: wassa.id, titolo: trimmedTitle, testo: trimmedText })
+    if (isEdit && prompt) {
+      updatePrompt({ id: prompt.id, titolo: trimmedTitle, testo: trimmedText })
       onComplete?.()
     } else {
-      // create new and navigate back to active set
-      addWassa({ id: Date.now().toString(), titolo: trimmedTitle, testo: trimmedText })
+      addPrompt({ id: Date.now().toString(), titolo: trimmedTitle, testo: trimmedText })
       resetNew()
       navigate("activeSet")
     }
   }
 
-  // Dynamic buttons config similar to Header
   type Btn = { label: string; action: () => void }
   const buttons: Btn[] = isEdit
     ? [
         { label: "💾 Salva", action: handleSave },
         { label: "❌ Annulla", action: onComplete ?? (() => {}) },
       ]
-    : [
-        { label: "Salva wassa", action: handleSave },
-      ]
+    : [{ label: "Salva prompt", action: handleSave }]
 
   if (isEdit) {
     return (
-      <li className="wassa-edit-item active-edit">
+      <li className="prompt-edit-item active-edit">
         <input
           value={title}
           onChange={(e: ChangeEvent<HTMLInputElement>) => setTitle(e.target.value)}
@@ -79,7 +73,7 @@ export default function WassaForm(props: WassaFormProps) {
           className="textarea-text"
           onChange={(e: ChangeEvent<HTMLTextAreaElement>) => setText(e.target.value)}
         />
-        <div className="wassa-buttons">
+        <div className="prompt-buttons">
           {buttons.map((btn, i) => (
             <button
               key={i}
@@ -95,10 +89,9 @@ export default function WassaForm(props: WassaFormProps) {
     )
   }
 
-  // new mode
   return (
-    <div className="new-wassa-form active-form">
-      <h3 className="form-label">Crea un nuovo wassà</h3>
+    <div className="new-prompt-form active-form">
+      <h3 className="form-label">Crea un nuovo prompt</h3>
 
       <input
         placeholder="Titolo"
@@ -109,14 +102,14 @@ export default function WassaForm(props: WassaFormProps) {
 
       <textarea
         ref={textareaRef}
-        placeholder="Testo del tuo wassà"
+        placeholder="Testo del tuo prompt"
         value={text}
         onChange={(e: ChangeEvent<HTMLTextAreaElement>) => setText(e.target.value)}
         className="textarea-text"
         rows={1}
       />
 
-      <div className="wassa-buttons">
+      <div className="prompt-buttons">
         {buttons.map((btn, i) => (
           <button
             key={i}
