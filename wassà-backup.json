@@ -3,14 +3,7 @@
     "view": "settings",
     "clipboardReplace": true,
     "buttonNumberClass": "53",
-    "activeSet": {
-      "descrizione": "trgnbsf hb",
-      "id": "set-1754841787631",
-      "titolo": "ergbtrgsn",
-      "wassasID": [
-        1754341156748
-      ]
-    }
+    "activeSet": "default"
   },
   "wassas": [
     {
@@ -30,6 +23,12 @@
     }
   ],
   "wassaSets": [
+     {
+      "descrizione": "",
+      "id": "default",
+      "titolo": "Default",
+      "wassasID": []
+    },
     {
       "descrizione": "rtbrwtbngs",
       "id": "set-1754841778869",

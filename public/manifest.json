@@ -13,7 +13,7 @@
     "clipboardWrite"
   ],
   "action": {
-    "default_popup": "estensione.html"
+    "default_popup": "popup.html"
   },
   "content_scripts": [
     {

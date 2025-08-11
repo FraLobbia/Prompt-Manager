@@ -1,5 +1,6 @@
 
 @use "./styles/variables" as *;
+@use "./styles/partials/margin-and-padding" as *;
 
 body {
   width: 750px;
@@ -44,7 +45,13 @@ body {
   margin: 0;
   padding: 0;
 }
+.justify-center {
+  justify-content: center;
+}
 
+.align-center {
+  align-items: center;
+}
 .popup-container {
   font-family: system-ui, sans-serif;
   background: $background;
@@ -232,3 +239,4 @@ body {
     @extend .btn-secondary;
   }
 }
+

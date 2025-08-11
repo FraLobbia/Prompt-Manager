@@ -1,15 +1,9 @@
 import { useSettings, useWassas } from "../../store/hooks"
 import type { Wassa } from "../../types/Wassa"
 
-interface WassaProps {
-  prompt: Wassa
-  onEdit?: (wassa: Wassa) => void
-}
-
 export default function Wassa({ prompt, onEdit }: WassaProps) {
   const { clipboardReplace, buttonNumberClass } = useSettings()
   const { removeWassa } = useWassas()
-
   const { id, titolo, testo } = prompt
   const lines = testo.split("\n")
   const anteprima = lines.slice(0, 2).join("\n")
@@ -43,30 +37,41 @@ export default function Wassa({ prompt, onEdit }: WassaProps) {
       }
     })
   }
-
+  /**
+   * Rimuove il wassà corrente.
+   */
   const handleRemoveWassa = () => {
     if (confirm(`Vuoi davvero eliminare il wassà "${titolo}"?`)) {
       removeWassa(id)
     }
   }
-
-  const renderButton = (
-    onClick: () => void,
-    icon: string,
-    label?: string,
-    extraStyle?: React.CSSProperties,
-    title?: string
-  ) => (
-    <button
-      onClick={onClick}
-      className={`button-${buttonNumberClass}`}
-      style={{ marginLeft: "0.3rem", ...extraStyle }}
-      title={title}
-    >
-      <div>{icon}</div>
-      {label && <div>{label}</div>}
-    </button>
-  )
+  /**
+   * Button configuration
+   */
+  const buttons: ButtonCfg[] = [
+    {
+      icon: "➕",
+      label: "Coda",
+      action: () => callContentScript("insert", testo),
+      style: { marginLeft: "0" },
+    },
+    {
+      icon: "🔄",
+      label: "Sovrascrivi",
+      action: () => callContentScript("overwrite", testo),
+    },
+    {
+      icon: "✏️",
+      label: "Modifica",
+      action: () => onEdit?.(prompt),
+    },
+    {
+      icon: "🗑",
+      action: handleRemoveWassa,
+      title: "Elimina",
+      style: { maxWidth: "30px" },
+    },
+  ]
 
   return (
     <li className="wassa-item">
@@ -76,11 +81,32 @@ export default function Wassa({ prompt, onEdit }: WassaProps) {
         {hasMoreLines ? "…" : ""}
       </div>
       <div className="wassa-buttons">
-        {renderButton(() => callContentScript("insert", testo), "➕", "Coda", { marginLeft: "0" })}
-        {renderButton(() => callContentScript("overwrite", testo), "🔄", "Sovrascrivi")}
-        {renderButton(() => onEdit?.(prompt), "✏️", "Modifica")}
-        {renderButton(handleRemoveWassa, "🗑", undefined, { maxWidth: "30px" }, "Elimina")}
+        {buttons.map((btn, i) => (
+          <button
+            key={i}
+            onClick={btn.action}
+            className={`button-${buttonNumberClass}`}
+            title={btn.title}
+            style={{ ...(i > 0 ? { marginLeft: "0.3rem" } : undefined), ...(btn.style ?? {}) }}
+          >
+            <div>{btn.icon}</div>
+            {btn.label && <div>{btn.label}</div>}
+          </button>
+        ))}
       </div>
     </li>
   )
+}
+
+type ButtonCfg = {
+  icon: string
+  label?: string
+  title?: string
+  action: () => void
+  style?: React.CSSProperties
+}
+
+interface WassaProps {
+  prompt: Wassa
+  onEdit?: (wassa: Wassa) => void
 }

@@ -1,0 +1,41 @@
+// Scala spacing (puoi modificarla a piacere)
+$spacers: (
+  1: 0.25rem, // 4px
+  2: 0.5rem,  // 8px
+  3: 1rem,    // 16px
+  4: 1.5rem,  // 24px
+  5: 3rem     // 48px
+);
+
+// Funzione helper
+@function spacer($key) {
+  @return map-get($spacers, $key);
+}
+
+// Mixin generico
+@mixin space($type, $dir, $size) {
+  $prop: if($type == 'm', margin, padding);
+
+  @if $dir == 'a' {
+    #{$prop}: spacer($size);
+  } @else if $dir == 'x' {
+    #{$prop}-left: spacer($size);
+    #{$prop}-right: spacer($size);
+  } @else if $dir == 'y' {
+    #{$prop}-top: spacer($size);
+    #{$prop}-bottom: spacer($size);
+  } @else {
+    #{$prop}-#{$dir}: spacer($size);
+  }
+}
+
+// Generazione classi
+@each $abbr, $prop in ('m': margin, 'p': padding) {
+  @each $dirAbbr in ('a', 't', 'b', 'l', 'r', 'x', 'y') {
+    @each $sizeKey, $value in $spacers {
+      .#{$abbr}#{$dirAbbr}-#{$sizeKey} {
+        @include space($abbr, $dirAbbr, $sizeKey);
+      }
+    }
+  }
+}

@@ -8,7 +8,7 @@ import { loadSettingsFromStorage, loadWassasFromStorage, loadWassaSetsFromStorag
 import Header from "./components/common/Header"
 import SettingsPanel from "./components/settingsPanel/SettingsPanel"
 import WassaList from "./components/wassa/WassaList"
-import NewWassaForm from "./components/wassa/NewWassa"
+import WassaForm from "./components/wassa/WassaForm"
 
 function EditWassaPlaceholder() {
   return <div>{/* TODO: <EditWassaForm /> */}Modifica Wassa – componente mancante</div>
@@ -34,7 +34,7 @@ export function App() {
   useEffect(() => {
     dispatch(loadSettingsFromStorage())
     dispatch(loadWassasFromStorage())
-  dispatch(loadWassaSetsFromStorage())
+    dispatch(loadWassaSetsFromStorage())
   }, [dispatch])
 
   /**
@@ -51,7 +51,7 @@ export function App() {
 
       case "newWassa":
         // dopo il submit torna alla vista principale
-        return <NewWassaForm onSubmit={() => navigate("activeSet")} />
+        return <WassaForm mode="new" onComplete={() => navigate("activeSet")} />
 
       case "newSet":
         return <WassaSetForm />
@@ -61,9 +61,9 @@ export function App() {
 
       case "editSet":
         return <EditSetPlaceholder />
-      
-        case "chooseSet":
-          return <WassaSetList />
+
+      case "chooseSet":
+        return <WassaSetList />
 
       default: {
         // Se la view non è ancora stata caricata (es. inizializzazione), evita di renderizzare fallback arbitrari

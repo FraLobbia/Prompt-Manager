@@ -1,5 +1,5 @@
 import { useResolvedWassaSets } from "../../store/hooks"
-import type { WassaSet as WassaSetType } from "../../types/WassaSet"
+import type { ResolvedWassaSet } from "../../store/selectors/wassaSelectors"
 import WassaSet from "./WassaSet"
 
 export default function WassaSetList() {
@@ -11,7 +11,7 @@ export default function WassaSetList() {
 
   return (
     <ul className="wassa-list">
-      {resolvedWassaSets.map((set : WassaSetType) => (
+  {resolvedWassaSets.map((set: ResolvedWassaSet) => (
         <WassaSet key={set.id} wassaSet={set} />
       ))}
     </ul>

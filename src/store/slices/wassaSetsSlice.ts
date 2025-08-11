@@ -3,6 +3,7 @@ import type { ThunkAction } from "@reduxjs/toolkit"
 import type { AnyAction } from "redux"
 import type { RootState } from "../store"
 import type { WassaSet } from "../../types/WassaSet"
+import { DEFAULT_WASSA_SET, DEFAULT_WASSA_SET_ID } from "../../types/WassaSet"
 import { persistWassaSets, loadWassaSets } from "../../persistence/storage"
 
 // Stato
@@ -11,7 +12,7 @@ interface WassaSetsState {
 }
 
 const initialState: WassaSetsState = {
-  sets: [],
+  sets: [DEFAULT_WASSA_SET],
 }
 
 const wassaSetsSlice = createSlice({
@@ -19,11 +20,13 @@ const wassaSetsSlice = createSlice({
   initialState,
   reducers: {
     setWassaSets(state, action: PayloadAction<WassaSet[]>) {
-      // Garantisco l'array wassasID
-      state.sets = action.payload.map(s => ({
+      // Garantisco l'array wassasID e l'inclusione del set di default
+      const incoming = action.payload.map(s => ({
         ...s,
         wassasID: Array.isArray(s.wassasID) ? s.wassasID.slice() : [],
       }))
+      const hasDefault = incoming.some(s => s.id === DEFAULT_WASSA_SET_ID)
+      state.sets = hasDefault ? incoming : [DEFAULT_WASSA_SET, ...incoming]
     },
     addWassaSet(state, action: PayloadAction<WassaSet>) {
       const s = action.payload
@@ -45,13 +48,13 @@ const wassaSetsSlice = createSlice({
     },
 
     // --- Operazioni sugli ID dei Wassa dentro un set ---
-    addWassaIdToSet(state, action: PayloadAction<{ setId: string; wassaId: number }>) {
+  addWassaIdToSet(state, action: PayloadAction<{ setId: string; wassaId: string }>) {
       const { setId, wassaId } = action.payload
       const set = state.sets.find(s => s.id === setId)
       if (!set) return
       if (!set.wassasID.includes(wassaId)) set.wassasID.push(wassaId)
     },
-    addWassaIdsToSet(state, action: PayloadAction<{ setId: string; wassaIds: number[] }>) {
+  addWassaIdsToSet(state, action: PayloadAction<{ setId: string; wassaIds: string[] }>) {
       const { setId, wassaIds } = action.payload
       const set = state.sets.find(s => s.id === setId)
       if (!set) return
@@ -59,13 +62,13 @@ const wassaSetsSlice = createSlice({
       for (const id of wassaIds) asSet.add(id)
       set.wassasID = Array.from(asSet)
     },
-    replaceWassaIdsInSet(state, action: PayloadAction<{ setId: string; wassaIds: number[] }>) {
+  replaceWassaIdsInSet(state, action: PayloadAction<{ setId: string; wassaIds: string[] }>) {
       const { setId, wassaIds } = action.payload
       const set = state.sets.find(s => s.id === setId)
       if (!set) return
       set.wassasID = wassaIds.slice()
     },
-    removeWassaIdFromSet(state, action: PayloadAction<{ setId: string; wassaId: number }>) {
+  removeWassaIdFromSet(state, action: PayloadAction<{ setId: string; wassaId: string }>) {
       const { setId, wassaId } = action.payload
       const set = state.sets.find(s => s.id === setId)
       if (!set) return
@@ -132,19 +135,19 @@ export const removeWassaSetAndSave = (setId: string): ThunkAction<Promise<void>,
     await dispatch(saveWassaSets())
   }
 
-export const addWassaIdsToSetAndSave = (setId: string, wassaIds: number[]): ThunkAction<Promise<void>, RootState, unknown, AnyAction> =>
+export const addWassaIdsToSetAndSave = (setId: string, wassaIds: string[]): ThunkAction<Promise<void>, RootState, unknown, AnyAction> =>
   async (dispatch) => {
     dispatch(addWassaIdsToSet({ setId, wassaIds }))
     await dispatch(saveWassaSets())
   }
 
-export const removeWassaIdFromSetAndSave = (setId: string, wassaId: number): ThunkAction<Promise<void>, RootState, unknown, AnyAction> =>
+export const removeWassaIdFromSetAndSave = (setId: string, wassaId: string): ThunkAction<Promise<void>, RootState, unknown, AnyAction> =>
   async (dispatch) => {
     dispatch(removeWassaIdFromSet({ setId, wassaId }))
     await dispatch(saveWassaSets())
   }
 
-export const replaceWassaIdsInSetAndSave = (setId: string, wassaIds: number[]): ThunkAction<Promise<void>, RootState, unknown, AnyAction> =>
+export const replaceWassaIdsInSetAndSave = (setId: string, wassaIds: string[]): ThunkAction<Promise<void>, RootState, unknown, AnyAction> =>
   async (dispatch) => {
     dispatch(replaceWassaIdsInSet({ setId, wassaIds }))
     await dispatch(saveWassaSets())

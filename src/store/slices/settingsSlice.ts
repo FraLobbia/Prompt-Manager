@@ -1,7 +1,6 @@
 import { createSlice, type PayloadAction } from "@reduxjs/toolkit";
 import type { AppDispatch } from "../store";
 import { persistSettings } from "../../persistence/storage";
-import type { WassaSet } from "../../types/WassaSet";
 import { initialState, Settings, type Settings as SettingsClass, type Views } from "../../types/Settings";
 
 /**
@@ -22,8 +21,8 @@ export const settingsSlice = createSlice({
       state.view = action.payload;
     },
 
-    /** Imposta il WassaSet attivo */
-    setActiveSet(state, action: PayloadAction<WassaSet>) {
+  /** Imposta l'ID del set attivo */
+  setActiveSet(state, action: PayloadAction<string | undefined>) {
       state.activeSet = action.payload;
     },
 
@@ -58,7 +57,7 @@ export const settingsSlice = createSlice({
       state.view = s.view ?? state.view;
       state.clipboardReplace = s.clipboardReplace ?? state.clipboardReplace;
       state.buttonNumberClass = s.buttonNumberClass ?? state.buttonNumberClass;
-      state.activeSet = s.activeSet ?? state.activeSet;
+  state.activeSet = s.activeSet ?? state.activeSet;
     },
   },
 });

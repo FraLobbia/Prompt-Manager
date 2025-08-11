@@ -35,7 +35,7 @@ export default function WassaSetForm({ onSubmit, editingSet }: WassaSetFormProps
     const titolo = title.trim()
     if (!titolo) return
     const descrizione = description.trim()
-    const ids = selectedIds.map(id => Number(id)).filter(n => !Number.isNaN(n))
+    const ids = selectedIds.map(id => String(id)).filter(Boolean) 
 
     const set: WassaSet = {
       id: editingSet?.id ?? `set-${Date.now()}`,

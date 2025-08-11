@@ -1,16 +1,14 @@
-import type { WassaSet } from "./WassaSet";
-
 export class Settings {
   view: Views;
   clipboardReplace: boolean;
   buttonNumberClass: string;
-  activeSet?: WassaSet;
+  activeSet?: string; // contiene solo l'ID del set attivo
 
   constructor(
     view: Views,
     clipboardReplace: boolean,
     buttonNumberClass: string,
-    activeSet?: WassaSet
+    activeSet?: string
   ) {
     this.view = view;
     this.clipboardReplace = clipboardReplace;
@@ -33,5 +31,5 @@ export const initialState: Settings = {
   view: "activeSet",
   clipboardReplace: true,
   buttonNumberClass: "53",
-  activeSet: undefined,
+  activeSet: "default",
 };

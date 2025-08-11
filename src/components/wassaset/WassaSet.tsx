@@ -1,15 +1,13 @@
 import { useSettings, useWassaSets } from "../../store/hooks"
-import type { WassaSet } from "../../types/WassaSet"
+import { DEFAULT_WASSA_SET_ID } from "../../types/WassaSet"
+import type { ResolvedWassaSet } from "../../store/selectors/wassaSelectors"
 
-export default function WassaSet({wassaSet
-}: {
-  wassaSet: WassaSet
-}) {
+export default function WassaSet({ wassaSet }: { wassaSet: ResolvedWassaSet }) {
   const { activeSet, buttonNumberClass, setActiveSet, navigate } = useSettings()
   const { removeWassaSetAndSave } = useWassaSets()
 
   const handleMakeActive = () => {
-    setActiveSet({ id: wassaSet.id, titolo: wassaSet.titolo, descrizione: wassaSet.descrizione, wassasID: wassaSet.wassas?.map(w => Number(w.id)) ?? [] })
+    setActiveSet(wassaSet.id)
     navigate("activeSet")
   }
 
@@ -23,12 +21,52 @@ export default function WassaSet({wassaSet
     }
   }
 
+  const isDefaultSet = wassaSet.id === DEFAULT_WASSA_SET_ID;
+
+  type ButtonCfg = {
+    label: string
+    action: () => void
+    disabled?: boolean
+    className?: string
+    title?: string
+  }
+
+  const buttons: ButtonCfg[] = [
+    {
+      label: wassaSet.id === activeSet ? "✅ Attivo" : "Rendi attivo",
+      action: handleMakeActive,
+      disabled: wassaSet.id === activeSet,
+      className: wassaSet.id === activeSet ? "active" : "",
+    },
+    {
+      label: "✏️ Modifica",
+      action: handleEdit,
+    },
+    {
+      label: "🗑",
+      action: handleRemove,
+      disabled: wassaSet.id === DEFAULT_WASSA_SET_ID,
+      title: wassaSet.id === DEFAULT_WASSA_SET_ID ? "Non puoi eliminare il set di default" : "Elimina",
+    },
+  ]
+
   return (
     <li className="wassa-item">
       <div className="wassa-list__header">
         <strong>{wassaSet.titolo}</strong>
-        {wassaSet.descrizione && <div className="muted">{wassaSet.descrizione}</div>}
-        <div className="muted">Wassà nel set: {wassaSet.wassas?.length}</div>
+        {isDefaultSet ?
+          <>
+            <p className="muted">Set di default.</p>
+            <p className="muted"> Mostra i wassà di tutti i set.</p>
+          </>
+          :
+          <>
+            <div className="muted">{wassaSet.descrizione}</div>
+            <div className="muted">
+              Wassà nel set: {wassaSet.wassas?.length}
+            </div>
+          </>
+        }
       </div>
 
       {wassaSet.wassas && wassaSet.wassas.length > 0 && (
@@ -41,21 +79,19 @@ export default function WassaSet({wassaSet
         </ul>
       )}
 
-      <div className="wassa-buttons" style={{ marginTop: "0.5rem" }}>
-        <button
-          className={`button-${buttonNumberClass} ${wassaSet.id === activeSet?.id ? "active" : ""}`}
-          onClick={handleMakeActive}
-          disabled={wassaSet.id === activeSet?.id}
-        >
-          <span>{wassaSet.id === activeSet?.id ? "Attivo" : "✅ Rendi attivo"}</span>
-        </button>
-        <button className={`button-${buttonNumberClass}`} onClick={handleEdit} style={{ marginLeft: "0.3rem" }}>
-          <div>✏️</div>
-          <div>Modifica</div>
-        </button>
-        <button className={`button-${buttonNumberClass}`} onClick={handleRemove} style={{ marginLeft: "0.3rem" }} title="Elimina">
-          <div>🗑</div>
-        </button>
+      <div className="wassa-buttons mt-3">
+        {(isDefaultSet ? [buttons[0]] : buttons).map((btn, i) => (
+          <button
+            key={i}
+            onClick={btn.action}
+            disabled={btn.disabled}
+            title={btn.title}
+            className={`button-${buttonNumberClass} ${btn.className ?? ""}`}
+            style={i > 0 ? { marginLeft: "0.3rem" } : undefined}
+          >
+            {btn.label}
+          </button>
+        ))}
       </div>
     </li>
   )

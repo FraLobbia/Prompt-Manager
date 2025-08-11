@@ -31,11 +31,11 @@ export function useSettings() {
     view: settings.view,
     clipboardReplace: settings.clipboardReplace,
     buttonNumberClass: settings.buttonNumberClass,
-    activeSet: settings.activeSet,
+  activeSet: settings.activeSet,
 
     // azioni
     navigate: (v: typeof settings.view) => dispatch(setView(v)),
-    setActiveSet: (s: WassaSet) => dispatch(setActiveSet(s)),
+  setActiveSet: (id: string | undefined) => dispatch(setActiveSet(id)),
     setClipboardReplace: (value: boolean) => dispatch(setClipboardReplace(value)),
     setButtonNumberClass: (value: string) => dispatch(setButtonNumberClass(value)),
   }
@@ -66,13 +66,13 @@ export const useWassaSets = () => {
     addWassaSetAndSave: (set: WassaSet) => dispatch(addWassaSetAndSave(set)),
     updateWassaSetAndSave: (set: WassaSet) => dispatch(updateWassaSetAndSave(set)),
     removeWassaSetAndSave: (id: string) => dispatch(removeWassaSetAndSave(id)),
-    addWassaIdsToSetAndSave: (setId: string, ids: number[]) => dispatch(addWassaIdsToSetAndSave(setId, ids)),
-    removeWassaIdFromSetAndSave: (setId: string, id: number) => dispatch(removeWassaIdFromSetAndSave(setId, id)),
-    replaceWassaIdsInSetAndSave: (setId: string, ids: number[]) => dispatch(replaceWassaIdsInSetAndSave(setId, ids)),
+  addWassaIdsToSetAndSave: (setId: string, ids: string[]) => dispatch(addWassaIdsToSetAndSave(setId, ids)),
+  removeWassaIdFromSetAndSave: (setId: string, id: string) => dispatch(removeWassaIdFromSetAndSave(setId, id)),
+  replaceWassaIdsInSetAndSave: (setId: string, ids: string[]) => dispatch(replaceWassaIdsInSetAndSave(setId, ids)),
 
     // Helper sintetici
-    addWassaIdToSet: (setId: string, id: number) => dispatch(addWassaIdsToSetAndSave(setId, [id])),
-    replaceWassaIdsInSet: (setId: string, ids: number[]) => dispatch(replaceWassaIdsInSetAndSave(setId, ids)),
+  addWassaIdToSet: (setId: string, id: string) => dispatch(addWassaIdsToSetAndSave(setId, [id])),
+  replaceWassaIdsInSet: (setId: string, ids: string[]) => dispatch(replaceWassaIdsInSetAndSave(setId, ids)),
   }
 }
 

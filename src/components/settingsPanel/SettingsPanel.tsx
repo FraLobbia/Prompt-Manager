@@ -6,6 +6,7 @@ export default function SettingsPanel() {
   const { activeSet, clipboardReplace, setClipboardReplace, buttonNumberClass, setButtonNumberClass, navigate } = useSettings()
   const dispatch = useDispatch()
   const { wassaSets } = useWassaSets()
+  const active = wassaSets.find(s => s.id === activeSet)
 
   const onExport = exportBackup
   const onImport = async (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -23,9 +24,9 @@ export default function SettingsPanel() {
   return (
     <div className="settings-panel">
       <div id='sets'>
-        <h3>Sets di Wassà</h3>
-        <p>Set attuale: <strong>{activeSet?.titolo || 'Nessun set attivo'}</strong></p>
-        <p>Set disponibili: <strong>{wassaSets.length}</strong></p>
+  <h3>Sets di Wassà</h3>
+  <p>Set attuale: <strong>{active?.titolo || 'Nessun set attivo'}</strong></p>
+  <p>Set disponibili: <strong>{wassaSets.length}</strong></p>
         <br />
         <div className="d-flex-row">
           <button onClick={() => navigate("newSet")} className={`button-${buttonNumberClass}`}>

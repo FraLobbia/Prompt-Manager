@@ -24,7 +24,7 @@ type StoredSettings = {
   view: Settings["view"];
   clipboardReplace: boolean;
   buttonNumberClass: string;
-  activeSet?: Settings["activeSet"];
+  activeSet?: string; // solo ID
   /** legacy support (vecchia chiave) */
   useClipboard?: boolean;
 };
@@ -41,7 +41,7 @@ function toStored(s: Settings): StoredSettings {
     view: s.view,
     clipboardReplace: s.clipboardReplace,
     buttonNumberClass: s.buttonNumberClass,
-    activeSet: s.activeSet,
+  activeSet: s.activeSet,
   };
 }
 
@@ -57,12 +57,23 @@ function fromStored(obj: Partial<StoredSettings> | undefined): Settings {
     return { ...initialState };
   }
 
+  const activeSetId = ((): string | undefined => {
+    const raw = (obj as unknown as { activeSet?: unknown })?.activeSet
+    if (raw == null) return undefined
+    if (typeof raw === "string") return raw
+    if (typeof raw === "object") {
+      const maybe = raw as { id?: unknown }
+      if (typeof maybe.id === "string") return maybe.id
+    }
+    return undefined
+  })()
+
   return {
     view: obj.view ?? initialState.view,
     clipboardReplace:
       obj.clipboardReplace ?? obj.useClipboard ?? initialState.clipboardReplace,
     buttonNumberClass: obj.buttonNumberClass ?? initialState.buttonNumberClass,
-    activeSet: obj.activeSet ?? initialState.activeSet,
+    activeSet: activeSetId ?? initialState.activeSet,
   };
 }
 
