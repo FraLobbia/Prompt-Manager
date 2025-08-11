@@ -3,7 +3,7 @@ import { useEffect } from "react"
 import { useDispatch } from "react-redux"
 import type { ThunkDispatch } from "@reduxjs/toolkit"
 import type { AnyAction } from "redux"
-import { loadSettingsFromStorage, loadPromptsFromStorage, loadPromptSetsFromStorage } from "./persistence/storage"
+import { loadSettingsFromStorage, loadPromptsFromStorage, loadPromptSetsFromStorage } from "./persistence/storage.thunks"
 
 import Header from "./components/common/Header"
 import SettingsPanel from "./components/settingsPanel/SettingsPanel"
