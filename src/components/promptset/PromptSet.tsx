@@ -3,11 +3,12 @@ import EllipsisMenu from "../common/EllipsisMenu"
 import { useSettings, usePromptSets } from "../../store/hooks"
 import { DEFAULT_PROMPT_SET_ID, type PromptSet } from "../../types/PromptSet"
 import { VIEWS } from "../../constants/views"
+import AnimatedCollapse from "../common/AnimatedCollapse.tsx"
 
 
 export default function PromptSet({ promptSet }: { promptSet: PromptSet }) {
   /** Hooks a stato globale */
-  const { activeSet, setActiveSet, navigate } = useSettings()
+  const { activeSet, navigate } = useSettings()
   const { removePromptSetAndSave } = usePromptSets()
 
   /** Utility */
@@ -15,13 +16,6 @@ export default function PromptSet({ promptSet }: { promptSet: PromptSet }) {
   const isActive = promptSet.id === activeSet
   const count = promptSet.prompts?.length ?? 0
   const [showPrompts, setShowPrompts] = useState(false)
-
-  /**
-   * Rende attivo il set di prompt
-   */
-  const handleMakeActive = useCallback(() => {
-    setActiveSet(promptSet.id)
-  }, [setActiveSet, promptSet.id])
 
   /**
    * Gestisce la modifica del set di prompt navigando alla vista di modifica TODO
@@ -40,20 +34,7 @@ export default function PromptSet({ promptSet }: { promptSet: PromptSet }) {
   }, [removePromptSetAndSave, promptSet.id, promptSet.titolo])
 
   return (
-    <li
-      className={`m-3 prompt-set${isActive ? " prompt-set--active" : ""}${isDefaultSet ? " prompt-set--default" : ""}`}
-      // opzionale: click superficie per attivare
-      onClick={handleMakeActive}
-      title={isActive ? "Set già attivo" : "Clic per rendere attivo"}
-      role="button"
-      tabIndex={0}
-      onKeyDown={(e) => {
-        if (e.key === "Enter" || e.key === " ") {
-          e.preventDefault()
-          handleMakeActive()
-        }
-      }}
-    >
+    <div className={`prompt-set__container ${isActive ? "is-active" : ""} ${isDefaultSet ? "is-default" : ""}`}>
       {/* Header */}
       <div className="prompt-set__header">
         <div className="flex-between">
@@ -95,64 +76,54 @@ export default function PromptSet({ promptSet }: { promptSet: PromptSet }) {
           </div>
         </div>
 
-        {isDefaultSet ? (
-          <div className="prompt-set__meta">
-            <p className="prompt-set__line">Set di default.</p>
-            <p className="prompt-set__line">
-              Mostra i prompt di tutti i set <span className="prompt-set__count">({count})</span>
-            </p>
-          </div>
-        ) : (
           <div className="prompt-set__meta">
             {promptSet.descrizione && <p className="prompt-set__line">{promptSet.descrizione}</p>}
-            <p className="prompt-set__line">
-              Prompt nel set: <span className="prompt-set__count">{count}</span>
-            </p>
           </div>
-        )}
 
-        {/* Bottone toggle lista prompt (non attiva il set) */}
-        {count > 0 && (
-          <div className="prompt-set__toggle">
-            <button
-              type="button"
-              className={`btn btn--toggle-prompts`}
-              aria-expanded={showPrompts}
-              aria-controls={`prompt-set-list-${promptSet.id}`}
-              onClick={(e) => {
-                e.stopPropagation()
-                setShowPrompts(v => !v)
-              }}
-            >
-              <svg
-                className={`caret${showPrompts ? ' caret--up' : ''}`}
-                width="10"
-                height="10"
-                viewBox="0 0 10 10"
-                aria-hidden="true"
+          {/* Bottone toggle lista prompt (non attiva il set) */}
+          {count > 0 && (
+            <div className="prompt-set__toggle">
+              <button
+                type="button"
+                className={`btn btn--toggle-prompts`}
+                aria-expanded={showPrompts}
+                aria-controls={`prompt-set-list-${promptSet.id}`}
+                onClick={(e) => {
+                  e.stopPropagation()
+                  setShowPrompts(v => !v)
+                }}
               >
-                <path d="M1 3l4 4 4-4" fill="none" stroke="currentColor" strokeWidth="1.3" strokeLinejoin="round" />
-              </svg>
-              {showPrompts ? "Comprimi i prompt del set" : "Vedi i prompt del set"}
-            </button>
-          </div>
-        )}
+                <svg
+                  className={`caret${showPrompts ? ' caret--up' : ''}`}
+                  width="10"
+                  height="10"
+                  viewBox="0 0 10 10"
+                  aria-hidden="true"
+                >
+                  <path d="M1 3l4 4 4-4" fill="none" stroke="currentColor" strokeWidth="1.3" strokeLinejoin="round" />
+                </svg>
+                {showPrompts ? "Comprimi" : <>Mostra <strong className="prompt-set__count">{count}</strong> prompt</>}
+              </button>
+            </div>
+          )}
       </div>
 
-      {/* Lista interna (prompt del set) */}
-      {showPrompts && count > 0 && (
+  {/* Lista interna (prompt del set) con animazione */}
+  <AnimatedCollapse open={showPrompts && count > 0}>
         <ul
           className="prompt-set__list"
           id={`prompt-set-list-${promptSet.id}`}
           aria-label={`Elenco prompt del set ${promptSet.titolo}`}
         >
-          {promptSet.prompts!.map((p) => (
+          {promptSet.prompts?.map((p) => (
             <li key={String(p.id)} className="prompt-set__list-item">
               <span className="prompt-set__item-title">{p.titolo}</span>
             </li>
           ))}
         </ul>
-      )}
-    </li>
+      </AnimatedCollapse>
+    </div>
   )
 }
+
+// AnimatedCollapse estratto in common/AnimatedCollapse.tsx

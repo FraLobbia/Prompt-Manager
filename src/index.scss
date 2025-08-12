@@ -5,6 +5,8 @@
 @use "./styles/partials/margin-and-padding" as *;
 @use "./styles/partials/forms" as *;
 @use "./styles/partials/buttons" as *;
+
+@use "./components/promptset/PromptSet.scss" as *; // Importa il componente PromptSet
 /* Nota: non si può @use un file TS:
    @use "../src/components/promptset/PromptSet" as *;  // ← rimosso perché non valido in SCSS
 */
@@ -266,4 +268,14 @@ li {
 }
 .caret--up {
   transform: rotate(180deg);
+}
+
+/* Collapse animation */
+.collapse {
+  overflow: hidden;
+  transition: max-height 0.28s ease, opacity 0.25s ease;
+  opacity: 0;
+}
+.collapse.is-open {
+  opacity: 1;
 }

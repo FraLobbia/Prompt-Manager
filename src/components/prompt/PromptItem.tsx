@@ -97,7 +97,6 @@ export default function PromptItem({ prompt, onEdit }: PromptItemProps) {
             key={i}
             onClick={btn.action}
             className="btn prompt-btn"
-            style={{ flex: 1, display: "flex", flexDirection: "column", alignItems: "center" }}
             title={btn.title}
           >
             <div>{btn.icon}</div>
