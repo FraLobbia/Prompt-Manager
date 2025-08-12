@@ -1,120 +1,111 @@
-import { useEffect, useRef, useState, type ChangeEvent } from "react"
+import { useEffect, useMemo, useRef, useState, useCallback, type ChangeEvent } from "react"
 import { usePrompts, useSettings } from "../../store/hooks"
 import type { Prompt } from "../../types/Prompt"
 import { getIcon, ICON_KEY } from "../../constants/icons"
 import { VIEWS } from "../../constants/views"
 
-type PromptFormProps =
-  | { mode: "new"; onComplete?: () => void }
-  | { mode: "edit"; prompt: Prompt; onComplete?: () => void }
+type BaseProps = { onComplete?: () => void }
+type NewProps = BaseProps & { mode: "new" }
+type EditProps = BaseProps & { mode: "edit"; prompt: Prompt }
+export type PromptFormProps = NewProps | EditProps
 
 export default function PromptForm(props: PromptFormProps) {
+  /** Props  */
   const isEdit = props.mode === "edit"
-  const prompt = isEdit ? (props as Extract<PromptFormProps, { mode: "edit" }>).prompt : undefined
-  const onComplete = props.onComplete
+  const current = isEdit ? props.prompt : undefined
 
+  /** Stato globale */
   const { addPrompt, updatePrompt } = usePrompts()
   const { buttonNumberClass, navigate } = useSettings()
 
-  const [title, setTitle] = useState(isEdit ? prompt!.titolo : "")
-  const [text, setText] = useState(isEdit ? prompt!.testo : "")
+  /** Stato locale */
+  const [title, setTitle] = useState<string>(current?.titolo ?? "")
+  const [text, setText] = useState<string>(current?.testo ?? "")
+
+  /**
+   * Ridimensiona l'area di testo in base al contenuto mentre si digita
+  */
   const textareaRef = useRef<HTMLTextAreaElement>(null)
-
-  useEffect(() => {
-    resizeTextarea()
-  }, [text])
-
-  const resizeTextarea = () => {
+  const resizeTextarea = useCallback(() => {
     const el = textareaRef.current
     if (!el) return
     el.style.height = "auto"
     el.style.height = `${el.scrollHeight}px`
-  }
+  }, [])
+  useEffect(() => { resizeTextarea() }, [text, resizeTextarea])
 
-  const resetNew = () => {
+  /**
+   * Resetta il form per un nuovo prompt
+   */
+  const resetNew = useCallback(() => {
     setTitle("")
     setText("")
-    onComplete?.()
-  }
+    props.onComplete?.()
+  }, [props])
 
-  const handleSave = () => {
+  /**
+   * Gestisce il salvataggio del prompt
+   */
+  const handleSave = useCallback(() => {
     const trimmedTitle = title.trim()
     const trimmedText = text.trim()
     if (!trimmedTitle || !trimmedText) return
 
-    if (isEdit && prompt) {
-      updatePrompt({ id: prompt.id, titolo: trimmedTitle, testo: trimmedText })
-      onComplete?.()
+    if (isEdit && current) {
+      updatePrompt({ id: current.id, titolo: trimmedTitle, testo: trimmedText })
+      props.onComplete?.()
     } else {
-      addPrompt({ id: Date.now().toString(), titolo: trimmedTitle, testo: trimmedText })
+      addPrompt({ id: `${Date.now()}`, titolo: trimmedTitle, testo: trimmedText })
       resetNew()
       navigate(VIEWS.activeSet)
     }
-  }
+  }, [isEdit, current, title, text, updatePrompt, addPrompt, resetNew, navigate, props])
 
-  type Btn = { label: string; action: () => void }
-  const buttons: Btn[] = isEdit
-    ? [
-        { label: `${getIcon(ICON_KEY.save)} Salva`, action: handleSave },
-        { label: `${getIcon(ICON_KEY.close)} Annulla`, action: onComplete ?? (() => {}) },
+  /**
+   * Gestisce la cancellazione del prompt in modalità modifica
+   */
+  const handleCancel = useCallback(() => props.onComplete?.(), [props])
+
+  type Btn = { key: string; label: string; action: () => void }
+  /**
+   * Bottoni disponibili
+   */
+  const buttons: Btn[] = useMemo(() => {
+    return isEdit
+      ? [
+        { key: "save", label: `${getIcon(ICON_KEY.save)} Salva`, action: handleSave },
+        { key: "cancel", label: `${getIcon(ICON_KEY.close)} Annulla`, action: handleCancel },
       ]
-    : [{ label: "Salva prompt", action: handleSave }]
-
-  if (isEdit) {
-    return (
-      <li className="prompt-edit-item active-edit">
-        <input
-          value={title}
-          onChange={(e: ChangeEvent<HTMLInputElement>) => setTitle(e.target.value)}
-          className="input-title editing"
-          autoFocus
-        />
-        <textarea
-          ref={textareaRef}
-          value={text}
-          className="textarea-text"
-          onChange={(e: ChangeEvent<HTMLTextAreaElement>) => setText(e.target.value)}
-        />
-        <div className="prompt-buttons">
-          {buttons.map((btn, i) => (
-            <button
-              key={i}
-              onClick={btn.action}
-              className={`button-${buttonNumberClass}`}
-              style={i > 0 ? { marginLeft: "0.3rem" } : undefined}
-            >
-              {btn.label}
-            </button>
-          ))}
-        </div>
-      </li>
-    )
-  }
+      : [
+        { key: "save", label: "Salva prompt", action: handleSave },
+      ]
+  }, [isEdit, handleSave, handleCancel])
 
   return (
-    <div className="new-prompt-form active-form">
-      <h3 className="form-label">Crea un nuovo prompt</h3>
-
+    <>
       <input
-        placeholder="Titolo"
+        placeholder={"Inserisci il titolo"}
         value={title}
         onChange={(e: ChangeEvent<HTMLInputElement>) => setTitle(e.target.value)}
-        className="input-title"
+        className="prompt-form__title"
+        autoFocus={isEdit}
+        aria-label="Titolo prompt"
       />
 
       <textarea
         ref={textareaRef}
-        placeholder="Testo del tuo prompt"
+        placeholder={"Inserisci il testo del tuo prompt"}
         value={text}
         onChange={(e: ChangeEvent<HTMLTextAreaElement>) => setText(e.target.value)}
-        className="textarea-text"
+        className="prompt-form__textarea"
         rows={1}
+        aria-label="Testo prompt"
       />
 
       <div className="prompt-buttons">
         {buttons.map((btn, i) => (
           <button
-            key={i}
+            key={btn.key}
             onClick={btn.action}
             className={`button-${buttonNumberClass}`}
             style={i > 0 ? { marginLeft: "0.3rem" } : undefined}
@@ -123,6 +114,6 @@ export default function PromptForm(props: PromptFormProps) {
           </button>
         ))}
       </div>
-    </div>
+    </>
   )
 }

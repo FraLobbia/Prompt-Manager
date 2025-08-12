@@ -110,7 +110,6 @@ const persistenceMiddleware: Middleware = (store) => (next) => (action: unknown)
     persistSettingsDebounced(nextSettingsRef)
   }
 
-  // ⚠️ PROMPTS: persistenza granulare per azione (niente più blob)
   if (isActionWithType(action)) {
     switch (action.type) {
       // Operazioni singolo prompt → salva/aggiorna solo quell'elemento

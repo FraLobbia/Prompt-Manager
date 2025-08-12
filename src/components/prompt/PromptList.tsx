@@ -9,30 +9,29 @@ export default function PromptList() {
   const prompts = useAppSelector(promptSelectors.selectPromptsOfCurrentSet);
   const [editId, setEditId] = useState<string | null>(null)
 
-  /* ######## Vuoto ######## */
+  /* ######## RENDER se non ci sono prompts ######## */
   if (prompts.length === 0) {
     return <p className="prompt-list__empty">Il set attivo non contiene prompt.</p>
   }
 
-  /* ######## Render ######## */
+  /* ######## RENDER ######## */
   return (
-    <ul className="prompt-list">
-      {prompts.map(p =>
-        editId === String(p.id) ? (
-          <PromptForm
+    <ul className="prompt-list mx-3">
+      {prompts.map(p => {
+        const isEditing = editId === String(p.id)
+        return (
+          <li
             key={String(p.id)}
-            mode="edit"
-            prompt={p}
-            onComplete={() => setEditId(null)}
-          />
-        ) : (
-          <PromptItem
-            key={String(p.id)}
-            prompt={p}
-            onEdit={() => setEditId(String(p.id))}
-          />
+            className={isEditing ? "prompt-edit-item active-edit" : undefined}
+          >
+            {isEditing ? (
+              <PromptForm mode="edit" prompt={p} onComplete={() => setEditId(null)} />
+            ) : (
+              <PromptItem prompt={p} onEdit={() => setEditId(String(p.id))} />
+            )}
+          </li>
         )
-      )}
+      })}
     </ul>
   )
 }

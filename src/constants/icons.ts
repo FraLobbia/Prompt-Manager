@@ -1,4 +1,5 @@
 export const ICONS = {
+  back: "←",
   close: "❌",
   settings: "⚙️",
   add: "➕",

@@ -1,0 +1,41 @@
+/* Form prompt - sempre a larghezza piena */
+.prompt-form__title,
+.prompt-form__textarea {
+  width: 100%;
+  box-sizing: border-box; /* Include padding/border nel calcolo della larghezza */
+  padding: 0.5rem;
+  font-size: 1rem;
+  font-family: inherit;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+
+  &:focus {
+    outline: none;
+    border-color: #4a90e2; /* Colore evidenziato */
+    box-shadow: 0 0 0 2px rgba(74, 144, 226, 0.2);
+  }
+}
+
+/* Area di testo - adattabile e larga al 100% */
+.prompt-form__textarea {
+  resize: vertical; /* Riattiva il ridimensionamento manuale */
+  min-height: 3rem;
+}
+
+/* Contenitore bottoni - anche lui largo 100% */
+.prompt-buttons {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5rem; /* Distanza tra i bottoni */
+  width: 100%;
+  margin-top: 0.5rem;
+}
+
+/* Gap tra input, textarea e bottoni */
+.prompt-form__title {
+  margin-bottom: 0.5rem;
+}
+
+.prompt-form__textarea {
+  margin-bottom: 0.5rem;
+}

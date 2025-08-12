@@ -13,7 +13,9 @@ export default function PromptSetList() {
   return (
     <ul className="prompt-set-list">
       {promptSets.map((set: IPromptSet) => (
-        <PromptSet key={set.id} promptSet={set} />
+        <li key={set.id} className="prompt-set-list__item">
+          <PromptSet promptSet={set} />
+        </li>
       ))}
     </ul>
   )
