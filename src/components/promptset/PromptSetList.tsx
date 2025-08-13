@@ -14,7 +14,7 @@ export default function PromptSetList() {
   const { activeSet, setActiveSet, navigate } = useSettings()
 
   return (
-    <ul className="prompt-set-list">
+    <ul>
       {promptSets.map((set: IPromptSet) => {
         const isActive = set.id === activeSet
         const isDefault = set.id === 'default'

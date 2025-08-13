@@ -57,14 +57,14 @@ export default function PromptSetForm({ onSubmit, editingSet }: PromptSetFormPro
   const listSize = Math.min(8, Math.max(3, total || 3))
 
   return (
-    <div className="new-prompt-form active-form">
+    <div id="prompt-set-form" className="form-card card-like">
       <h3 className="form-label">{editingSet ? "Modifica set" : "Crea un nuovo set"}</h3>
 
       <input
         placeholder="Titolo del set *"
         value={title}
         onChange={(e: ChangeEvent<HTMLInputElement>) => setTitle(e.target.value)}
-        className="input-title"
+        className="input-title input-base"
         aria-label="Titolo set"
       />
 
@@ -75,7 +75,7 @@ export default function PromptSetForm({ onSubmit, editingSet }: PromptSetFormPro
           setDescription(e.target.value)
           autoResize(e.target)
         }}
-        className="textarea-text"
+        className="textarea-text textarea-base"
         rows={1}
         aria-label="Descrizione set"
       />
@@ -110,18 +110,17 @@ export default function PromptSetForm({ onSubmit, editingSet }: PromptSetFormPro
           <div className="multiselect-actions" style={{ marginTop: "0.5rem" }}>
             <button
               type="button"
-              className={`button-${buttonNumberClass}`}
+              className={`btn`}
               onClick={() => setSelectedIds((prompts ?? []).map((p) => String(p.id)))}
             >
-              Seleziona tutti
+              Seleziona tutto
             </button>
             <button
               type="button"
-              className={`button-${buttonNumberClass}`}
+              className={`btn`}
               onClick={() => setSelectedIds([])}
-              style={{ marginLeft: "0.5rem" }}
             >
-              Deseleziona
+              Deseleziona tutto
             </button>
           </div>
         </div>
@@ -129,8 +128,7 @@ export default function PromptSetForm({ onSubmit, editingSet }: PromptSetFormPro
 
       <button
         onClick={handleSave}
-        className={`button-${buttonNumberClass}`}
-        style={{ marginTop: "0.75rem" }}
+        className={`btn`}
         disabled={!title.trim()}
       >
         {editingSet ? "Salva modifiche" : "Salva set"}

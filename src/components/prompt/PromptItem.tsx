@@ -73,7 +73,7 @@ export default function PromptItem({ prompt, onEdit }: PromptItemProps) {
 
   /** ######### RENDER ########## */
   return (
-    <div className="prompt-item-wrapper" style={{ position: "relative" }}>
+    <div className="prompt-item__container" style={{ position: "relative" }}>
       <h3 style={{ paddingRight: "2rem" }}>{titolo}</h3>
       {/* Ellipsis menu riusabile */}
       <div style={{ position: "absolute", top: 4, right: 4 }}>

@@ -1,41 +1,119 @@
-/* Form prompt - sempre a larghezza piena */
+@use "../variables" as *;
+
+/* Wrapper comune per i form, coerente con .prompt-set / .prompt-list */
+.form-card.card-like {
+  background: linear-gradient(145deg, #ffffff, #f9fafb);
+  border: 1px solid #e3e6eb;
+  border-radius: 10px;
+  padding: 1rem;
+  box-shadow: 0 2px 6px rgba(0, 0, 0, .05);
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
+  transition: transform 0.15s ease, box-shadow 0.15s ease;
+
+  &:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 6px 14px rgba(0, 0, 0, .08);
+  }
+}
+
+/* ID di montaggio già presenti nei componenti */
+#prompt-set-form,
+#prompt-form {
+  margin-inline: 10px;
+  margin-bottom: 10px;
+  /* Mantengo un bordo principale in tinta col tema, senza perdere la coerenza visual */
+  // border-radius: $border-radius !important;
+  // // border: 1.5px solid $primary;
+  // box-shadow: 0 0 6px rgba($primary, 0.25);
+}
+
+/* Titoli e testi di supporto */
+.form-label {
+  font-weight: 700;
+  margin: 0 0 0.25rem 0;
+  color: #0f172a;
+}
+.form-subtitle {
+  margin: 0.25rem 0 0.35rem 0;
+  font-size: 0.95rem;
+  color: #475569;
+}
+.hint {
+  margin: 0.25rem 0;
+  font-size: 0.92rem;
+  color: #64748b;
+}
+
+/* Base per input e textarea (riuso sui selettori già esistenti) */
+.input-base,
+.textarea-base,
 .prompt-form__title,
-.prompt-form__textarea {
+.prompt-form__textarea,
+.input-title,
+.textarea-text {
   width: 100%;
-  box-sizing: border-box; /* Include padding/border nel calcolo della larghezza */
-  padding: 0.5rem;
+  box-sizing: border-box;
+  padding: 0.55rem 0.7rem;
   font-size: 1rem;
   font-family: inherit;
-  border: 1px solid #ccc;
-  border-radius: 4px;
+  border: 1px solid #e2e8f0;
+  border-radius: 6px;
+  background: #ffffff;
+  color: #0f172a;
+  transition: border-color .15s ease, box-shadow .15s ease;
 
   &:focus {
     outline: none;
-    border-color: #4a90e2; /* Colore evidenziato */
+    border-color: #4a90e2;
     box-shadow: 0 0 0 2px rgba(74, 144, 226, 0.2);
   }
 }
 
-/* Area di testo - adattabile e larga al 100% */
-.prompt-form__textarea {
-  resize: vertical; /* Riattiva il ridimensionamento manuale */
+/* Spaziature verticali tra blocchi */
+.prompt-form__title,
+.input-title { margin-bottom: 0.5rem; }
+.prompt-form__textarea,
+.textarea-text { margin-bottom: 0.5rem; }
+
+/* Textarea auto/ri-dimensionabile */
+.prompt-form__textarea,
+.textarea-text {
+  resize: vertical;
   min-height: 3rem;
 }
 
-/* Contenitore bottoni - anche lui largo 100% */
-.prompt-buttons {
+/* Azioni e bottoni */
+.form-actions {
   display: flex;
   flex-wrap: wrap;
-  gap: 0.5rem; /* Distanza tra i bottoni */
+  gap: 0.5rem;
   width: 100%;
-  margin-top: 0.5rem;
+  margin-top: 0.25rem;
 }
 
-/* Gap tra input, textarea e bottoni */
-.prompt-form__title {
-  margin-bottom: 0.5rem;
+/* Multiselect elenco prompt */
+.multiselect {
+  width: 100%;
+  border: 1px solid #e2e8f0;
+  border-radius: 6px;
+  padding: 0.35rem;
+  background: #ffffff;
+  color: #0f172a;
+}
+.multiselect option {
+  padding: 0.25rem 0.35rem;
+}
+.multiselect-actions {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
 }
 
-.prompt-form__textarea {
-  margin-bottom: 0.5rem;
+/* Divider sottile coerente con card */
+.divider {
+  height: 1px;
+  width: 100%;
+  background: #e2e8f0;
 }

@@ -16,7 +16,7 @@ export default function PromptForm(props: PromptFormProps) {
 
   /** Stato globale */
   const { addPrompt, updatePrompt } = usePrompts()
-  const { buttonNumberClass, navigate } = useSettings()
+  const { navigate } = useSettings()
 
   /** Stato locale */
   const [title, setTitle] = useState<string>(current?.titolo ?? "")
@@ -82,12 +82,12 @@ export default function PromptForm(props: PromptFormProps) {
   }, [isEdit, handleSave, handleCancel])
 
   return (
-    <>
+    <div id="prompt-form" className="form-card card-like">
       <input
         placeholder={"Inserisci il titolo"}
         value={title}
         onChange={(e: ChangeEvent<HTMLInputElement>) => setTitle(e.target.value)}
-        className="prompt-form__title"
+        className="prompt-form__title input-base"
         autoFocus={isEdit}
         aria-label="Titolo prompt"
       />
@@ -97,23 +97,23 @@ export default function PromptForm(props: PromptFormProps) {
         placeholder={"Inserisci il testo del tuo prompt"}
         value={text}
         onChange={(e: ChangeEvent<HTMLTextAreaElement>) => setText(e.target.value)}
-        className="prompt-form__textarea"
+        className="prompt-form__textarea textarea-base"
         rows={1}
         aria-label="Testo prompt"
       />
 
-      <div className="prompt-buttons">
+      <div className="form-actions flex-center mb-2">
         {buttons.map((btn, i) => (
           <button
             key={btn.key}
             onClick={btn.action}
-            className={`button-${buttonNumberClass}`}
+            className={`btn`}
             style={i > 0 ? { marginLeft: "0.3rem" } : undefined}
           >
             {btn.label}
           </button>
         ))}
       </div>
-    </>
+    </div>
   )
 }

@@ -11,18 +11,18 @@ export default function PromptList() {
 
   /* ######## RENDER se non ci sono prompts ######## */
   if (prompts.length === 0) {
-    return <p className="prompt-list__empty">Il set attivo non contiene prompt.</p>
+    return <p className="prompt-list__empty">Il set attivo non contiene prompt.</p>;
   }
 
   /* ######## RENDER ######## */
   return (
-    <ul className="prompt-list mx-3">
+    <ul className="prompt-list">
       {prompts.map(p => {
-        const isEditing = editId === String(p.id)
+        const isEditing = editId === String(p.id);
         return (
           <li
             key={String(p.id)}
-            className={isEditing ? "prompt-edit-item active-edit" : undefined}
+            className={`prompt-set__list-item${isEditing ? ' prompt-edit-item active-edit' : ''}`}
           >
             {isEditing ? (
               <PromptForm mode="edit" prompt={p} onComplete={() => setEditId(null)} />
@@ -30,8 +30,8 @@ export default function PromptList() {
               <PromptItem prompt={p} onEdit={() => setEditId(String(p.id))} />
             )}
           </li>
-        )
+        );
       })}
     </ul>
-  )
+  );
 }
