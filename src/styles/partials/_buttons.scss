@@ -1,10 +1,5 @@
-/* ===========================
-   Buttons (partial globale)
-   =========================== */
 @use "../_variables" as *; // Importa le variabili globali
 
-
-/* Layout/base per coesistere con button-XX dinamico */
 .btn {
   appearance: none;
   border: 1px solid transparent;
@@ -21,14 +16,23 @@
   text-align: center;
   user-select: none;
   background: $btn-background-color;
+
+  &:disabled {
+    opacity: 0.6;
+    cursor: not-allowed;
+  }
 }
 
-/* Icon-only (tre puntini, ecc.) */
+/* 
+ * Rotondo
+ * Icon-only (tre puntini, ecc.) 
+ */
 .btn--icon {
   padding: 0.35rem 0.5rem;
   min-width: 2rem;
   min-height: 2rem;
   border-radius: 50%;
+  // background: lighten($btn-background-color, 5%);
   background: $btn-background-color;
   border: 1px solid #e5e7eb;
 
@@ -39,24 +43,4 @@
   &:active {
     transform: translateY(1px);
   }
-}
-
-/* Stati generici */
-.btn:disabled {
-  opacity: 0.6;
-  cursor: not-allowed;
-}
-
-/* Gruppetti di bottoni orizzontali (se usi più azioni) */
-.btn-group {
-  display: inline-flex;
-  gap: 0.4rem;
-}
-
-/* Contenitori d’azione nei componenti */
-.prompt-set__buttons {
-  display: flex;
-  flex-wrap: wrap;
-  gap: 0.4rem;
-  margin-top: 0.25rem;
 }

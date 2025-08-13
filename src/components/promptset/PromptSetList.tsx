@@ -21,7 +21,7 @@ export default function PromptSetList() {
         return (
           <li
             key={set.id}
-            className={`prompt-set-list__item m-3 prompt-set${isActive ? ' prompt-set--active' : ''}${isDefault ? ' prompt-set--default' : ''}`}
+            className={`card prompt-set-list__item m-3${isActive ? ' prompt-set--active' : ''}${isDefault ? ' prompt-set--default' : ''}`}
             onClick={() => {
               if (isActive) {
                 navigate(VIEWS.activeSet)

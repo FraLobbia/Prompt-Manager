@@ -66,10 +66,10 @@ export default function PromptForm(props: PromptFormProps) {
    */
   const handleCancel = useCallback(() => props.onComplete?.(), [props])
 
-  type Btn = { key: string; label: string; action: () => void }
   /**
-   * Bottoni disponibili
-   */
+   * Configurazione buttons
+  */
+  type Btn = { key: string; label: string; action: () => void }
   const buttons: Btn[] = useMemo(() => {
     return isEdit
       ? [
@@ -82,13 +82,13 @@ export default function PromptForm(props: PromptFormProps) {
   }, [isEdit, handleSave, handleCancel])
 
   return (
-    <div id="prompt-form" className="form-card card-like">
+    <div className="card">
       <input
         placeholder={"Inserisci il titolo"}
         value={title}
         onChange={(e: ChangeEvent<HTMLInputElement>) => setTitle(e.target.value)}
-        className="prompt-form__title input-base"
         autoFocus={isEdit}
+        className="h3"
         aria-label="Titolo prompt"
       />
 
@@ -97,12 +97,11 @@ export default function PromptForm(props: PromptFormProps) {
         placeholder={"Inserisci il testo del tuo prompt"}
         value={text}
         onChange={(e: ChangeEvent<HTMLTextAreaElement>) => setText(e.target.value)}
-        className="prompt-form__textarea textarea-base"
         rows={1}
         aria-label="Testo prompt"
       />
 
-      <div className="form-actions flex-center mb-2">
+      <div className="flex-center mb-2">
         {buttons.map((btn, i) => (
           <button
             key={btn.key}

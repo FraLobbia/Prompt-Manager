@@ -5,17 +5,18 @@ import { DEFAULT_PROMPT_SET_ID, type PromptSet } from "../../types/PromptSet"
 import { VIEWS } from "../../constants/views"
 import AnimatedCollapse from "../common/AnimatedCollapse.tsx"
 
-
 export default function PromptSet({ promptSet }: { promptSet: PromptSet }) {
   /** Hooks a stato globale */
   const { activeSet, navigate } = useSettings()
   const { removePromptSetAndSave } = usePromptSets()
+  
+  /** Stato locale */
+  const [showPrompts, setShowPrompts] = useState(false)
 
   /** Utility */
   const isDefaultSet = promptSet.id === DEFAULT_PROMPT_SET_ID
   const isActive = promptSet.id === activeSet
   const count = promptSet.prompts?.length ?? 0
-  const [showPrompts, setShowPrompts] = useState(false)
 
   /**
    * Gestisce la modifica del set di prompt navigando alla vista di modifica TODO
@@ -34,12 +35,11 @@ export default function PromptSet({ promptSet }: { promptSet: PromptSet }) {
   }, [removePromptSetAndSave, promptSet.id, promptSet.titolo])
 
   return (
-    <div className={`prompt-set__container ${isActive ? "is-active" : ""} ${isDefaultSet ? "is-default" : ""}`}>
-      {/* Header */}
-      <div className="prompt-set__header">
+    <div>
+      <div className="flex-column">
         <div className="flex-between">
-          <h3 className="prompt-set__title">{promptSet.titolo}</h3>
-          <div className="d-flex-row">
+          <h3>{promptSet.titolo}</h3>
+          <div className="flex-row">
             {isActive && (
               <span
                 className="prompt-set__active-flag"
@@ -56,24 +56,34 @@ export default function PromptSet({ promptSet }: { promptSet: PromptSet }) {
               <EllipsisMenu
                 buttonClassName={`btn btn--icon`}
                 actions={[
-                  { key: 'edit', label: <span style={{ marginLeft: 6 }}>Modifica</span>, onClick: () => handleEdit() },
-                  { key: 'delete', label: <span style={{ marginLeft: 6 }}>Elimina</span>, onClick: () => handleRemove(), disabled: isDefaultSet },
+                  {
+                    key: 'edit',
+                    label: <span>Modifica</span>,
+                    onClick: () => handleEdit()
+                  },
+                  {
+                    key: 'delete',
+                    label: <span>Elimina</span>,
+                    onClick: () => handleRemove(),
+                    disabled: isDefaultSet
+                  },
                 ]}
               />
             </div>
           </div>
         </div>
 
-        <div className="prompt-set__meta">
-          {promptSet.descrizione && <p className="prompt-set__line">{promptSet.descrizione}</p>}
-        </div>
+        <p className="text-muted">
+          {promptSet.descrizione ?? "Nessuna descrizione"}
+        </p>
+
 
         {/* Bottone toggle lista prompt (non attiva il set) */}
         {count > 0 && (
-          <div className="prompt-set__toggle">
+          <div>
             <button
               type="button"
-              className={`btn btn--toggle-prompts`}
+              className="btn"
               aria-expanded={showPrompts}
               aria-controls={`prompt-set-list-${promptSet.id}`}
               onClick={(e) => {
@@ -96,7 +106,7 @@ export default function PromptSet({ promptSet }: { promptSet: PromptSet }) {
         )}
       </div>
 
-      {/* Lista interna (prompt del set) con animazione */}
+      {/* Lista interna espandibile (prompt del set) con animazione */}
       <AnimatedCollapse open={showPrompts && count > 0}>
         <ul
           className="prompt-set__list"
@@ -113,5 +123,3 @@ export default function PromptSet({ promptSet }: { promptSet: PromptSet }) {
     </div>
   )
 }
-
-// AnimatedCollapse estratto in common/AnimatedCollapse.tsx

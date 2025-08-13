@@ -8,21 +8,34 @@ interface PromptSetFormProps {
 }
 
 export default function PromptSetForm({ onSubmit, editingSet }: PromptSetFormProps) {
+  /** Hooks a stato globale */
   const { navigate } = useSettings()
   const { addPromptSetAndSave, updatePromptSetAndSave } = usePromptSets()
   const { prompts } = usePrompts()
 
+  /** Stato locale */
   const [title, setTitle] = useState(editingSet?.titolo ?? "")
   const [description, setDescription] = useState(editingSet?.descrizione ?? "")
   const [selectedIds, setSelectedIds] = useState<string[]>(
     (editingSet?.promptIds ?? []).map(String)
   )
 
+  /** Utility */
+  const total = prompts?.length ?? 0
+  const listSize = Math.min(8, Math.max(3, total || 3))
+
+  /**
+   * Ridimensiona automaticamente l'area di testo in base al contenuto
+   * @param el L'elemento textarea da ridimensionare
+   */
   const autoResize = (el: HTMLTextAreaElement | null) => {
     el?.style.setProperty("height", "auto")
     el?.style.setProperty("height", `${el.scrollHeight}px`)
   }
 
+  /**
+   * Ripristina il modulo ai valori iniziali
+   */
   const resetForm = () => {
     setTitle("")
     setDescription("")
@@ -30,6 +43,9 @@ export default function PromptSetForm({ onSubmit, editingSet }: PromptSetFormPro
     onSubmit?.()
   }
 
+  /**
+   * Gestisce il salvataggio del set di prompt
+   */
   const handleSave = () => {
     const titolo = title.trim()
     if (!titolo) return
@@ -53,41 +69,36 @@ export default function PromptSetForm({ onSubmit, editingSet }: PromptSetFormPro
     navigate("activeSet")
   }
 
-  const total = prompts?.length ?? 0
-  const listSize = Math.min(8, Math.max(3, total || 3))
-
   return (
-    <div id="prompt-set-form" className="form-card card-like">
-      <h3 className="form-label">{editingSet ? "Modifica set" : "Crea un nuovo set"}</h3>
-
+    <div className="card">
+      <h3>{editingSet ? "Modifica set" : "Crea un nuovo set"}</h3>
       <input
-        placeholder="Titolo del set *"
+        placeholder="Inserisci il titolo del set"
         value={title}
         onChange={(e: ChangeEvent<HTMLInputElement>) => setTitle(e.target.value)}
-        className="input-title input-base"
         aria-label="Titolo set"
+        className="h3"
       />
 
       <textarea
-        placeholder="Descrizione del set (opzionale)"
+        placeholder="Inserisci la descrizione del set (opzionale)"
         value={description}
         onChange={(e: ChangeEvent<HTMLTextAreaElement>) => {
           setDescription(e.target.value)
           autoResize(e.target)
         }}
-        className="textarea-text textarea-base"
         rows={1}
         aria-label="Descrizione set"
       />
 
-      <div className="divider" style={{ margin: "0.5rem 0" }} />
+      <div className="divider"/>
 
-      <h4 className="form-subtitle">Aggiungi prompt esistenti (opzionale)</h4>
+      <h4 className="text-muted">Aggiungi prompt esistenti (opzionale)</h4>
 
       {!total ? (
-        <p className="hint">Non ci sono prompt salvati. Creane qualcuno e poi torna qui.</p>
+        <p className="text-muted">Non ci sono prompt salvati. Creane qualcuno e poi torna qui.</p>
       ) : (
-        <div className="d-flex-column">
+        <div className="flex-column">
           <select
             id="prompt-select"
             multiple
@@ -107,17 +118,17 @@ export default function PromptSetForm({ onSubmit, editingSet }: PromptSetFormPro
             ))}
           </select>
 
-          <div className="multiselect-actions" style={{ marginTop: "0.5rem" }}>
+          <div className="flex-row mt-2 gap-1">
             <button
               type="button"
-              className={`btn`}
+              className="btn"
               onClick={() => setSelectedIds((prompts ?? []).map((p) => String(p.id)))}
             >
               Seleziona tutto
             </button>
             <button
               type="button"
-              className={`btn`}
+              className="btn"
               onClick={() => setSelectedIds([])}
             >
               Deseleziona tutto
@@ -128,10 +139,10 @@ export default function PromptSetForm({ onSubmit, editingSet }: PromptSetFormPro
 
       <button
         onClick={handleSave}
-        className={`btn`}
+        className="btn"
         disabled={!title.trim()}
       >
-        {editingSet ? "Salva modifiche" : "Salva set"}
+        {editingSet ? "Salva modifiche" : "Salva nuovo set"}
       </button>
     </div>
   )

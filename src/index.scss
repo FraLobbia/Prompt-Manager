@@ -4,7 +4,6 @@
 @use "./styles/partials/buttons" as *;
 @use "./styles/partials/flex" as *;
 
-@use "./components/promptset/PromptSet.scss" as *;
 
 body {
   width: $popup-width;
@@ -22,8 +21,89 @@ body {
   background-size: cover;
 }
 
+h3,
+.h3 {
+  margin: 0;
+  font-size: 1.1rem;
+  line-height: 1.3;
+  font-weight: 700;
+  color: #0f172a;
+}
 
+.card {
+  background: linear-gradient(145deg, #ffffff, #f9fafb);
+  border: 1px solid #e3e6eb;
+  border-radius: 10px;
+  padding-inline: 1rem;
+  padding-block: 0.75rem;
+  margin-inline: 10px;
+  box-shadow: 0 2px 6px rgba(0, 0, 0, .05);
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
+  transition: transform 0.15s ease, box-shadow 0.15s ease;
 
+  &:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 6px 14px rgba(0, 0, 0, .08);
+  }
+}
+
+.prompt-set__active-flag {
+  display: inline-flex;
+  align-items: center;
+  color: green;
+  font-weight: 500;
+  margin-right: 8px;
+  font-size: 14px;
+  gap: 4px;
+}
+
+.prompt-set__count {
+  font-size: 0.8rem;
+  font-weight: 600;
+  color: #144e4e;
+}
+
+/* Lista interna (prompt del set) */
+.prompt-set__list {
+  list-style: none;
+  padding: 0;
+  margin: 0.25rem 0 0;
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 0.35rem;
+}
+
+.prompt-set__list-item {
+  background: #f8fafc;
+  border: 1px solid #e2e8f0;
+  border-radius: 6px;
+  padding: 0.5rem 0.7rem;
+  transition: background 0.15s ease, transform 0.15s ease;
+
+  &:hover {
+    background: #f1f5f9;
+    transform: translateX(2px);
+  }
+}
+
+.prompt-set--active {
+  border-color: #0ea5a5;
+  box-shadow: 0 0 0 3px rgba(14, 165, 165, .15);
+}
+
+.prompt-set__item-title {
+  font-size: 0.95rem;
+  font-weight: 500;
+  color: #1e293b;
+}
+
+.text-muted {
+  color: #64748b;
+  /* blu-grigio soft */
+  font-size: 0.9rem;
+}
 
 li {
   list-style: none;
@@ -78,24 +158,7 @@ li {
 
 }
 
-/* ===========================
-   Campi input globali
-   =========================== */
 
-.input-title {
-  font-weight: normal;
-  transition: font-weight 0.3s ease;
-
-  &:focus {
-    font-weight: 600; // più grassetto quando scrivi
-    outline: none;
-    border-color: $primary;
-  }
-
-  &.editing {
-    font-weight: 600; // mantieni grassetto anche fuori focus se vuoi
-  }
-}
 
 /* ===========================
    Settings panel

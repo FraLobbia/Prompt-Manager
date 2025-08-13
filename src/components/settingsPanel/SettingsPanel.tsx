@@ -37,7 +37,7 @@ export default function SettingsPanel() {
         </label>
 
         <label className="settings-input-label">
-          <div className="d-flex-row">
+          <div className="flex-row">
             <h3>Classe CSS bottoni:</h3>
             <input
               type="text"
@@ -57,7 +57,7 @@ export default function SettingsPanel() {
       <div className="settings-backup-buttons">
         <h3>Backup</h3>
         <br />
-        <div className="d-flex-row">
+        <div className="flex-row">
           <button className={`button-${buttonNumberClass}`} onClick={onExport}>
             {getIcon(ICON_KEY.save)} Esporta json
           </button>

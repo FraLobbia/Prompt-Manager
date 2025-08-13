@@ -14,12 +14,10 @@ export default function PromptList() {
   /* ######## RENDER se non ci sono prompts ######## */
   if (prompts.length === 0) {
     return (
-      <div className="flex-center d-flex-column">
+      <div className="flex-center flex-column">
         <p>Il set attivo non contiene prompt.</p>
-        <button
-          onClick={() => navigate(VIEWS.chooseSet)}
-          className="btn my-2"
-        >
+        <button className="btn my-2" 
+                onClick={() => navigate(VIEWS.chooseSet)}>
           Scegli un altro set
         </button>
       </div>
@@ -28,18 +26,16 @@ export default function PromptList() {
 
   /* ######## RENDER ######## */
   return (
-    <ul className="card">
+    <ul>
       {prompts.map(p => {
-        const isEditing = editId === String(p.id);
         return (
           <li
-            key={String(p.id)}
-            className={`prompt-set__list-item${isEditing ? ' prompt-edit-item active-edit' : ''}`}
-          >
-            {isEditing ? (
+            key={p.id}
+            className="card m-2">
+            {p.id === editId ? (
               <PromptForm mode="edit" prompt={p} onComplete={() => setEditId(null)} />
             ) : (
-              <PromptItem prompt={p} onEdit={() => setEditId(String(p.id))} />
+              <PromptItem prompt={p} onEdit={() => setEditId(p.id)} />
             )}
           </li>
         );
