@@ -30,7 +30,7 @@ export default function PromptForm(props: PromptFormProps) {
     const el = textareaRef.current
     if (!el) return
     el.style.height = "auto"
-    el.style.height = `${el.scrollHeight}px`
+    el.style.height = `${el.scrollHeight + 5}px`
   }, [])
   useEffect(() => { resizeTextarea() }, [text, resizeTextarea])
 
@@ -77,23 +77,24 @@ export default function PromptForm(props: PromptFormProps) {
         { key: "cancel", label: `${getIcon(ICON_KEY.close)} Annulla`, action: handleCancel },
       ]
       : [
-        { key: "save", label: "Salva prompt", action: handleSave },
+        { key: "save", label: "Salva nuovo prompt", action: handleSave },
       ]
   }, [isEdit, handleSave, handleCancel])
 
   return (
-    <div className="card">
+    <div className={isEdit ? "" : "card"}>
       <input
         placeholder={"Inserisci il titolo"}
         value={title}
         onChange={(e: ChangeEvent<HTMLInputElement>) => setTitle(e.target.value)}
         autoFocus={isEdit}
         className="h3"
+        style={isEdit ? { marginBottom: ".75rem" } : {}}
         aria-label="Titolo prompt"
       />
 
       <textarea
-        ref={textareaRef}
+        ref={textareaRef} // per ridimensionamento
         placeholder={"Inserisci il testo del tuo prompt"}
         value={text}
         onChange={(e: ChangeEvent<HTMLTextAreaElement>) => setText(e.target.value)}
@@ -101,14 +102,12 @@ export default function PromptForm(props: PromptFormProps) {
         aria-label="Testo prompt"
       />
 
-      <div className="flex-center mb-2">
-        {buttons.map((btn, i) => (
+      <div className="flex-center mt-2 gap-1">
+        {buttons.map((btn) => (
           <button
             key={btn.key}
             onClick={btn.action}
-            className={`btn`}
-            style={i > 0 ? { marginLeft: "0.3rem" } : undefined}
-          >
+            className={`btn`}>
             {btn.label}
           </button>
         ))}

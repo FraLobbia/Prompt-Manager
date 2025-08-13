@@ -73,7 +73,7 @@ export default function PromptSet({ promptSet }: { promptSet: PromptSet }) {
           </div>
         </div>
 
-        <p className="text-muted">
+        <p className="text-muted mb-1">
           {promptSet.descrizione ?? "Nessuna descrizione"}
         </p>
 

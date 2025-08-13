@@ -71,12 +71,61 @@ export function App() {
     }
   }
 
+  let backButton = null;
+  let cambiaSetButton = null;
+  if (view === VIEWS.activeSet) {
+    cambiaSetButton = (
+      <button
+        className="btn-back p-0"
+        onClick={() => navigate(VIEWS.chooseSet)}
+      >
+        Cambia Set
+      </button>
+    );
+  } else {
+    // Tasto indietro a sinistra
+    backButton = (
+      <button
+        className="btn-back"
+        onClick={() => {
+          // Logica indietro come in Header
+          switch (view) {
+        case VIEWS.settings:
+        case VIEWS.editPrompt:
+        case VIEWS.newPrompt:
+          navigate(VIEWS.activeSet);
+          break;
+        case VIEWS.editSet:
+          navigate(VIEWS.chooseSet);
+          break;
+        case VIEWS.newSet:
+          navigate(VIEWS.chooseSet);
+          break;
+        case VIEWS.chooseSet:
+          navigate(VIEWS.activeSet);
+          break;
+        default:
+          break;
+          }
+        }}
+      >
+        ←
+      </button>
+    );
+  }
+
   return (
     <div className="popup-container">
       <Header />
-      {renderView()}
+      <div className="flex-row flex-fill mt-5" style={{ width: '100%' }}>
+        {backButton}
+        {cambiaSetButton}
+        <div style={{ width: "100%" }}>
+          {renderView()}
+        </div>
+      </div>
     </div>
-  )
+  );
 }
 
 export default App

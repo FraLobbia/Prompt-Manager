@@ -23,6 +23,11 @@
   }
 }
 
+.btn-back {
+  @extend .btn;
+  border-radius: 0 110px 110px 0;
+}
+
 /* 
  * Rotondo
  * Icon-only (tre puntini, ecc.) 
@@ -33,7 +38,9 @@
   min-height: 2rem;
   border-radius: 50%;
   // background: lighten($btn-background-color, 5%);
-  background: $btn-background-color;
+  // background: $btn-background-color;
+  background: #dadada;
+  color: white;
   border: 1px solid #e5e7eb;
 
   &:hover {

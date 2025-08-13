@@ -57,37 +57,23 @@ export default function Header() {
       case VIEWS.activeSet:
       default:
         return {
-          title: "Prompt Manager",
+          title: "Il tuo set di prompt",
           back: undefined,
           buttons: [
             { label: "Crea Prompt", action: () => navigate(VIEWS.newPrompt) },
-            { label: "Cambia Set", action: () => navigate(VIEWS.chooseSet) },
+            // { label: "Cambia Set", action: () => navigate(VIEWS.chooseSet) },
             { label: getIcon(ICON_KEY.settings), action: () => navigate(VIEWS.settings) },
           ],
         }
     }
   }
 
-  const { title: headerTitle, buttons, back } = getConfig()
+  const { title: headerTitle, buttons } = getConfig()
 
   return (
     <div className="header header--with-back" style={{ display: 'flex', alignItems: 'center', gap: '.75rem' }}>
       <h2 className="title" style={{ flex: 1, margin: 0 }}>{headerTitle}</h2>
       <div className="header-buttons" style={{ display: 'flex', alignItems: 'center', gap: '.4rem' }}>
-        {back && (
-          <button
-            type="button"
-            aria-label="Torna indietro"
-            className="btn btn--back"
-            onClick={back}
-            style={{ fontSize: '1rem' }}
-          >
-            {getIcon(ICON_KEY.back)}
-          </button>
-        )}
-        {back && buttons.length > 0 && (
-          <div aria-hidden="true" style={{ width: 1, alignSelf: 'stretch', background: '#ccc', opacity: .6 }} />
-        )}
         {buttons.map((btn, i) => (
           <button
             key={i}
