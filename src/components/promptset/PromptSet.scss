@@ -5,7 +5,8 @@
   background: linear-gradient(145deg, #ffffff, #f9fafb);
   border: 1px solid #e3e6eb;
   border-radius: 10px;
-  padding: 1rem;
+  padding-inline: 1rem;
+  padding-block: 0.75rem;
   box-shadow: 0 2px 6px rgba(0,0,0,.05);
   display: flex;
   flex-direction: column;
@@ -22,12 +23,6 @@
 .prompt-set__header {
   display: flex;
   flex-direction: column !important;
-}
-
-.prompt-set__menu {
-  position: absolute;
-  top: 0.25rem;
-  right: 0.25rem;
 }
 
 
@@ -64,6 +59,16 @@
   font-size: 0.8rem;
   font-weight: 600;
   color: #144e4e;
+}
+
+.prompt-set__active-flag {
+    display: inline-flex;
+    align-items: center;
+    color: green;
+    font-weight: 500;
+    margin-right: 8px;
+    font-size: 14px;
+    gap: 4px;
 }
 
 /* Lista interna (prompt del set) */

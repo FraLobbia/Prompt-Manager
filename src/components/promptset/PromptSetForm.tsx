@@ -8,7 +8,7 @@ interface PromptSetFormProps {
 }
 
 export default function PromptSetForm({ onSubmit, editingSet }: PromptSetFormProps) {
-  const { buttonNumberClass, navigate } = useSettings()
+  const { navigate } = useSettings()
   const { addPromptSetAndSave, updatePromptSetAndSave } = usePromptSets()
   const { prompts } = usePrompts()
 

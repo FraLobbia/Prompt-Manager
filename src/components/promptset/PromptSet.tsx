@@ -38,23 +38,11 @@ export default function PromptSet({ promptSet }: { promptSet: PromptSet }) {
       {/* Header */}
       <div className="prompt-set__header">
         <div className="flex-between">
-
           <h3 className="prompt-set__title">{promptSet.titolo}</h3>
-
-          {/* Icona 3 puntini (menù/modifica) in alto a destra */}
           <div className="d-flex-row">
             {isActive && (
               <span
                 className="prompt-set__active-flag"
-                style={{
-                  display: "inline-flex",
-                  alignItems: "center",
-                  color: "green",
-                  fontWeight: 500,
-                  marginRight: 8,
-                  fontSize: 14,
-                  gap: 4,
-                }}
                 aria-label="Set attivo"
               >
                 <svg width="16" height="16" viewBox="0 0 16 16" fill="green" xmlns="http://www.w3.org/2000/svg" style={{ marginRight: 2 }}>
@@ -64,7 +52,7 @@ export default function PromptSet({ promptSet }: { promptSet: PromptSet }) {
                 Attivo
               </span>
             )}
-            <div className="prompt-set__menu" style={{ position: "relative" }}>
+            <div>
               <EllipsisMenu
                 buttonClassName={`btn btn--icon`}
                 actions={[
@@ -76,40 +64,40 @@ export default function PromptSet({ promptSet }: { promptSet: PromptSet }) {
           </div>
         </div>
 
-          <div className="prompt-set__meta">
-            {promptSet.descrizione && <p className="prompt-set__line">{promptSet.descrizione}</p>}
-          </div>
+        <div className="prompt-set__meta">
+          {promptSet.descrizione && <p className="prompt-set__line">{promptSet.descrizione}</p>}
+        </div>
 
-          {/* Bottone toggle lista prompt (non attiva il set) */}
-          {count > 0 && (
-            <div className="prompt-set__toggle">
-              <button
-                type="button"
-                className={`btn btn--toggle-prompts`}
-                aria-expanded={showPrompts}
-                aria-controls={`prompt-set-list-${promptSet.id}`}
-                onClick={(e) => {
-                  e.stopPropagation()
-                  setShowPrompts(v => !v)
-                }}
+        {/* Bottone toggle lista prompt (non attiva il set) */}
+        {count > 0 && (
+          <div className="prompt-set__toggle">
+            <button
+              type="button"
+              className={`btn btn--toggle-prompts`}
+              aria-expanded={showPrompts}
+              aria-controls={`prompt-set-list-${promptSet.id}`}
+              onClick={(e) => {
+                e.stopPropagation()
+                setShowPrompts(v => !v)
+              }}
+            >
+              <svg
+                className={`caret${showPrompts ? ' caret--up' : ''}`}
+                width="10"
+                height="10"
+                viewBox="0 0 10 10"
+                aria-hidden="true"
               >
-                <svg
-                  className={`caret${showPrompts ? ' caret--up' : ''}`}
-                  width="10"
-                  height="10"
-                  viewBox="0 0 10 10"
-                  aria-hidden="true"
-                >
-                  <path d="M1 3l4 4 4-4" fill="none" stroke="currentColor" strokeWidth="1.3" strokeLinejoin="round" />
-                </svg>
-                {showPrompts ? "Comprimi" : <>Mostra <strong className="prompt-set__count">{count}</strong> prompt</>}
-              </button>
-            </div>
-          )}
+                <path d="M1 3l4 4 4-4" fill="none" stroke="currentColor" strokeWidth="1.3" strokeLinejoin="round" />
+              </svg>
+              {showPrompts ? "Comprimi" : <>Mostra<strong className="prompt-set__count">{count}</strong>prompt</>}
+            </button>
+          </div>
+        )}
       </div>
 
-  {/* Lista interna (prompt del set) con animazione */}
-  <AnimatedCollapse open={showPrompts && count > 0}>
+      {/* Lista interna (prompt del set) con animazione */}
+      <AnimatedCollapse open={showPrompts && count > 0}>
         <ul
           className="prompt-set__list"
           id={`prompt-set-list-${promptSet.id}`}

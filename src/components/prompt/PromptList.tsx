@@ -1,22 +1,34 @@
 import { useState } from "react"
-import { useAppSelector } from "../../store/hooks"
+import { useAppSelector, useSettings } from "../../store/hooks"
 import PromptItem from "./PromptItem"
 import PromptForm from "./PromptForm"
 import { promptSelectors } from "../../store/selectors/promptSelectors"
+import { VIEWS } from "../../constants/views"
 
 export default function PromptList() {
   // Solo i Prompt del set attivo
   const prompts = useAppSelector(promptSelectors.selectPromptsOfCurrentSet);
   const [editId, setEditId] = useState<string | null>(null)
+  const { navigate } = useSettings()
 
   /* ######## RENDER se non ci sono prompts ######## */
   if (prompts.length === 0) {
-    return <p className="prompt-list__empty">Il set attivo non contiene prompt.</p>;
+    return (
+      <div className="flex-center d-flex-column">
+        <p>Il set attivo non contiene prompt.</p>
+        <button
+          onClick={() => navigate(VIEWS.chooseSet)}
+          className="btn my-2"
+        >
+          Scegli un altro set
+        </button>
+      </div>
+    );
   }
 
   /* ######## RENDER ######## */
   return (
-    <ul className="prompt-list">
+    <ul className="card">
       {prompts.map(p => {
         const isEditing = editId === String(p.id);
         return (

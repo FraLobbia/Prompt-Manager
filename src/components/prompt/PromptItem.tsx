@@ -73,30 +73,32 @@ export default function PromptItem({ prompt, onEdit }: PromptItemProps) {
 
   /** ######### RENDER ########## */
   return (
-    <div className="prompt-item__container" style={{ position: "relative" }}>
-      <h3 style={{ paddingRight: "2rem" }}>{titolo}</h3>
-      {/* Ellipsis menu riusabile */}
-      <div style={{ position: "absolute", top: 4, right: 4 }}>
-        <EllipsisMenu
-          actions={[
-            { key: 'edit', label: <span style={{ marginLeft: 6 }}>Modifica</span>, onClick: () => onEdit?.(prompt) },
-            { key: 'delete', label: <span style={{ marginLeft: 6 }}>Elimina</span>, onClick: handleRemove, danger: true },
-          ]}
-          buttonClassName="btn btn--icon"
-          ariaLabel="Azioni prompt"
-        />
+    <div className="prompt-item__container">
+      <div className="flex-between">
+        <h3>{titolo}</h3>
+        <div>
+          <EllipsisMenu
+            actions={[
+              { key: 'edit', label: <span style={{ marginLeft: 6 }}>Modifica</span>, onClick: () => onEdit?.(prompt) },
+              { key: 'delete', label: <span style={{ marginLeft: 6 }}>Elimina</span>, onClick: handleRemove, danger: true },
+            ]}
+            buttonClassName="btn btn--icon"
+            ariaLabel="Azioni prompt"
+          />
+        </div>
       </div>
 
       <div className="prompt-preview">
         {anteprima}
         {hasMoreLines ? "…" : ""}
       </div>
-      <div className="prompt-buttons" style={{ display: "flex", gap: "0.5rem", marginTop: "0.5rem" }}>
+      <div className="flex-center gap-1 mt-1">
         {primaryButtons.map((btn, i) => (
           <button
             key={i}
             onClick={btn.action}
-            className="btn prompt-btn"
+            className="btn"
+            style={{ width: "100px" }}
             title={btn.title}
           >
             <div>{btn.icon}</div>
