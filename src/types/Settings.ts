@@ -4,12 +4,14 @@ export class Settings {
   clipboardReplaceEnabled: boolean;
   clipboardTemplate: string;
   activeSet?: string; // contiene solo l'ID del set attivo
+  /** ID del set attualmente in modifica (non persistito). */
+  editingSetId?: string;
 
   constructor(
     view: Views,
     clipboardReplaceEnabled: boolean,
     clipboardTemplate: string,
-    activeSet?: string
+  activeSet?: string
   ) {
     this.view = view;
     this.clipboardReplaceEnabled = clipboardReplaceEnabled;

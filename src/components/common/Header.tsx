@@ -33,12 +33,6 @@ export default function Header() {
             { label: getIcon(ICON_KEY.settings), action: () => navigate(VIEWS.settings) },
           ],
         }
-      case VIEWS.editPrompt:
-        return {
-          title: "Modifica Prompt",
-          back: () => navigate(VIEWS.activeSet),
-          buttons: [],
-        }
       case VIEWS.editSet:
         return {
           title: "Modifica Set",

@@ -45,15 +45,26 @@ export const EllipsisMenu: React.FC<EllipsisMenuProps> = ({
 }) => {
   const [open, setOpen] = useState(false)
   const ref = useRef<HTMLDivElement | null>(null)
+  const triggerRef = useRef<HTMLButtonElement | null>(null)
+  const panelRef = useRef<HTMLDivElement | null>(null)
+
+  const closeMenu = () => {
+    // Se il focus è dentro il pannello, riportalo al trigger prima di nascondere
+    const active = document.activeElement
+    if (active && panelRef.current?.contains(active)) {
+      triggerRef.current?.focus()
+    }
+    setOpen(false)
+  }
 
   // Chiude al click fuori o su ESC
   useEffect(() => {
     if (!open) return
     const onDocClick = (e: MouseEvent) => {
-      if (ref.current && !ref.current.contains(e.target as Node)) setOpen(false)
+      if (ref.current && !ref.current.contains(e.target as Node)) closeMenu()
     }
     const onKey = (e: KeyboardEvent) => {
-      if (e.key === "Escape") setOpen(false)
+      if (e.key === "Escape") closeMenu()
     }
     document.addEventListener("mousedown", onDocClick)
     document.addEventListener("keydown", onKey)
@@ -63,9 +74,18 @@ export const EllipsisMenu: React.FC<EllipsisMenuProps> = ({
     }
   }, [open])
 
+  // Quando chiuso, applica inert al pannello per prevenire focus/AT
+  useEffect(() => {
+    const el = panelRef.current
+    if (!el) return
+    if (!open) el.setAttribute("inert", "")
+    else el.removeAttribute("inert")
+  }, [open])
+
   return (
     <div ref={ref} className="ellipsis-menu">
       <button
+        ref={triggerRef}
         type="button"
         aria-haspopup="true"
         aria-expanded={open}
@@ -80,7 +100,8 @@ export const EllipsisMenu: React.FC<EllipsisMenuProps> = ({
         ⋯
       </button>
 
-      <div
+  <div
+    ref={panelRef}
         role="menu"
         aria-hidden={!open}
         className={[
@@ -96,8 +117,9 @@ export const EllipsisMenu: React.FC<EllipsisMenuProps> = ({
             role="menuitem"
             disabled={a.disabled}
             onClick={(e) => {
+              e.stopPropagation()
               a.onClick(e)
-              setOpen(false)
+      closeMenu()
             }}
             className={[
               "ellipsis-menu__item",

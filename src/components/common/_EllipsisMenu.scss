@@ -1,36 +1,48 @@
-/* Pannello completamente trasparente: gli item “fluttuano nel nulla” */
+
+/* Wrapper del componente */
 .ellipsis-menu {
   position: relative;
   display: inline-block;
 }
 
-.ellipsis-menu__trigger {
-  /* qui puoi ereditare il tuo stile .btn/.btn--icon */
-}
 
-/* Contenitore del menu: invisibile, non cattura i click (solo gli item) */
+/* --------------------------------------------------------------------------
+   Pannello del menu:
+   - completamente trasparente (gli item sembrano fluttuare)
+   - non intercetta i click: gli eventi passano agli item (pointer-events: none)
+   - animazione leggera su apertura
+   - allineamento controllato via classi .align-left / .align-right
+   -------------------------------------------------------------------------- */
 .ellipsis-menu__panel {
   position: absolute;
   top: 100%;
-  /* allineamento gestito da classi dedicate */
-  pointer-events: none; /* 👈 il pannello non prende i click */
-  background: transparent; /* 👈 trasparente */
+  pointer-events: none;        /* 👈 il contenitore NON riceve click */
+  background: transparent;     /* 👈 invisibile */
   border: none;
   padding: 0.25rem 0;
   margin-top: 0.25rem;
-  min-width: 160px;
+  min-width: 160px;            /* base size di riferimento */
   z-index: 200;
 
   display: flex;
   flex-direction: column;
   gap: 0.35rem;
 
+  /* Effetto ingresso */
   opacity: 0;
   transform: translateY(4px);
   transition: opacity 160ms ease, transform 160ms ease;
 
+  /* Allineamento “fisico” rispetto al trigger */
   &.align-right { right: 0; left: auto; }
   &.align-left  { left: 0;  right: auto; }
+
+  /* Allineamento del contenuto:
+     - elementi agganciati al lato desiderato
+     - Questa parte è “non comune”: sfruttiamo align-items invece di width:100% sugli item
+  */
+  &.align-right { align-items: flex-end; }  /* 👈 item aderiscono a destra */
+  &.align-left  { align-items: flex-start; }/* 👈 item aderiscono a sinistra */
 
   &.is-open {
     opacity: 1;
@@ -38,21 +50,33 @@
   }
 }
 
-/* Gli item sono i “palloncini” fluttuanti e ricevono i click */
+/* --------------------------------------------------------------------------
+   Item del menu (i “palloncini” cliccabili):
+   - ricevono i click (pointer-events: auto)
+   - non occupano tutta la larghezza (width:auto) così rispettano l’allineamento
+   - min/max width per un layout stabile
+   -------------------------------------------------------------------------- */
 .ellipsis-menu__item {
-  pointer-events: auto; /* 👈 permette l’interazione */
+  pointer-events: auto;           /* 👈 gli item SONO interattivi */
   display: flex;
   align-items: center;
   justify-content: flex-start;
 
-  /* stile “chip/pill” galleggiante */
   background: #ffffff;
   border: 1px solid #e2e8f0;
   border-radius: 10px;
   padding: 0.45rem 0.65rem;
   box-shadow: 0 8px 24px rgba(0,0,0,.12);
   text-align: left;
-  width: 100%;
+
+  /* Parti “non comuni”: niente width:100% → gli item si “agganciano” al lato impostato */
+  width: auto;                    /* 👈 si dimensiona sul contenuto */
+  min-width: 160px;               /* coerenza col pannello */
+  max-width: 320px;               /* opzionale: limite massimo */
+  white-space: nowrap;            /* opzionale: evita l’andare a capo */
+  /* Per permettere il wrapping, sostituisci con:
+     white-space: normal; word-break: break-word;
+  */
 
   transition: transform .12s ease, box-shadow .12s ease, background-color .12s ease;
 
@@ -68,6 +92,20 @@
   }
 }
 
+/* Variante “danger” (azione distruttiva) */
 .ellipsis-menu__item--danger {
   color: #b00020;
 }
+
+/* --------------------------------------------------------------------------
+   Note di accessibilità/UX (facoltative, ma utili):
+   - Aggiungi focus styles coerenti al tuo design system se gli item possono
+     ricevere focus via tastiera:
+   -------------------------------------------------------------------------- */
+/*
+.ellipsis-menu__item:focus-visible {
+  outline: 2px solid rgba(74,144,226,.4);  // adatta al tuo tema
+  outline-offset: 2px;
+  border-radius: 10px;
+}
+*/

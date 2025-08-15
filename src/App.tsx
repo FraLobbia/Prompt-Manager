@@ -10,24 +10,16 @@ import SettingsPanel from "./components/settingsPanel/SettingsPanel"
 import PromptList from "./components/prompt/PromptList"
 import PromptForm from "./components/prompt/PromptForm"
 import { VIEWS } from "./constants/views"
-
-function EditPromptPlaceholder() {
-  return <div>{/* TODO: <EditForm /> */}Modifica Prompt – componente mancante</div>
-}
-function EditSetPlaceholder() {
-  return <div>{/* TODO: <EditSetForm /> */}Modifica Set – componente mancante</div>
-}
-
 import type { RootState } from "./store/store"
 import type { AppDispatch } from "./store/store"
 import { useSettings } from "./store/hooks"
 import PromptSetForm from "./components/promptset/PromptSetForm"
 import PromptSetList from "./components/promptset/PromptSetList"
-// no need to import slice-level loader; we use the storage-level uniform thunk
 
 export function App() {
   const dispatch: ThunkDispatch<RootState, unknown, AnyAction> = useDispatch<AppDispatch>()
   const { view, navigate } = useSettings()
+
 
   /** Carica le impostazioni e i prompt/set dallo storage all'avvio dell'app. */
   useEffect(() => {
@@ -53,13 +45,10 @@ export function App() {
         return <PromptForm mode="new" onComplete={() => navigate(VIEWS.activeSet)} />
 
       case "newSet":
-        return <PromptSetForm />
-
-      case "editPrompt":
-        return <EditPromptPlaceholder />
+        return <PromptSetForm mode="new" />
 
       case "editSet":
-        return <EditSetPlaceholder />
+        return <PromptSetForm mode="edit" />
 
       case "chooseSet":
         return <PromptSetList />
@@ -90,22 +79,21 @@ export function App() {
         onClick={() => {
           // Logica indietro come in Header
           switch (view) {
-        case VIEWS.settings:
-        case VIEWS.editPrompt:
-        case VIEWS.newPrompt:
-          navigate(VIEWS.activeSet);
-          break;
-        case VIEWS.editSet:
-          navigate(VIEWS.chooseSet);
-          break;
-        case VIEWS.newSet:
-          navigate(VIEWS.chooseSet);
-          break;
-        case VIEWS.chooseSet:
-          navigate(VIEWS.activeSet);
-          break;
-        default:
-          break;
+            case VIEWS.settings:
+            case VIEWS.newPrompt:
+              navigate(VIEWS.activeSet);
+              break;
+            case VIEWS.editSet:
+              navigate(VIEWS.chooseSet);
+              break;
+            case VIEWS.newSet:
+              navigate(VIEWS.chooseSet);
+              break;
+            case VIEWS.chooseSet:
+              navigate(VIEWS.activeSet);
+              break;
+            default:
+              break;
           }
         }}
       >

@@ -23,6 +23,11 @@
   }
 }
 
+.btn-secondary {
+  @extend .btn;
+  background: $primary-light;
+}
+
 .btn-back {
   @extend .btn;
   border-radius: 0 110px 110px 0;

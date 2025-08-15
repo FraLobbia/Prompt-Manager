@@ -49,13 +49,14 @@ const promptSetsSlice = createSlice({
       const { setId, promptId } = action.payload
       const set = state.sets.find(s => s.id === setId)
       if (!set) return
-      if (!set.promptIds.includes(promptId)) set.promptIds.push(promptId)
+  const ids = set.promptIds ?? (set.promptIds = [])
+  if (!ids.includes(promptId)) ids.push(promptId)
     },
     addPromptIdsToSet(state, action: PayloadAction<{ setId: string; promptIds: string[] }>) {
       const { setId, promptIds } = action.payload
       const set = state.sets.find(s => s.id === setId)
       if (!set) return
-      const asSet = new Set(set.promptIds)
+  const asSet = new Set(set.promptIds ?? [])
       for (const id of promptIds) asSet.add(id)
       set.promptIds = Array.from(asSet)
     },
@@ -69,7 +70,7 @@ const promptSetsSlice = createSlice({
       const { setId, promptId } = action.payload
       const set = state.sets.find(s => s.id === setId)
       if (!set) return
-      set.promptIds = set.promptIds.filter(id => id !== promptId)
+  set.promptIds = (set.promptIds ?? []).filter(id => id !== promptId)
     },
     clearPromptIdsInSet(state, action: PayloadAction<string>) {
       const set = state.sets.find(s => s.id === action.payload)

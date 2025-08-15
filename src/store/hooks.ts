@@ -1,7 +1,7 @@
 import { useDispatch, useSelector, type TypedUseSelectorHook } from "react-redux"
 import type { AppDispatch, RootState } from "./store"
 
-import { setActiveSet, setClipboardTemplate, setView, setclipboardReplaceEnabled } from "./slices/settingsSlice"
+import { setActiveSet, setClipboardTemplate, setEditingSet, setView, setclipboardReplaceEnabled, updateSettingsAndPersist } from "./slices/settingsSlice"
 
 import { addPrompt, removePrompt, updatePrompt } from "./slices/promptSlice"
 import type { Prompt } from "../types/Prompt"
@@ -32,10 +32,16 @@ export function useSettings() {
     clipboardReplaceEnabled: settings.clipboardReplaceEnabled,
     clipboardTemplate: settings.clipboardTemplate,
     activeSet: settings.activeSet,
+    editingSetId: (settings as typeof settings & { editingSetId?: string }).editingSetId,
 
     // azioni
     navigate: (v: typeof settings.view) => dispatch(setView(v)),
     setActiveSet: (id: string | undefined) => dispatch(setActiveSet(id)),
+    setEditingSet: (id: string | undefined) => {
+      dispatch(setEditingSet(id))
+      // Persisti anche sullo storage
+  dispatch(updateSettingsAndPersist({ editingSetId: id } as Partial<import("../types/Settings").Settings> & { editingSetId?: string }))
+    },
     setclipboardReplaceEnabled: (value: boolean) => dispatch(setclipboardReplaceEnabled(value)),
     setClipboardTemplate: (value: string) => dispatch(setClipboardTemplate(value)),
   }

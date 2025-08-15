@@ -14,16 +14,22 @@ import { initialState, Settings, type Settings as SettingsClass, type Views } fr
  */
 export const settingsSlice = createSlice({
   name: "settings",
-  initialState: initialState, // importato da types/Settings.ts per mantenere un'unica fonte di verità
+  initialState: initialState as Settings & { editingSetId?: string }, // estendo con campo ephemerale
   reducers: {
     /** Aggiorna solo la view attuale */
     setView(state, action: PayloadAction<Views>) {
+      console.log("Impostazione della view:", action.payload);
       state.view = action.payload;
     },
 
   /** Imposta l'ID del set attivo */
   setActiveSet(state, action: PayloadAction<string | undefined>) {
       state.activeSet = action.payload;
+    },
+
+    /** Imposta l'ID del set in modifica (ephemerale, non persistito) */
+    setEditingSet(state, action: PayloadAction<string | undefined>) {
+      state.editingSetId = action.payload;
     },
 
     /** Attiva/disattiva la sostituzione automatica dalla clipboard */
@@ -53,11 +59,13 @@ export const settingsSlice = createSlice({
      * Se aggiungi nuove proprietà a Settings, assicurati di gestirle qui.
      */
     hydrateFromStorage(state, action: PayloadAction<SettingsClass | Partial<Settings>>) {
-      const s = action.payload as Partial<Settings>;
+      const s = action.payload as Partial<Settings> & { editingSetId?: string };
       state.view = s.view ?? state.view;
       state.clipboardReplaceEnabled = s.clipboardReplaceEnabled ?? state.clipboardReplaceEnabled;
       state.clipboardTemplate = s.clipboardTemplate ?? state.clipboardTemplate;
       state.activeSet = s.activeSet ?? state.activeSet;
+      // Ripristina anche l'ID del set in modifica se presente
+      state.editingSetId = s.editingSetId ?? state.editingSetId;
     },
   },
 });
@@ -65,6 +73,7 @@ export const settingsSlice = createSlice({
 export const {
   setView,
   setActiveSet,
+  setEditingSet,
   setclipboardReplaceEnabled,
   setClipboardTemplate,
   updateMany,
@@ -99,5 +108,6 @@ export const selectView = (state: { settings: Settings }) => state.settings.view
 export const selectclipboardReplaceEnabled = (state: { settings: Settings }) =>
   state.settings.clipboardReplaceEnabled;
 export const selectActiveSet = (state: { settings: Settings }) => state.settings.activeSet;
+export const selectEditingSetId = (state: { settings: Settings & { editingSetId?: string } }) => state.settings.editingSetId;
 
 export default settingsSlice.reducer;

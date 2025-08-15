@@ -13,7 +13,8 @@ export type StoredSettings = {
   view: Settings["view"];
   clipboardReplaceEnabled: boolean;
   clipboardTemplate: string;
-  activeSet?: string; // solo ID
+  activeSet?: string;
+  editingSetId?: string;
 };
 
 /**
@@ -29,6 +30,7 @@ export function toStored(s: Settings): StoredSettings {
     clipboardReplaceEnabled: s.clipboardReplaceEnabled,
     clipboardTemplate: s.clipboardTemplate,
     activeSet: s.activeSet,
+    editingSetId: s.editingSetId,
   };
 }
 
@@ -48,9 +50,10 @@ export function fromStored(obj: Partial<StoredSettings> | undefined): Settings {
 
   return {
     view,
-  clipboardReplaceEnabled: obj.clipboardReplaceEnabled ?? initialState.clipboardReplaceEnabled,
+    clipboardReplaceEnabled: obj.clipboardReplaceEnabled ?? initialState.clipboardReplaceEnabled,
     clipboardTemplate: obj.clipboardTemplate ?? initialState.clipboardTemplate,
-  activeSet: obj.activeSet ?? initialState.activeSet,
+    activeSet: obj.activeSet ?? initialState.activeSet,
+    editingSetId: obj.editingSetId,
   };
 }
 
@@ -67,5 +70,6 @@ export function mergeSettings(base: Settings, patch: Partial<Settings>): Setting
     clipboardReplaceEnabled: patch.clipboardReplaceEnabled ?? base.clipboardReplaceEnabled,
     clipboardTemplate: patch.clipboardTemplate ?? base.clipboardTemplate,
     activeSet: patch.activeSet ?? base.activeSet,
+    editingSetId: patch.editingSetId,
   };
 }

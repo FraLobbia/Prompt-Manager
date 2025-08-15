@@ -7,9 +7,9 @@ import AnimatedCollapse from "../common/AnimatedCollapse.tsx"
 
 export default function PromptSet({ promptSet }: { promptSet: PromptSet }) {
   /** Hooks a stato globale */
-  const { activeSet, navigate } = useSettings()
+  const { activeSet, navigate, setEditingSet } = useSettings()
   const { removePromptSetAndSave } = usePromptSets()
-  
+
   /** Stato locale */
   const [showPrompts, setShowPrompts] = useState(false)
 
@@ -22,8 +22,9 @@ export default function PromptSet({ promptSet }: { promptSet: PromptSet }) {
    * Gestisce la modifica del set di prompt navigando alla vista di modifica TODO
    */
   const handleEdit = useCallback(() => {
+    setEditingSet(promptSet.id)
     navigate(VIEWS.editSet)
-  }, [navigate])
+  }, [navigate, setEditingSet, promptSet.id])
 
   /**
    * Gestisce la rimozione del set di prompt
@@ -52,24 +53,23 @@ export default function PromptSet({ promptSet }: { promptSet: PromptSet }) {
                 Attivo
               </span>
             )}
-            <div>
-              <EllipsisMenu
-                buttonClassName={`btn btn--icon`}
-                actions={[
-                  {
-                    key: 'edit',
-                    label: <span>Modifica</span>,
-                    onClick: () => handleEdit()
-                  },
-                  {
-                    key: 'delete',
-                    label: <span>Elimina</span>,
-                    onClick: () => handleRemove(),
-                    disabled: isDefaultSet
-                  },
-                ]}
-              />
-            </div>
+            <EllipsisMenu
+              buttonClassName={`btn btn--icon`}
+              actions={[
+                {
+                  key: 'edit',
+                  label: <span>Modifica</span>,
+                  onClick: () => handleEdit(),
+                  disabled: promptSet.id === DEFAULT_PROMPT_SET_ID
+                },
+                {
+                  key: 'delete',
+                  label: <span>Elimina</span>,
+                  onClick: () => handleRemove(),
+                  disabled: isDefaultSet
+                },
+              ]}
+            />
           </div>
         </div>
 
