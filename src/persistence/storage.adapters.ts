@@ -2,20 +2,18 @@
 import { Settings, initialState } from "../types/Settings";
 
 /** ------------------------
- *  Adattatori Settings
+ *  Adattatori Settings (schema corrente)
  *  ------------------------ */
 
 /**
- * Forma serializzata nello storage (con supporto legacy)
+ * Forma serializzata nello storage (schema attuale)
  * Serve a convertire le impostazioni in un formato adatto per lo storage.
  */
 export type StoredSettings = {
-  view: Settings["view"] | "newPrompt" | "editPrompt";
-  clipboardReplace: boolean;
-  buttonNumberClass: string;
+  view: Settings["view"];
+  clipboardReplaceEnabled: boolean;
+  clipboardTemplate: string;
   activeSet?: string; // solo ID
-  /** legacy support (vecchia chiave) */
-  useClipboard?: boolean;
 };
 
 /**
@@ -28,8 +26,8 @@ export type StoredSettings = {
 export function toStored(s: Settings): StoredSettings {
   return {
     view: s.view,
-    clipboardReplace: s.clipboardReplace,
-    buttonNumberClass: s.buttonNumberClass,
+    clipboardReplaceEnabled: s.clipboardReplaceEnabled,
+    clipboardTemplate: s.clipboardTemplate,
     activeSet: s.activeSet,
   };
 }
@@ -46,31 +44,13 @@ export function fromStored(obj: Partial<StoredSettings> | undefined): Settings {
     return { ...initialState };
   }
 
-  const activeSetId = ((): string | undefined => {
-    const raw = (obj as unknown as { activeSet?: unknown })?.activeSet;
-    if (raw == null) return undefined;
-    if (typeof raw === "string") return raw;
-    if (typeof raw === "object") {
-      const maybe = raw as { id?: unknown };
-      if (typeof maybe.id === "string") return maybe.id;
-    }
-    return undefined;
-  })();
-
-  const view = ((): Settings["view"] => {
-    const v = obj.view ?? initialState.view;
-    // map legacy views
-    if (v === "newPrompt") return "newPrompt";
-    if (v === "editPrompt") return "editPrompt";
-    return v as Settings["view"];
-  })();
+  const view = (obj.view ?? initialState.view) as Settings["view"];
 
   return {
     view,
-    clipboardReplace:
-      obj.clipboardReplace ?? obj.useClipboard ?? initialState.clipboardReplace,
-    buttonNumberClass: obj.buttonNumberClass ?? initialState.buttonNumberClass,
-    activeSet: activeSetId ?? initialState.activeSet,
+  clipboardReplaceEnabled: obj.clipboardReplaceEnabled ?? initialState.clipboardReplaceEnabled,
+    clipboardTemplate: obj.clipboardTemplate ?? initialState.clipboardTemplate,
+  activeSet: obj.activeSet ?? initialState.activeSet,
   };
 }
 
@@ -84,8 +64,8 @@ export function fromStored(obj: Partial<StoredSettings> | undefined): Settings {
 export function mergeSettings(base: Settings, patch: Partial<Settings>): Settings {
   return {
     view: patch.view ?? base.view,
-    clipboardReplace: patch.clipboardReplace ?? base.clipboardReplace,
-    buttonNumberClass: patch.buttonNumberClass ?? base.buttonNumberClass,
+    clipboardReplaceEnabled: patch.clipboardReplaceEnabled ?? base.clipboardReplaceEnabled,
+    clipboardTemplate: patch.clipboardTemplate ?? base.clipboardTemplate,
     activeSet: patch.activeSet ?? base.activeSet,
   };
 }

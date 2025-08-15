@@ -50,7 +50,7 @@ export default function Header() {
           title: "Scegli Set",
           back: () => navigate(VIEWS.activeSet),
           buttons: [
-            { label: "Crea Set", action: () => navigate(VIEWS.newSet) },
+            { label: "Crea nuovo Set", action: () => navigate(VIEWS.newSet) },
             { label: getIcon(ICON_KEY.settings), action: () => navigate(VIEWS.settings) },
           ],
         }
@@ -60,7 +60,7 @@ export default function Header() {
           title: "Il tuo set di prompt",
           back: undefined,
           buttons: [
-            { label: "Crea Prompt", action: () => navigate(VIEWS.newPrompt) },
+            { label: "Crea nuovo Prompt", action: () => navigate(VIEWS.newPrompt) },
             // { label: "Cambia Set", action: () => navigate(VIEWS.chooseSet) },
             { label: getIcon(ICON_KEY.settings), action: () => navigate(VIEWS.settings) },
           ],

@@ -14,8 +14,8 @@ export default function PromptList() {
   /* ######## RENDER se non ci sono prompts ######## */
   if (prompts.length === 0) {
     return (
-      <div className="flex-center flex-column">
-        <p>Il set attivo non contiene prompt.</p>
+      <div className="card my-2">
+        <h3>Il set attivo non contiene prompt.</h3>
         <button className="btn my-2" 
                 onClick={() => navigate(VIEWS.chooseSet)}>
           Scegli un altro set

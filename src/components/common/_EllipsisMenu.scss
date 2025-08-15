@@ -1,0 +1,73 @@
+/* Pannello completamente trasparente: gli item “fluttuano nel nulla” */
+.ellipsis-menu {
+  position: relative;
+  display: inline-block;
+}
+
+.ellipsis-menu__trigger {
+  /* qui puoi ereditare il tuo stile .btn/.btn--icon */
+}
+
+/* Contenitore del menu: invisibile, non cattura i click (solo gli item) */
+.ellipsis-menu__panel {
+  position: absolute;
+  top: 100%;
+  /* allineamento gestito da classi dedicate */
+  pointer-events: none; /* 👈 il pannello non prende i click */
+  background: transparent; /* 👈 trasparente */
+  border: none;
+  padding: 0.25rem 0;
+  margin-top: 0.25rem;
+  min-width: 160px;
+  z-index: 200;
+
+  display: flex;
+  flex-direction: column;
+  gap: 0.35rem;
+
+  opacity: 0;
+  transform: translateY(4px);
+  transition: opacity 160ms ease, transform 160ms ease;
+
+  &.align-right { right: 0; left: auto; }
+  &.align-left  { left: 0;  right: auto; }
+
+  &.is-open {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+/* Gli item sono i “palloncini” fluttuanti e ricevono i click */
+.ellipsis-menu__item {
+  pointer-events: auto; /* 👈 permette l’interazione */
+  display: flex;
+  align-items: center;
+  justify-content: flex-start;
+
+  /* stile “chip/pill” galleggiante */
+  background: #ffffff;
+  border: 1px solid #e2e8f0;
+  border-radius: 10px;
+  padding: 0.45rem 0.65rem;
+  box-shadow: 0 8px 24px rgba(0,0,0,.12);
+  text-align: left;
+  width: 100%;
+
+  transition: transform .12s ease, box-shadow .12s ease, background-color .12s ease;
+
+  &:hover:not(:disabled) {
+    transform: translateY(-1px);
+    box-shadow: 0 10px 28px rgba(0,0,0,.14);
+    background: #f8fafc;
+  }
+
+  &:disabled {
+    opacity: 0.6;
+    cursor: not-allowed;
+  }
+}
+
+.ellipsis-menu__item--danger {
+  color: #b00020;
+}

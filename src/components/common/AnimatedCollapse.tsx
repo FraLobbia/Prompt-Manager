@@ -13,17 +13,23 @@ export default function AnimatedCollapse({ open, children, className = "", durat
   const containerRef = useRef<HTMLDivElement | null>(null)
   const [height, setHeight] = useState(0)
 
-  // Misura l'altezza ogni volta che open cambia o i children cambiano (nel caso cambi la dimensione interna)
+  /**
+   * Misura l'altezza ogni volta che open cambia o i children cambiano 
+   * (nel caso cambi la dimensione interna)
+   */
   useEffect(() => {
     if (containerRef.current) {
       const content = containerRef.current.firstElementChild as HTMLElement | null
       if (content) {
         setHeight(content.scrollHeight)
+
       }
     }
   }, [open, children])
 
-  // Aggiorna altezza anche on resize (facoltativo per resilienza layout)
+  /**
+   * Aggiorna altezza anche on resize (facoltativo per resilienza layout)
+   */
   useEffect(() => {
     const handleResize = () => {
       if (containerRef.current) {

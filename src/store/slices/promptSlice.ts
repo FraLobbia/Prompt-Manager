@@ -2,7 +2,7 @@
 import { createSlice, type PayloadAction } from "@reduxjs/toolkit"
 import type { Prompt } from "../../types/Prompt"
 import type { AppDispatch } from "../store"
-import { upsertPrompt, deletePrompt, migratePromptsIfNeeded } from "../../persistence/storage.prompts"
+import { upsertPrompt, deletePrompt, writePromptsBulk } from "../../persistence/storage.prompts"
 
 interface PromptsState {
   prompts: Prompt[]
@@ -57,7 +57,7 @@ export const replaceAllPromptsAndSave = (prompts: Prompt[]) => async (dispatch: 
   dispatch(setPrompts(prompts))
   try {
     // Scrive indice + byId (chunkando solo se necessario per i singoli prompt)
-    await migratePromptsIfNeeded(prompts)
+    await writePromptsBulk(prompts)
   } catch (error) {
     console.error("Errore nel salvataggio totale dei prompt (granulare)", error)
   }

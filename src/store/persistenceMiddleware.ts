@@ -4,7 +4,7 @@ import { persistSettings, persistPromptSets } from '../persistence/storage'
 import type { Prompt } from '../types/Prompt'
 import type { Settings } from '../types/Settings'
 import type { PromptSet } from '../types/PromptSet'
-import { upsertPrompt, deletePrompt, migratePromptsIfNeeded } from '../persistence/storage.prompts'
+import { upsertPrompt, deletePrompt, writePromptsBulk } from '../persistence/storage.prompts'
 
 /** ------------------------------------------------------------
  *  Utility di logging: stampa l'uso di storage.sync e storage.local
@@ -81,8 +81,8 @@ const upsertPromptDebounced = createDebounced((p: Prompt) => {
     .catch(console.error)
 }, 150)
 
-const migratePromptsDebounced = createDebounced((list: Prompt[]) => {
-  return migratePromptsIfNeeded(list)
+const writePromptsBulkDebounced = createDebounced((list: Prompt[]) => {
+  return writePromptsBulk(list)
     .then(() => logAllStorageUsage())
     .catch(console.error)
 }, 200)
@@ -97,7 +97,6 @@ const persistenceMiddleware: Middleware = (store) => (next) => (action: unknown)
   const prevState = store.getState() as LocalState
   const prevSettingsRef = prevState.settings
   const prevPromptSetsRef = prevState.promptSets
-  // ⚠️ Non usiamo più il riferimento dei prompts per persistere il blob
 
   const result = next(action)
 
@@ -131,7 +130,7 @@ const persistenceMiddleware: Middleware = (store) => (next) => (action: unknown)
       // Sostituzione completa (es. import backup) → migrazione/riscrittura indice + byId
       case 'prompts/setPrompts': {
         const list = action.payload as Prompt[]
-        migratePromptsDebounced(list) // Debounce perché potrebbe arrivare in burst dopo import
+        writePromptsBulkDebounced(list) // Debounce perché potrebbe arrivare in burst dopo import
         break
       }
       default:

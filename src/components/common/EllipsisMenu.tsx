@@ -1,94 +1,115 @@
-import React, { useState, useRef, useEffect } from "react"
+import React, { useEffect, useRef, useState } from "react"
 
+/** Azione del menu a tre puntini. */
 export interface EllipsisAction {
+  /** Identificatore univoco dell’azione. */
   key: string
+  /** Contenuto visivo dell’azione (testo/icone). */
   label: React.ReactNode
+  /** Handler di click. */
   onClick: (e: React.MouseEvent) => void
+  /** Se true, disabilita l’azione. */
   disabled?: boolean
+  /** Se true, stile “pericoloso” (es. elimina). */
   danger?: boolean
 }
 
-interface EllipsisMenuProps {
+/** Proprietà del componente EllipsisMenu. */
+export interface EllipsisMenuProps {
+  /** Elenco azioni da mostrare nel pannello. */
   actions: EllipsisAction[]
+  /** Classe extra per il bottone trigger. */
   buttonClassName?: string
+  /** Classe extra per il pannello (oltre a quelle interne). */
   menuClassName?: string
-  align?: 'right' | 'left'
+  /** Allineamento del pannello rispetto al trigger. */
+  align?: "right" | "left"
+  /** Tooltip del bottone trigger. */
   title?: string
+  /** Etichetta ARIA per accessibilità. */
   ariaLabel?: string
 }
 
+/**
+ * Menu a tre puntini con pannello “invisibile”:
+ * il contenitore del menu è trasparente, solo gli item sono cliccabili.
+ * Richiede gli stili SCSS correlati (panel trasparente, item fluttuanti).
+ */
 export const EllipsisMenu: React.FC<EllipsisMenuProps> = ({
   actions,
-  buttonClassName = 'btn btn--icon',
-  menuClassName = 'ellipsis-menu__panel',
-  align = 'right',
-  title = 'Azioni',
-  ariaLabel = 'Menu azioni',
+  buttonClassName = "btn btn--icon",
+  menuClassName = "",
+  align = "right",
+  title = "Azioni",
+  ariaLabel = "Menu azioni",
 }) => {
   const [open, setOpen] = useState(false)
   const ref = useRef<HTMLDivElement | null>(null)
 
+  // Chiude al click fuori o su ESC
   useEffect(() => {
     if (!open) return
-    const handle = (e: MouseEvent) => {
-      if (ref.current && !ref.current.contains(e.target as Node)) {
-        setOpen(false)
-      }
+    const onDocClick = (e: MouseEvent) => {
+      if (ref.current && !ref.current.contains(e.target as Node)) setOpen(false)
     }
-    document.addEventListener('mousedown', handle)
-    return () => document.removeEventListener('mousedown', handle)
+    const onKey = (e: KeyboardEvent) => {
+      if (e.key === "Escape") setOpen(false)
+    }
+    document.addEventListener("mousedown", onDocClick)
+    document.addEventListener("keydown", onKey)
+    return () => {
+      document.removeEventListener("mousedown", onDocClick)
+      document.removeEventListener("keydown", onKey)
+    }
   }, [open])
 
   return (
-    <div ref={ref} className="ellipsis-menu" style={{ position: 'relative', display: 'inline-block' }}>
+    <div ref={ref} className="ellipsis-menu">
       <button
         type="button"
         aria-haspopup="true"
         aria-expanded={open}
         aria-label={ariaLabel}
-        className={buttonClassName}
-        onClick={(e) => { e.stopPropagation(); setOpen(o => !o) }}
+        className={`ellipsis-menu__trigger ${buttonClassName}`.trim()}
+        onClick={(e) => {
+          e.stopPropagation()
+          setOpen((o) => !o)
+        }}
         title={title}
       >
         ⋯
       </button>
-      {open && (
-        <div
-          role="menu"
-          className={menuClassName}
-          style={{
-            position: 'absolute',
-            top: '100%',
-            [align === 'right' ? 'right' : 'left']: 0,
-            background: '#fff',
-            border: '1px solid #ccc',
-            borderRadius: 4,
-            padding: '0.25rem 0',
-            minWidth: 150,
-            zIndex: 200,
-            boxShadow: '0 4px 12px rgba(0,0,0,0.12)'
-          } as React.CSSProperties}
-        >
-          {actions.map(a => (
-            <button
-              key={a.key}
-              role="menuitem"
-              disabled={a.disabled}
-              onClick={(e) => { a.onClick(e); setOpen(false) }}
-              className={`btn menu-item${a.danger ? ' danger' : ''}`}
-              style={{
-                width: '100%',
-                justifyContent: 'flex-start',
-                color: a.danger && !a.disabled ? '#b00020' : undefined,
-                opacity: a.disabled ? 0.6 : 1,
-                cursor: a.disabled ? 'not-allowed' : 'pointer'
-              }}
-            >
-              {a.label}
-            </button>
-          ))}
-        </div>
-      )}
+
+      <div
+        role="menu"
+        aria-hidden={!open}
+        className={[
+          "ellipsis-menu__panel",
+          `align-${align}`,
+          open ? "is-open" : "",
+          menuClassName,
+        ].join(" ").trim()}
+      >
+        {actions.map((a) => (
+          <button
+            key={a.key}
+            role="menuitem"
+            disabled={a.disabled}
+            onClick={(e) => {
+              a.onClick(e)
+              setOpen(false)
+            }}
+            className={[
+              "ellipsis-menu__item",
+              "btn",
+              "menu-item",
+              a.danger ? "ellipsis-menu__item--danger" : "",
+            ].join(" ").trim()}
+          >
+            {a.label}
+          </button>
+        ))}
+      </div>
     </div>
   )
 }

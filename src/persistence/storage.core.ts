@@ -9,9 +9,8 @@
      * chunking (split della stringa in pezzi < 8KB)
      * scrittura dei chunk come chiavi distinte + una chiave meta
    - In caso di errore/quota superata, fallback automatico su storage.local
-   - In lettura:
-     * proviamo prima a leggere i chunk (formato nuovo)
-     * se non presenti, proviamo il formato legacy "singola chiave"
+  - In lettura:
+     * leggiamo i chunk (se metadati presenti), altrimenti non c'è contenuto
    ====================================================================== */
 
 export type StorageArea = "sync" | "local";
@@ -118,7 +117,7 @@ export async function writeLargeObject(
 }
 
 /** Legge un oggetto grande dai chunk se presenti;
- *  se non trova meta/chunk, prova il formato legacy a singola chiave. */
+ *  se non trova meta/chunk, restituisce undefined. */
 export async function readLargeObject<T>(
   area: StorageArea,
   baseKey: string
@@ -126,7 +125,7 @@ export async function readLargeObject<T>(
   const metaKey = `${baseKey}${META_SUFFIX}`;
   const chunkPrefix = `${baseKey}${CHUNK_SUFFIX}`;
 
-  // Prova meta+chunk (nuovo formato)
+  // Prova meta+chunk (formato corrente)
   try {
     const meta = await storageGet<MetaGetResult>(area, [metaKey]);
     const count: number | undefined = meta?.[metaKey]?.chunkCount;
@@ -136,15 +135,6 @@ export async function readLargeObject<T>(
       const json = keys.map((k) => data[k] ?? "").join("");
       return JSON.parse(json) as T;
     }
-  } catch {
-    // Se fallisce, continuiamo con il fallback legacy
-  }
-
-  // Fallback legacy: prova a leggere il valore direttamente con la chiave base
-  try {
-    const legacy = await storageGet<Record<string, unknown>>(area, [baseKey]);
-    const value = legacy?.[baseKey] as T | undefined;
-    if (value !== undefined) return value;
   } catch {
     // Ignora: restituiamo undefined
   }

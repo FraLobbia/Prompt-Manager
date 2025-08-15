@@ -17,7 +17,7 @@ interface PromptItemProps {
 
 export default function PromptItem({ prompt, onEdit }: PromptItemProps) {
   /** Hooks a stato globale */
-  const { clipboardReplace } = useSettings()
+  const { clipboardReplaceEnabled, clipboardTemplate } = useSettings()
   const { removePrompt } = usePrompts()
 
   /** Props e utility */
@@ -33,17 +33,16 @@ export default function PromptItem({ prompt, onEdit }: PromptItemProps) {
     action: "insert" | "overwrite",
     text: string
   ) => {
-    if (clipboardReplace) {
+    if (clipboardReplaceEnabled) {
       try {
         const clipboardText = await navigator.clipboard.readText()
-        text = text.replaceAll("PromptTemplate", clipboardText)
-          .replaceAll("PromptTemplate", clipboardText)
+        text = text.replaceAll(clipboardTemplate, clipboardText)
       } catch (err) {
         console.error("Errore nella lettura della clipboard:", err)
       }
     } else {
-      text = text.replaceAll("PromptTemplate", " ")
-        .replaceAll("PromptTemplate", " ")
+      text = text.replaceAll(clipboardTemplate, " ")
+        .replaceAll(clipboardTemplate, " ")
     }
     // Manda il messaggio al content script su chrome
     chrome.tabs.query({ active: true, currentWindow: true }, (tabs) => {

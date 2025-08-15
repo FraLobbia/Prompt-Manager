@@ -1,7 +1,7 @@
 import { useDispatch, useSelector, type TypedUseSelectorHook } from "react-redux"
 import type { AppDispatch, RootState } from "./store"
 
-import { setActiveSet, setView, setButtonNumberClass, setClipboardReplace } from "./slices/settingsSlice"
+import { setActiveSet, setClipboardTemplate, setView, setclipboardReplaceEnabled } from "./slices/settingsSlice"
 
 import { addPrompt, removePrompt, updatePrompt } from "./slices/promptSlice"
 import type { Prompt } from "../types/Prompt"
@@ -29,15 +29,15 @@ export function useSettings() {
   return {
     // stato
     view: settings.view,
-    clipboardReplace: settings.clipboardReplace,
-    buttonNumberClass: settings.buttonNumberClass,
-  activeSet: settings.activeSet,
+    clipboardReplaceEnabled: settings.clipboardReplaceEnabled,
+    clipboardTemplate: settings.clipboardTemplate,
+    activeSet: settings.activeSet,
 
     // azioni
     navigate: (v: typeof settings.view) => dispatch(setView(v)),
-  setActiveSet: (id: string | undefined) => dispatch(setActiveSet(id)),
-    setClipboardReplace: (value: boolean) => dispatch(setClipboardReplace(value)),
-    setButtonNumberClass: (value: string) => dispatch(setButtonNumberClass(value)),
+    setActiveSet: (id: string | undefined) => dispatch(setActiveSet(id)),
+    setclipboardReplaceEnabled: (value: boolean) => dispatch(setclipboardReplaceEnabled(value)),
+    setClipboardTemplate: (value: string) => dispatch(setClipboardTemplate(value)),
   }
 }
 
@@ -60,7 +60,7 @@ export const usePromptSets = () => {
 
   // Espongo sia i thunk originali *AndSave che helper comodi
   return {
-  promptSets,
+    promptSets,
 
     // Thunk diretti
     addPromptSetAndSave: (set: PromptSet) => dispatch(addPromptSetAndSave(set)),

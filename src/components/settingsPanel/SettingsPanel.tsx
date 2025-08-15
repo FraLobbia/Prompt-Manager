@@ -1,13 +1,19 @@
+import React from 'react'
 import { useSettings } from '../../store/hooks'
 import { useDispatch } from 'react-redux'
 import { exportBackup, importBackup } from '../../utils/utils'
 import { getIcon, ICON_KEY } from '../../constants/icons'
 
 export default function SettingsPanel() {
-  const { clipboardReplace, setClipboardReplace, buttonNumberClass, setButtonNumberClass } = useSettings()
+  const {
+    clipboardReplaceEnabled,
+    setclipboardReplaceEnabled,
+    clipboardTemplate,
+    setClipboardTemplate,
+  } = useSettings()
   const dispatch = useDispatch()
 
-  const onExport = exportBackup
+  /** Gestisce l'importazione di un file di backup JSON. */
   const onImport = async (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0]
     if (!file) return
@@ -21,52 +27,58 @@ export default function SettingsPanel() {
   }
 
   return (
-    <div className="settings-panel">
-      
-      <div id='general-settings'>
-        <label className="settings-checkbox-label">
+    <div className="card">
+      <h2>Impostazioni generali</h2>
+
+      <div>
+        <label className="settings-checkbox-label mt-3">
           <input
             type="checkbox"
-            checked={clipboardReplace}
-            onChange={(e) => setClipboardReplace(e.target.checked)}
-            className="settings-checkbox"
+            checked={clipboardReplaceEnabled}
+            onChange={(e) => setclipboardReplaceEnabled(e.target.checked)}
           />
-          <span>
-            Abilita sostituzione <strong>"PromptTemplate"</strong> (compatibile anche con "PromptTemplate") con gli appunti
-          </span>
+          <span><strong>Rimpiazza il segnaposto scelto con gli appunti</strong></span>
         </label>
 
-        <label className="settings-input-label">
-          <div className="flex-row">
-            <h3>Classe CSS bottoni:</h3>
-            <input
-              type="text"
-              value={buttonNumberClass}
-              onChange={(e) => setButtonNumberClass(e.target.value)}
-              className="settings-input"
-              placeholder="es. 53"
-              style={{ marginInlineStart: '10px' }}
-            />
-          </div>
-        </label>
-
+        <div>
+          <label htmlFor="clipboard-template">
+            Segnaposto da sostituire
+          </label>
+          <input
+            id="clipboard-template"
+            type="text"
+            value={clipboardTemplate}
+            onChange={(e) => setClipboardTemplate(e.target.value)}
+            placeholder="es. PromptTemplate, {{template}}, #clipboardcontent"
+            disabled={!clipboardReplaceEnabled}
+          />
+          <small className="text-muted">
+            Il testo indicato verrà cercato e sostituito con il contenuto degli appunti.
+          </small>
+        </div>
       </div>
 
       <hr />
 
-      <div className="settings-backup-buttons">
-        <h3>Backup</h3>
-        <br />
-        <div className="flex-row">
-          <button className={`button-${buttonNumberClass}`} onClick={onExport}>
+      <div className="backup-header">
+        <h2>Backup</h2>
+        <span className="info-icon" title="Puoi esportare o importare un file di backup in formato JSON contenente tutte le tue impostazioni, i prompt e i set di prompt. In questo modo puoi salvare una copia dei tuoi dati sul computer o trasferirli facilmente su un altro dispositivo. Normalmente, le informazioni vengono salvate automaticamente nello spazio di sincronizzazione di Google Chrome, che ha un limite di circa 100 KB: superata questa soglia, parte dei dati più grandi viene memorizzata solo in locale sul dispositivo.">
+          {getIcon(ICON_KEY.info)}
+        </span>
+      </div>
+      <div>
+
+        <div className="flex-row gap-1">
+          <button className="btn" onClick={exportBackup}>
             {getIcon(ICON_KEY.save)} Esporta json
           </button>
-          <label className="import-button-label">
-            <span className={`button-${buttonNumberClass}`}>{getIcon(ICON_KEY.add)} Importa json</span>
-            <input type="file" accept=".json" onChange={onImport} style={{ display: "none" }} />
+          <label>
+            <span className="btn">{getIcon(ICON_KEY.add)} Importa json</span>
+            <input type="file" accept=".json" onChange={onImport} style={{ display: 'none' }} />
           </label>
         </div>
       </div>
+
     </div>
   )
 }

@@ -7,7 +7,7 @@ import { initialState, Settings, type Settings as SettingsClass, type Views } fr
  * Slice Redux che gestisce tutte le impostazioni globali dell'app.
  * 
  * Struttura logica:
- * - State: contiene i valori correnti delle impostazioni (view, clipboardReplace, ecc.)
+ * - State: contiene i valori correnti delle impostazioni (view, clipboardReplaceEnabled, ecc.)
  * - Reducers: funzioni sincrone che aggiornano lo stato
  * - Thunk: funzioni asincrone che possono persistere lo stato o fare logica extra
  * - Selectors: funzioni per leggere in modo centralizzato e tipizzato lo stato
@@ -27,13 +27,13 @@ export const settingsSlice = createSlice({
     },
 
     /** Attiva/disattiva la sostituzione automatica dalla clipboard */
-    setClipboardReplace(state, action: PayloadAction<boolean>) {
-      state.clipboardReplace = action.payload;
+    setclipboardReplaceEnabled(state, action: PayloadAction<boolean>) {
+      state.clipboardReplaceEnabled = action.payload;
     },
 
-    /** Imposta il codice della classe numerica per i pulsanti */
-    setButtonNumberClass(state, action: PayloadAction<string>) {
-      state.buttonNumberClass = action.payload;
+    /** Imposta il segnaposto da sostituire */
+    setClipboardTemplate(state, action: PayloadAction<string>) {
+      state.clipboardTemplate = action.payload;
     },
 
     /**
@@ -55,9 +55,9 @@ export const settingsSlice = createSlice({
     hydrateFromStorage(state, action: PayloadAction<SettingsClass | Partial<Settings>>) {
       const s = action.payload as Partial<Settings>;
       state.view = s.view ?? state.view;
-      state.clipboardReplace = s.clipboardReplace ?? state.clipboardReplace;
-      state.buttonNumberClass = s.buttonNumberClass ?? state.buttonNumberClass;
-  state.activeSet = s.activeSet ?? state.activeSet;
+      state.clipboardReplaceEnabled = s.clipboardReplaceEnabled ?? state.clipboardReplaceEnabled;
+      state.clipboardTemplate = s.clipboardTemplate ?? state.clipboardTemplate;
+      state.activeSet = s.activeSet ?? state.activeSet;
     },
   },
 });
@@ -65,8 +65,8 @@ export const settingsSlice = createSlice({
 export const {
   setView,
   setActiveSet,
-  setClipboardReplace,
-  setButtonNumberClass,
+  setclipboardReplaceEnabled,
+  setClipboardTemplate,
   updateMany,
   hydrateFromStorage,
 } = settingsSlice.actions;
@@ -96,10 +96,8 @@ export const updateSettingsAndPersist =
  */
 export const selectSettings = (state: { settings: Settings }) => state.settings;
 export const selectView = (state: { settings: Settings }) => state.settings.view;
-export const selectClipboardReplace = (state: { settings: Settings }) =>
-  state.settings.clipboardReplace;
-export const selectButtonNumberClass = (state: { settings: Settings }) =>
-  state.settings.buttonNumberClass;
+export const selectclipboardReplaceEnabled = (state: { settings: Settings }) =>
+  state.settings.clipboardReplaceEnabled;
 export const selectActiveSet = (state: { settings: Settings }) => state.settings.activeSet;
 
 export default settingsSlice.reducer;

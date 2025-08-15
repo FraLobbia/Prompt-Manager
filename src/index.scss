@@ -3,11 +3,10 @@
 @use "./styles/partials/forms" as *;
 @use "./styles/partials/buttons" as *;
 @use "./styles/partials/flex" as *;
-
+@use "components/common/EllipsisMenu.scss" as *;
 
 body {
   width: $popup-width;
-  max-width: $popup-width;
   margin: 0 auto;
 }
 
@@ -37,6 +36,7 @@ h3,
   padding-inline: 1rem;
   padding-block: 0.75rem;
   margin-inline: 10px;
+  margin-block: 0.5rem;
   box-shadow: 0 2px 6px rgba(0, 0, 0, .05);
   display: flex;
   flex-direction: column;
@@ -101,9 +101,20 @@ h3,
 
 .text-muted {
   color: #64748b;
-  /* blu-grigio soft */
-  font-size: 0.9rem;
 }
+
+.backup-header {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+
+  .info-icon {
+    cursor: help;
+    font-size: 1.1rem;
+    line-height: 1;
+  }
+}
+
 
 li {
   list-style: none;
@@ -184,15 +195,22 @@ li {
 }
 
 .settings-checkbox-label {
-  display: flex;
+  display: inline-flex;
   align-items: center;
-  margin-bottom: $spacing-md;
+  gap: $spacing-sm; // spazio tra checkbox e testo
+  cursor: pointer; // area cliccabile più intuitiva
   font-size: 0.95rem;
+  line-height: 1.2;
+  margin-bottom: $spacing-md;
+
+  input[type="checkbox"] {
+    inline-size: 1.25rem; 
+    block-size: 1.25rem;
+    margin: 0;
+    accent-color: $primary; // colore nativo
+  }
 }
 
-.settings-checkbox {
-  margin-right: $spacing-sm;
-}
 
 .settings-buttons {
   display: flex;

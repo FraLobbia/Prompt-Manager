@@ -1,3 +1,5 @@
+
+
 export const ICONS = {
   back: "←",
   close: "❌",
@@ -8,6 +10,7 @@ export const ICONS = {
   delete: "🗑",
   active: "✅",
   save: "💾",
+  info: "ℹ️"
 } as const;
 
 // Tipo dei nomi ricavato automaticamente

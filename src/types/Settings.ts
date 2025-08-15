@@ -1,19 +1,19 @@
 import type { ViewValue } from "../constants/views";
 export class Settings {
   view: Views;
-  clipboardReplace: boolean;
-  buttonNumberClass: string;
+  clipboardReplaceEnabled: boolean;
+  clipboardTemplate: string;
   activeSet?: string; // contiene solo l'ID del set attivo
 
   constructor(
     view: Views,
-    clipboardReplace: boolean,
-    buttonNumberClass: string,
+    clipboardReplaceEnabled: boolean,
+    clipboardTemplate: string,
     activeSet?: string
   ) {
     this.view = view;
-    this.clipboardReplace = clipboardReplace;
-    this.buttonNumberClass = buttonNumberClass;
+    this.clipboardReplaceEnabled = clipboardReplaceEnabled;
+    this.clipboardTemplate = clipboardTemplate;
     this.activeSet = activeSet;
   }
 }
@@ -23,7 +23,7 @@ export type Views = ViewValue;
 /** Stato iniziale di default */
 export const initialState: Settings = {
   view: "activeSet",
-  clipboardReplace: true,
-  buttonNumberClass: "53",
+  clipboardReplaceEnabled: true,
   activeSet: "default",
+  clipboardTemplate: "{{template}}",
 };

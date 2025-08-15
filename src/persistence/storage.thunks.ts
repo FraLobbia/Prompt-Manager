@@ -55,7 +55,7 @@ export const loadSettingsFromStorage = () => async (dispatch: Dispatch) => {
  */
 export const loadPromptsFromStorage = () => async (dispatch: Dispatch) => {
   try {
-    const prompts = await loadPrompts(); // fa anche eventuale migrazione legacy → granulare
+  const prompts = await loadPrompts();
     dispatch(setPrompts(prompts));
   } catch (error) {
     console.error("Errore nel caricamento dei prompt", error);

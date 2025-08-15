@@ -69,17 +69,16 @@ export async function loadAllPrompts(): Promise<Prompt[]> {
     .filter((p): p is Prompt => Boolean(p));
 }
 
-/** Migrazione dal blob legacy PROMPTS_KEY → schema granulare */
-export async function migratePromptsIfNeeded(legacyPrompts?: Prompt[]) {
-  if (!Array.isArray(legacyPrompts) || legacyPrompts.length === 0) return;
+/** Scrittura bulk di un array di Prompt nel formato granulare (indice + byId) */
+export async function writePromptsBulk(list?: Prompt[]) {
+  if (!Array.isArray(list) || list.length === 0) return;
 
   // scrivi indice
-  const idx = legacyPrompts.map((p) => p.id);
+  const idx = list.map((p) => p.id);
   await storageSet("sync", { [PROMPTS_INDEX_KEY]: idx });
 
   // scrivi ogni prompt (chunk per oversize se serve)
-  for (const p of legacyPrompts) {
-    // eslint-disable-next-line no-await-in-loop
+  for (const p of list) {
     await writeOnePrompt(p);
   }
 }
