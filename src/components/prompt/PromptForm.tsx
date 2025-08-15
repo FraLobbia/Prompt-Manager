@@ -1,5 +1,5 @@
 import { useEffect, useMemo, useRef, useState, useCallback, type ChangeEvent } from "react"
-import { usePrompts, useSettings } from "../../store/hooks"
+import { usePrompts, usePromptSets, useSettings } from "../../store/hooks"
 import type { Prompt } from "../../types/Prompt"
 import { getIcon, ICON_KEY } from "../../constants/icons"
 import { VIEWS } from "../../constants/views"
@@ -16,11 +16,13 @@ export default function PromptForm(props: PromptFormProps) {
 
   /** Stato globale */
   const { addPrompt, updatePrompt } = usePrompts()
-  const { navigate } = useSettings()
+  const { addPromptIdToSet } = usePromptSets()
+  const { navigate, activeSet } = useSettings()
 
   /** Stato locale */
   const [title, setTitle] = useState<string>(current?.titolo ?? "")
   const [text, setText] = useState<string>(current?.testo ?? "")
+  const [addToActiveSet, setAddToActiveSet] = useState<boolean>(true) // solo per nuova creazione
 
   /**
    * Ridimensiona l'area di testo in base al contenuto mentre si digita
@@ -55,11 +57,15 @@ export default function PromptForm(props: PromptFormProps) {
       updatePrompt({ id: current.id, titolo: trimmedTitle, testo: trimmedText })
       props.onComplete?.()
     } else {
-      addPrompt({ id: `${Date.now()}`, titolo: trimmedTitle, testo: trimmedText })
+      const newId = `${Date.now()}`
+      addPrompt({ id: newId, titolo: trimmedTitle, testo: trimmedText })
+      if (addToActiveSet && activeSet) {
+        addPromptIdToSet(activeSet, newId)
+      }
       resetNew()
       navigate(VIEWS.activeSet)
     }
-  }, [isEdit, current, title, text, updatePrompt, addPrompt, resetNew, navigate, props])
+  }, [isEdit, current, title, text, updatePrompt, addPrompt, resetNew, navigate, props, addToActiveSet, activeSet, addPromptIdToSet])
 
   /**
    * Gestisce la cancellazione del prompt in modalità modifica
@@ -101,6 +107,17 @@ export default function PromptForm(props: PromptFormProps) {
         rows={1}
         aria-label="Testo prompt"
       />
+
+      {!isEdit && (
+        <label className="mt-2" style={{ display: "flex", alignItems: "center", gap: ".5rem" }}>
+          <input
+            type="checkbox"
+            checked={addToActiveSet}
+            onChange={(e: ChangeEvent<HTMLInputElement>) => setAddToActiveSet(e.target.checked)}
+          />
+          <span>Aggiungi al set attivo</span>
+        </label>
+      )}
 
       <div className="flex-center mt-2 gap-1">
         {buttons.map((btn) => (

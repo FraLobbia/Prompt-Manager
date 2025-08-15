@@ -83,7 +83,7 @@ export default function PromptSet({ promptSet }: { promptSet: PromptSet }) {
           <div>
             <button
               type="button"
-              className="btn"
+              className="btn-secondary"
               aria-expanded={showPrompts}
               aria-controls={`prompt-set-list-${promptSet.id}`}
               onClick={(e) => {

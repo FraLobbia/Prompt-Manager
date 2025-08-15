@@ -1,6 +1,5 @@
 @use "./styles/variables" as *;
 @use "./styles/partials/margin-and-padding" as *;
-@use "./styles/partials/forms" as *;
 @use "./styles/partials/buttons" as *;
 @use "./styles/partials/flex" as *;
 @use "components/common/_EllipsisMenu.scss" as *;
@@ -264,11 +263,11 @@ input[type="checkbox"] {
   transition: background 0.15s ease;
 
   &:hover {
-    background: #f3f4f6; /* grigio chiaro */
+    background: $primary-light; /* azzurro chiaro */
   }
 
   &.is-selected {
-    background: #e0f2fe; /* azzurro chiaro */
+    background: $primary-light; /* azzurro chiaro */
   }
 
   .multiselect-checkbox {
@@ -281,4 +280,46 @@ input[type="checkbox"] {
     flex: 1;
     font-size: 0.95rem;
   }
+}
+
+
+textarea,
+input {
+  width: 100%;
+  box-sizing: border-box;
+  padding: 0.55rem 0.7rem;
+  font-size: 1rem;
+  font-family: inherit;
+  border: 1px solid #e2e8f0;
+  border-radius: 6px;
+  background: #ffffff;
+  color: #0f172a;
+  transition: border-color .15s ease, box-shadow .15s ease;
+
+  &:focus {
+    outline: none;
+    border-color: #4a90e2;
+    box-shadow: 0 0 0 2px rgba(74, 144, 226, 0.2);
+  }
+}
+
+// /* Multiselect elenco prompt */
+// .multiselect {
+//   width: 100%;
+//   border: 1px solid #e2e8f0;
+//   border-radius: 6px;
+//   padding: 0.35rem;
+//   background: #ffffff;
+//   color: #0f172a;
+// }
+
+// .multiselect option {
+//   padding: 0.25rem 0.35rem;
+// }
+
+/* Divider sottile coerente con card */
+.divider {
+  height: 1px;
+  width: 100%;
+  background: #e2e8f0;
 }
