@@ -93,6 +93,7 @@ export default function PromptForm(props: PromptFormProps) {
         {buttons.map((btn) => (
           <button
             key={btn.key}
+            disabled={btn.key === "save" && (!title || !text)}
             onClick={btn.action}
             className={`btn`}>
             {btn.label}

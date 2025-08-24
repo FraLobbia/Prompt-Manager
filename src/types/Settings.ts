@@ -31,5 +31,5 @@ export const initialState: Settings = {
   clipboardReplaceEnabled: true,
   activeSet: "default",
   clipboardTemplate: "{{template}}",
-  modifyOnClickEnabled: true,
+  modifyOnClickEnabled: false,
 };

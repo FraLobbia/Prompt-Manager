@@ -30,7 +30,17 @@ export default function SettingsPanel() {
 
   return (
     <div className="card">
-      <h2>Impostazioni generali</h2>
+      <div className="gap-1 flex-between">
+        <h2>Impostazioni generali</h2>
+        <a
+          id='buy-coffee'
+          href="https://buymeacoffee.com/frnk.j"
+          target="_blank"
+          rel="noopener noreferrer"
+        >
+          ☕ Offrimi un caffè
+        </a>
+      </div>
 
       <div>
         <label className="settings-checkbox-label mt-3">
@@ -67,7 +77,7 @@ export default function SettingsPanel() {
             checked={modifyOnClickEnabled}
             onChange={(e) => setModifyOnClickEnabled(e.target.checked)}
           />
-          <span><strong>Il click su un prompt apre la modifica dello stesso</strong></span>
+          <span><strong>Il click su un prompt del set attivo apre la modifica dello stesso</strong></span>
         </label>
       </div>
 
@@ -99,20 +109,6 @@ export default function SettingsPanel() {
             />
           </label>
         </div>
-      </div>
-
-      <hr />
-
-      {/* Sezione Buy Me a Coffee */}
-      <div className="flex-row gap-1">
-        <a
-          className="btn"
-          href="https://buymeacoffee.com/frnk.j"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          ☕ Offrimi un caffè
-        </a>
       </div>
     </div>
   )

@@ -3,8 +3,9 @@
     "view": "settings",
     "clipboardReplaceEnabled": true,
     "clipboardTemplate": "{{template}}",
-    "activeSet": "default",
-    "editingSetId": "set-1755104373087"
+    "activeSet": "set-1755104373087",
+    "editingSetId": "set-1755104373087",
+    "modifyOnClickEnabled": false
   },
   "prompts": [
     {
@@ -19,7 +20,7 @@
     },
     {
       "id": "1754820914850",
-      "testo": "Restituiscimi il/i componente/i completo/i e funzionante/i, aggiornato/i con tutte le ultime modifiche discusse. Includi tutto il codice necessario, con commenti chiari e dettagliati che spieghino scopo, logica interna e interazioni con gli altri moduli dell’applicazione. Mantieni la coerenza con lo stile e le convenzioni già usate nel progetto. \n\nPromptTemplate",
+      "testo": "Restituiscimi il/i componente/i completo/i e funzionante/i, aggiornato/i con tutte le ultime modifiche discusse. Includi tutto il codice necessario, con commenti chiari e dettagliati che spieghino scopo, logica interna e interazioni con gli altri moduli dell’applicazione. Mantieni la coerenza con lo stile e le convenzioni già usate nel progetto. \n\n{{template}}",
       "titolo": "Aggiorna componente con ultime modifiche"
     },
     {

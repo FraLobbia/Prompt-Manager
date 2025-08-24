@@ -74,3 +74,19 @@
     transform: translateY(1px);
   }
 }
+
+#buy-coffee {
+  @extend .btn-secondary;
+
+  a {
+    text-decoration: none;
+  }
+
+  &:hover {
+    background: darken($secondary, 5%);
+  }
+
+  &:active {
+    transform: translateY(1px);
+  }
+}
