@@ -15,6 +15,7 @@ export type StoredSettings = {
   clipboardTemplate: string;
   activeSet?: string;
   editingSetId?: string;
+  modifyOnClickEnabled: boolean;
 };
 
 /**
@@ -31,6 +32,7 @@ export function toStored(s: Settings): StoredSettings {
     clipboardTemplate: s.clipboardTemplate,
     activeSet: s.activeSet,
     editingSetId: s.editingSetId,
+    modifyOnClickEnabled: s.modifyOnClickEnabled,
   };
 }
 
@@ -53,7 +55,8 @@ export function fromStored(obj: Partial<StoredSettings> | undefined): Settings {
     clipboardReplaceEnabled: obj.clipboardReplaceEnabled ?? initialState.clipboardReplaceEnabled,
     clipboardTemplate: obj.clipboardTemplate ?? initialState.clipboardTemplate,
     activeSet: obj.activeSet ?? initialState.activeSet,
-    editingSetId: obj.editingSetId,
+    editingSetId: obj.editingSetId ?? initialState.editingSetId,
+    modifyOnClickEnabled: obj.modifyOnClickEnabled ?? initialState.modifyOnClickEnabled,
   };
 }
 
@@ -67,9 +70,10 @@ export function fromStored(obj: Partial<StoredSettings> | undefined): Settings {
 export function mergeSettings(base: Settings, patch: Partial<Settings>): Settings {
   return {
     view: patch.view ?? base.view,
-    clipboardReplaceEnabled: patch.clipboardReplaceEnabled ?? base.clipboardReplaceEnabled,
-    clipboardTemplate: patch.clipboardTemplate ?? base.clipboardTemplate,
     activeSet: patch.activeSet ?? base.activeSet,
     editingSetId: patch.editingSetId,
+    clipboardReplaceEnabled: patch.clipboardReplaceEnabled ?? base.clipboardReplaceEnabled,
+    clipboardTemplate: patch.clipboardTemplate ?? base.clipboardTemplate,
+    modifyOnClickEnabled: patch.modifyOnClickEnabled ?? base.modifyOnClickEnabled,
   };
 }

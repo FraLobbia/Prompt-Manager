@@ -42,6 +42,10 @@ export const settingsSlice = createSlice({
       state.clipboardTemplate = action.payload;
     },
 
+    setModifyOnClickEnabled(state, action: PayloadAction<boolean>) {
+      state.modifyOnClickEnabled = action.payload;
+    },
+
     /**
      * Aggiornamento GENERICO di più proprietà in una sola dispatch.
      * Utile quando bisogna modificare più campi contemporaneamente.
@@ -63,8 +67,8 @@ export const settingsSlice = createSlice({
       state.view = s.view ?? state.view;
       state.clipboardReplaceEnabled = s.clipboardReplaceEnabled ?? state.clipboardReplaceEnabled;
       state.clipboardTemplate = s.clipboardTemplate ?? state.clipboardTemplate;
+      state.modifyOnClickEnabled = s.modifyOnClickEnabled ?? state.modifyOnClickEnabled;
       state.activeSet = s.activeSet ?? state.activeSet;
-      // Ripristina anche l'ID del set in modifica se presente
       state.editingSetId = s.editingSetId ?? state.editingSetId;
     },
   },
@@ -76,6 +80,7 @@ export const {
   setEditingSet,
   setclipboardReplaceEnabled,
   setClipboardTemplate,
+  setModifyOnClickEnabled,
   updateMany,
   hydrateFromStorage,
 } = settingsSlice.actions;

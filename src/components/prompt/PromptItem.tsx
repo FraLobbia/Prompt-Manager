@@ -17,7 +17,7 @@ interface PromptItemProps {
 
 export default function PromptItem({ prompt, onEdit }: PromptItemProps) {
   /** Hooks a stato globale */
-  const { clipboardReplaceEnabled, clipboardTemplate } = useSettings()
+  const { clipboardReplaceEnabled, clipboardTemplate, modifyOnClickEnabled } = useSettings()
   const { removePrompt } = usePrompts()
 
   /** Props e utility */
@@ -63,6 +63,16 @@ export default function PromptItem({ prompt, onEdit }: PromptItemProps) {
   }
 
   /**
+   * Gestisce la modifica del prompt al click.
+   * Disattivabile dalle impostazioni
+   */
+  const handleEdit = () => {
+    if (modifyOnClickEnabled) {
+      onEdit?.(prompt)
+    }
+  }
+
+  /**
    * Configura i pulsanti per il prompt.
    */
   const primaryButtons: ButtonCfg[] = [
@@ -72,7 +82,7 @@ export default function PromptItem({ prompt, onEdit }: PromptItemProps) {
 
   /** ######### RENDER ########## */
   return (
-    <div className="prompt-item__container">
+    <div className="prompt-item__container" onClick={() => handleEdit()}>
       <div className="flex-between">
         <h3>{titolo}</h3>
         <div>
@@ -93,16 +103,19 @@ export default function PromptItem({ prompt, onEdit }: PromptItemProps) {
       </div>
       <div className="flex-center gap-1 mt-1">
         {primaryButtons.map((btn, i) => (
-          <button
+            <button
             key={i}
-            onClick={btn.action}
-            className="btn"
+            onClick={(e) => {
+              e.stopPropagation()
+              btn.action()
+            }}
+            className="btn-secondary"
             style={{ width: "100px" }}
             title={btn.title}
-          >
+            >
             <div>{btn.icon}</div>
             {btn.label && <div>{btn.label}</div>}
-          </button>
+            </button>
         ))}
       </div>
     </div>

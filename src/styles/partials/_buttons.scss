@@ -1,5 +1,6 @@
 @use "../_variables" as *; // Importa le variabili globali
 
+/* --- Base generica per tutti i bottoni --- */
 .btn {
   appearance: none;
   border: 1px solid transparent;
@@ -23,17 +24,31 @@
   }
 }
 
+/* --- Variante secondaria --- */
 .btn-secondary {
   @extend .btn;
   background: $primary-light;
+
   &:hover {
     background: darken($primary-light, 5%);
   }
 }
 
-.btn-back {
+/* --- Bottone fisso a sinistra, sempre full viewport --- */
+.edge-btn {
   @extend .btn;
+  position: fixed;
+  top: 50px;          /* lascia spazio per l'header */
+  left: 0;
+  height: calc(100vh - 50px); /* riempie dal top 50px fino al fondo */
+  width: 48px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  padding: 0;
   border-radius: 0 110px 110px 0;
+  z-index: 1000;      /* resta sopra i contenuti */
 }
 
 /* 

@@ -10,6 +10,8 @@ export default function SettingsPanel() {
     setclipboardReplaceEnabled,
     clipboardTemplate,
     setClipboardTemplate,
+    modifyOnClickEnabled,
+    setModifyOnClickEnabled,
   } = useSettings()
   const dispatch = useDispatch()
 
@@ -40,7 +42,7 @@ export default function SettingsPanel() {
           <span><strong>Rimpiazza il segnaposto scelto con gli appunti</strong></span>
         </label>
 
-        <div>
+        {clipboardReplaceEnabled && <div className='pl-5'>
           <label htmlFor="clipboard-template">
             Segnaposto da sostituire
           </label>
@@ -55,7 +57,18 @@ export default function SettingsPanel() {
           <small className="text-muted">
             Il testo indicato verrà cercato e sostituito con il contenuto degli appunti.
           </small>
-        </div>
+        </div>}
+      </div>
+
+      <div>
+        <label className="settings-checkbox-label mt-3">
+          <input
+            type="checkbox"
+            checked={modifyOnClickEnabled}
+            onChange={(e) => setModifyOnClickEnabled(e.target.checked)}
+          />
+          <span><strong>Il click su un prompt apre la modifica dello stesso</strong></span>
+        </label>
       </div>
 
       <hr />

@@ -89,6 +89,16 @@ export default function PromptForm(props: PromptFormProps) {
 
   return (
     <div className={isEdit ? "" : "card"}>
+      <div className="prompt-form__buttons">
+        {buttons.map((btn) => (
+          <button
+            key={btn.key}
+            onClick={btn.action}
+            className={`btn`}>
+            {btn.label}
+          </button>
+        ))}
+      </div>
       <input
         placeholder={"Inserisci il titolo"}
         value={title}
@@ -119,16 +129,7 @@ export default function PromptForm(props: PromptFormProps) {
         </label>
       )}
 
-      <div className="flex-center mt-2 gap-1">
-        {buttons.map((btn) => (
-          <button
-            key={btn.key}
-            onClick={btn.action}
-            className={`btn`}>
-            {btn.label}
-          </button>
-        ))}
-      </div>
+
     </div>
   )
 }

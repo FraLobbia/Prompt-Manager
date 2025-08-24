@@ -1,5 +1,5 @@
 // src/App.tsx
-import { useEffect } from "react"
+import { useEffect, useRef } from "react"
 import { useDispatch } from "react-redux"
 import type { ThunkDispatch } from "@reduxjs/toolkit"
 import type { AnyAction } from "redux"
@@ -27,6 +27,26 @@ export function App() {
     dispatch(loadPromptsFromStorage())
     dispatch(loadPromptSetsFromStorage())
   }, [dispatch])
+
+  const scrollRef = useRef<HTMLDivElement>(null)
+  const headerRef = useRef<HTMLDivElement>(null)
+
+  useEffect(() => {
+    const el = scrollRef.current
+    const header = headerRef.current
+    if (!el || !header) return
+
+    const onScroll = () => {
+      if (el.scrollTop > 0) {
+        header.classList.add("with-shadow")
+      } else {
+        header.classList.remove("with-shadow")
+      }
+    }
+
+    el.addEventListener("scroll", onScroll)
+    return () => el.removeEventListener("scroll", onScroll)
+  }, [])
 
   /**
    * Renderizza la vista corrente in base allo stato.
@@ -65,50 +85,40 @@ export function App() {
   if (view === VIEWS.activeSet) {
     cambiaSetButton = (
       <button
-        className="btn-back p-0"
+        id="cambia-set-button"
+        className="edge-btn"
         onClick={() => navigate(VIEWS.chooseSet)}
       >
         Cambia Set
       </button>
-    );
+    )
   } else {
-    // Tasto indietro a sinistra
     backButton = (
       <button
-        className="btn-back"
+        id="back-button"
+        className="edge-btn"
         onClick={() => {
-          // Logica indietro come in Header
           switch (view) {
             case VIEWS.settings:
-            case VIEWS.newPrompt:
-              navigate(VIEWS.activeSet);
-              break;
-            case VIEWS.editSet:
-              navigate(VIEWS.chooseSet);
-              break;
-            case VIEWS.newSet:
-              navigate(VIEWS.chooseSet);
-              break;
-            case VIEWS.chooseSet:
-              navigate(VIEWS.activeSet);
-              break;
-            default:
-              break;
+            case VIEWS.newPrompt: navigate(VIEWS.activeSet); break
+            case VIEWS.editSet: navigate(VIEWS.chooseSet); break
+            case VIEWS.newSet: navigate(VIEWS.chooseSet); break
+            case VIEWS.chooseSet: navigate(VIEWS.activeSet); break
           }
         }}
       >
         ←
       </button>
-    );
+    )
   }
 
   return (
     <div className="popup-container">
       <Header />
-      <div className="flex-row flex-fill mt-5" style={{ width: '100%' }}>
+      <div className="content-wrap mt-5">
         {backButton}
         {cambiaSetButton}
-        <div style={{ width: "100%" }}>
+        <div className="scroll">
           {renderView()}
         </div>
       </div>

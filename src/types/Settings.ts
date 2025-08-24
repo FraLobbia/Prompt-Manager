@@ -3,6 +3,7 @@ export class Settings {
   view: Views;
   clipboardReplaceEnabled: boolean;
   clipboardTemplate: string;
+  modifyOnClickEnabled: boolean;
   activeSet?: string; // contiene solo l'ID del set attivo
   /** ID del set attualmente in modifica (non persistito). */
   editingSetId?: string;
@@ -11,11 +12,13 @@ export class Settings {
     view: Views,
     clipboardReplaceEnabled: boolean,
     clipboardTemplate: string,
-  activeSet?: string
+    modifyOnClickEnabled: boolean,
+    activeSet?: string
   ) {
     this.view = view;
     this.clipboardReplaceEnabled = clipboardReplaceEnabled;
     this.clipboardTemplate = clipboardTemplate;
+    this.modifyOnClickEnabled = modifyOnClickEnabled;
     this.activeSet = activeSet;
   }
 }
@@ -28,4 +31,5 @@ export const initialState: Settings = {
   clipboardReplaceEnabled: true,
   activeSet: "default",
   clipboardTemplate: "{{template}}",
+  modifyOnClickEnabled: true,
 };
