@@ -3,18 +3,19 @@
     "view": "settings",
     "clipboardReplaceEnabled": true,
     "clipboardTemplate": "{{template}}",
-    "activeSet": "default"
+    "activeSet": "default",
+    "editingSetId": "set-1755104373087"
   },
   "prompts": [
     {
       "id": "1754341092723",
-      "testo": "Obiettivo\nEffettua un refactoring del seguente codice mantenendone intatta la funzionalità applicativa.\n\nRequisiti\nQualità del codice\n\nMigliora leggibilità, manutenibilità e struttura.\n\nRispetta le best practice moderne (es. DRY, KISS, SRP).\n\nMantieni commenti preesistenti con esattezza.\n\nUtilizza nomi chiari, descrittivi e semanticamente corretti per funzioni e variabili.\n\nVincoli\n\nNon modificare la logica di business.\n\nNon aggiungere librerie, import o strutture non autorizzate.\n\nCondizioni per modifiche opzionali\nPrima di applicare qualunque delle seguenti modifiche:\n\nRinominare variabili o funzioni.\n\nEstrarre codice in moduli o file separati.\n\nIntrodurre librerie esterne, helper o nuove dipendenze.\n\nAggiungere import o utility non presenti.\n\nDevi chiedere esplicita approvazione.\n\nPer ogni proposta, specifica:\n\nMotivazione tecnica basata su principi di progettazione.\n\nDescrizione chiara della modifica.\n\nDirectory esatta in cui posizionare file o moduli eventualmente suggeriti.\n\nOutput richiesto\nFornisci la risposta seguendo questa struttura:\n\nAnalisi sintetica del codice\n\nEvidenzia criticità rilevate (senza alterare la logica).\n\nProposte di modifica (se necessarie)\n\nElenca modifiche opzionali, giustifica ciascuna secondo best practice.\n\nRichiedi conferma prima di applicarle.\n\nRefactoring (solo dopo approvazione)\n\nCodice completo e coerente, ben indentato.\n\nCommenti mantenuti fedelmente.\n\nNessuna alterazione funzionale.\n\nNote finali\nNon inventare o semplificare concetti tecnici.\n\nSe ci sono elementi ambigui o mancano contesti, chiedi chiarimenti prima di procedere.\n\nSe hai dubbi sulla struttura del progetto o sull’intento di una parte del codice, esplicitali chiaramente.\n\n{{template}}",
+      "testo": "Agisci come revisore senior di codice. Refactora il seguente codice mantenendo invariata la logica di business e preservando integralmente gli stili:\n\n{{template}}\n\nRegole:\n- NON modificare, rinominare, aggiungere o rimuovere `className` esistenti.\n- NON aggiungere nuovi `className`, `id` o stili inline.\n\nMODIFICHE OPZIONALI (richiedono conferma prima di applicarle)  \n- Rinominare variabili o funzioni.  \n- Estrarre codice in moduli o file separati.  \n- Introdurre helper o nuove dipendenze.  \nPer ogni proposta opzionale fornisci con opportuni sottotitoli: \n- Motivazione tecnica.  \n- Descrizione precisa della modifica.  \n- Directory esatta di destinazione se non è lo stesso file.\n\nFORMATO OUTPUT  \nA. Analisi sintetica  \n   - Breve descrizione del codice.  \n   - Elenco criticità rilevate (punti elenco).  \n\nB. Proposte di modifica (OPZIONALI)  \n   - [ID] Titolo — Motivazione — Dettagli — Directory prevista.  \n\nC. Refactoring (SOLO DOPO APPROVAZIONE)  \n   - Codice completo, ben indentato, con commenti originali preservati.  \n    Formato output:\n\nD. Note finali  \n   - Ambiguità da chiarire.  \n   - Rischi e trade-off.  \n\nISTRUZIONI DI INTERAZIONE  \n- Prima fornisci A e B.  \n- Dopo conferma esplicita, produci la sezione C.",
       "titolo": "Migliora codice"
     },
     {
       "id": "1754341156748",
-      "testo": "Valuta il seguente prompt e suggeriscimi 3 varianti più performanti: \nPrompttemplate",
-      "titolo": "3 varianti più performanti"
+      "testo": "Analizza il prompt: \"{{template}}\".  \nRiscrivilo in versione più efficace agendo nel seguente modo:  \n1. Obiettivo chiaro e sintetico.  \n2. Vincoli precisi sul formato di output.  \n3. Indicazioni di contesto per adattarlo a un caso d’uso specifico.  \nSpiega:  \n- Perché migliora l’efficacia del prompt.  \n- Quali vincoli aggiunge o rimuove.  \n- Fornisci un esempio di output ideale.",
+      "titolo": "Variante più performante del prompt"
     },
     {
       "id": "1754820914850",
@@ -22,33 +23,71 @@
       "titolo": "Aggiorna componente con ultime modifiche"
     },
     {
-      "id": "1755255636988",
-      "testo": "ewfew",
-      "titolo": "rwfwe"
+      "id": "1755299028057",
+      "testo": "Agisci come un generatore di sinonimi e alternative chiare per nomi di variabili.  \nDato il termine/variabile, genera:  \n\n1. Un elenco di 20 possibili alternative in inglese.  \n2. Un elenco di 20 possibili alternative in italiano.  \n\nCriteri:  \n- Devono essere valori validi per variabili (niente spazi, niente caratteri speciali, solo lettere e, se necessario, numeri).  \n- Usa il formato camelCase.  \n- Devono essere chiare, senza abbreviazioni ambigue.  \n- Devono essere sia descrittive che creative.  \n- Evita ripetizioni.  \n- Dammeli in ordine di lunghezza.\n\nTermine/variabile: {{template}}",
+      "titolo": "20 alternative per una variabile"
+    },
+    {
+      "id": "1755299594421",
+      "testo": "Agisci come un generatore di nomi chiari per classi.  \nDato il termine/concept, genera:\n\n1. Un elenco di 20 possibili alternative in inglese.  \n2. Un elenco di 20 possibili alternative in italiano.  \n\nCriteri:  \n- Usa formato PascalCase.  \n- Chiarezza prioritaria.  \n- Evita abbreviazioni ambigue.  \n- Deve essere evidente il ruolo della classe.  \n- Evita ripetizioni.\n- Devono essere chiare, senza abbreviazioni ambigue.  \n- Devono essere sia descrittive che creative.  \n- Dammeli in ordine di lunghezza.\n\nTermine/concept: \"{{template}}\"",
+      "titolo": "20 alternative per una classe"
+    },
+    {
+      "id": "1755299873076",
+      "testo": "Agisci come un generatore di nomi chiari per metodi.  \nDato il termine/azione, genera:\n\n1. Un elenco di 20 possibili alternative in inglese.  \n2. Un elenco di 20 possibili alternative in italiano.  \n\nCriteri:  \n- Usa formato camelCase.  \n- Iniziare sempre con un verbo che descriva chiaramente l’azione del metodo.  \n- Chiarezza prioritaria.  \n- Evita abbreviazioni ambigue.  \n- Deve essere evidente lo scopo del metodo.  \n- Devono essere sia descrittivi che creativi.  \n- Evita ripetizioni.  \n- Ordina le proposte per lunghezza crescente.  \n\nTermine/azione: \"{{template}}\"",
+      "titolo": "20 alternative per un metodo"
+    },
+    {
+      "id": "1755300695472",
+      "testo": "Agisci come un esperto di tecnologia e documentazione tecnica per sviluppatori.  \nAnalizza la tecnologia \"{{template}}\" e fornisci una risposta strutturata come segue:\n\n**Origine e contesto storico**  \n   - Di cosa si tratta, se è una libreria, un framework etc.\n   - Anno di nascita.  \n   - Creatore o organizzazione responsabile.  \n   - Motivazioni della creazione.\n\n**Problemi risolti**  \n   - Elenco puntato di problemi tecnici e pratici.  \n   - Evidenzia il problema principale in grassetto.\n   - Perchè questa tecnologia piuttosto che una specifica altra? Fai esempi concreti.\n\n**Evoluzione e innovazioni chiave**  \n   - Timeline sintetica con versioni rilevanti e principali miglioramenti.\n   - Prossimi sviluppi noti.\n\n**Popolarità attuale**  \n   - Dati quantitativi se disponibili (quote di mercato, statistiche di utilizzo).  \n   - Principali community o ecosistemi.\n\n**Confronto con alternative**  \n   - Tabella con almeno due delle migliori tecnologie simili, confrontando punti di forza e debolezza.\n\n**Casi d’uso reali**  \n   - Minimo 5 esempi concreti di implementazioni in progetti o aziende reali.\n\n**Risorse ufficiali**  \n   - Link a documentazione, repository, guide.\n\nCriteri:  \n- Linguaggio tecnico ma chiaro.  \n- Nessun contenuto generico o ridondante.  \n- Usa esempi concreti e verificabili.  \n- Formatta con titoli e sottosezioni per facilitare la lettura.\n\nFornisci inoltre un elenco di 10 elementi di possibile interesse collegati a questo argomento.",
+      "titolo": "Storia di una tecnologia"
     }
   ],
   "promptSets": [
     {
-      "PromptsID": [],
-      "descrizione": "",
       "id": "default",
-      "promptIds": [],
-      "titolo": "Default"
+      "titolo": "Default",
+      "descrizione": "Questo è il set di prompt predefinito. Contiene tutti i prompt memorizzati.",
+      "promptIds": [
+        "1755299028057"
+      ]
     },
     {
       "id": "set-1755104373087",
       "titolo": "Migliora prompt",
       "descrizione": "Per migliorare i tuoi prompt",
       "promptIds": [
-        "1755104327122"
+        "1755104327122",
+        "1755255636988",
+        "1754341156748",
+        "1755300695472"
       ]
     },
     {
-      "id": "set-1755255644609",
-      "titolo": "ewfa",
-      "descrizione": "wecd",
+      "id": "set-1755299076716",
+      "titolo": "Migliora nomi",
+      "descrizione": "Migliora i nomi di variabili",
       "promptIds": [
-        "1755255636988"
+        "1755299028057",
+        "1755299594421",
+        "1755299873076"
+      ]
+    },
+    {
+      "id": "set-1755301517063",
+      "titolo": "Studio ed informazioni varie",
+      "descrizione": "Per approfondire argomenti",
+      "promptIds": [
+        "1755300695472"
+      ]
+    },
+    {
+      "id": "set-1755301727123",
+      "titolo": "Ottimizza codice",
+      "descrizione": "Per ottimizzare del codice esistente",
+      "promptIds": [
+        "1754341092723",
+        "1754341156748"
       ]
     }
   ]

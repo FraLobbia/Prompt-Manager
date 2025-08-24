@@ -161,10 +161,10 @@ export default function PromptSetForm({ onSubmit, mode = "new" }: PromptSetFormP
           <input
             type="text"
             className="input input--sm multiselect-filter"
-            placeholder="Filtra prompt per titolo…"
+            placeholder="Cerca prompt per titolo…"
             value={filtro}
             onChange={onFilterChange}
-            aria-label="Filtra i prompt per titolo"
+            aria-label="Cerca i prompt per titolo"
           />
 
           {/* Nuovo: lista checkbox al posto di <select multiple> */}

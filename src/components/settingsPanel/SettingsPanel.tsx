@@ -62,23 +62,45 @@ export default function SettingsPanel() {
 
       <div className="backup-header">
         <h2>Backup</h2>
-        <span className="info-icon" title="Puoi esportare o importare un file di backup in formato JSON contenente tutte le tue impostazioni, i prompt e i set di prompt. In questo modo puoi salvare una copia dei tuoi dati sul computer o trasferirli facilmente su un altro dispositivo. Normalmente, le informazioni vengono salvate automaticamente nello spazio di sincronizzazione di Google Chrome, che ha un limite di circa 100 KB: superata questa soglia, parte dei dati più grandi viene memorizzata solo in locale sul dispositivo.">
+        <span
+          className="info-icon"
+          title="Puoi esportare o importare un file di backup in formato JSON contenente tutte le tue impostazioni, i prompt e i set di prompt. In questo modo puoi salvare una copia dei tuoi dati sul computer o trasferirli facilmente su un altro dispositivo. Normalmente, le informazioni vengono salvate automaticamente nello spazio di sincronizzazione di Google Chrome, che ha un limite di circa 100 KB: superata questa soglia, parte dei dati più grandi viene memorizzata solo in locale sul dispositivo."
+        >
           {getIcon(ICON_KEY.info)}
         </span>
       </div>
-      <div>
 
+      <div>
         <div className="flex-row gap-1">
-          <button className="btn" onClick={exportBackup}>
+          <button className="btn" type="button" onClick={exportBackup}>
             {getIcon(ICON_KEY.save)} Esporta json
           </button>
+
           <label>
             <span className="btn">{getIcon(ICON_KEY.add)} Importa json</span>
-            <input type="file" accept=".json" onChange={onImport} style={{ display: 'none' }} />
+            <input
+              type="file"
+              accept=".json,application/json"
+              onChange={onImport}
+              style={{ display: 'none' }}
+            />
           </label>
         </div>
       </div>
 
+      <hr />
+
+      {/* Sezione Buy Me a Coffee */}
+      <div className="flex-row gap-1">
+        <a
+          className="btn"
+          href="https://buymeacoffee.com/frnk.j"
+          target="_blank"
+          rel="noopener noreferrer"
+        >
+          ☕ Offrimi un caffè
+        </a>
+      </div>
     </div>
   )
 }
