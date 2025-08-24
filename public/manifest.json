@@ -2,7 +2,7 @@
   "manifest_version": 3,
   "name": "Prompt Manager",
   "version": "1.0",
-  "description": "Estensione Chrome per inserire prompt testuali personalizzati",
+  "description": "Permette di inserire velocemente prompt testuali personalizzati. É possibile creare set di prompt e gestirli facilmente.",
   "permissions": [
     "storage",
     "tabs",
@@ -25,5 +25,8 @@
       ],
       "run_at": "document_idle"
     }
-  ]
+  ],
+  "icons": {
+    "128": "128.png"
+  }
 }
