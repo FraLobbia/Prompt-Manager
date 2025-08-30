@@ -82,7 +82,7 @@ export default function PromptItem({ prompt, onEdit }: PromptItemProps) {
 
   /** ######### RENDER ########## */
   return (
-    <div className="prompt-item__container" onClick={() => handleEdit()}>
+    <div className="prompt-item__container w-100" onClick={() => handleEdit()}>
       <div className="flex-between">
         <h3>{titolo}</h3>
         <div>

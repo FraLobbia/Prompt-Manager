@@ -162,3 +162,26 @@ export async function readWithSyncFallback<T>(baseKey: string): Promise<T | unde
 
   return undefined;
 }
+
+/** Rimuove un oggetto: sia chiave diretta sia forma chunked (meta+chunk) */
+export async function removeLargeObject(area: StorageArea, baseKey: string): Promise<void> {
+  const metaKey = `${baseKey}${META_SUFFIX}`;
+  const chunkPrefix = `${baseKey}${CHUNK_SUFFIX}`;
+
+  // Prova a rimuovere eventuale valore diretto "non chunked"
+  try { await storageRemove(area, baseKey); } catch {
+    // intentionally ignored
+  }
+
+  // Rimuovi forma chunked, se presente
+  try {
+    const meta = await storageGet<MetaGetResult>(area, [metaKey]);
+    const count = meta?.[metaKey]?.chunkCount ?? 0;
+    if (count > 0) {
+      const keys = Array.from({ length: count }, (_, i) => `${chunkPrefix}${i}`);
+      await storageRemove(area, [...keys, metaKey]);
+    }
+  } catch {
+    // intentionally ignored
+  }
+}

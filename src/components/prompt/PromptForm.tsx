@@ -88,17 +88,20 @@ export default function PromptForm(props: PromptFormProps) {
   }, [isEdit, handleSave, handleCancel])
 
   return (
-    <div className={isEdit ? "" : "card"}>
-      <div className="prompt-form__buttons">
-        {buttons.map((btn) => (
-          <button
-            key={btn.key}
-            disabled={btn.key === "save" && (!title || !text)}
-            onClick={btn.action}
-            className={`btn`}>
-            {btn.label}
-          </button>
-        ))}
+    <div className={`w-100 ${isEdit ? "" : "card"}`}>
+      <div className="flex-between">
+        <h2>{isEdit ? "Modifica il tuo prompt" : "Crea un nuovo prompt"}</h2>
+        <div className="prompt-form__buttons">
+          {buttons.map((btn) => (
+            <button
+              key={btn.key}
+              disabled={btn.key === "save" && (!title || !text)}
+              onClick={btn.action}
+              className={`btn`}>
+              {btn.label}
+            </button>
+          ))}
+        </div>
       </div>
       <input
         placeholder={"Inserisci il titolo"}

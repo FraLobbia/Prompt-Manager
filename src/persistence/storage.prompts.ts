@@ -5,7 +5,7 @@ import {
   writeWithSyncFallback,
   storageGet,
   storageSet,
-  storageRemove,
+  removeLargeObject,
 } from "./storage.core";
 import type { StorageArea } from "./storage.core";
 
@@ -48,9 +48,12 @@ export async function upsertPrompt(p: Prompt) {
   await upsertIndex(p.id, undefined);
 }
 
-/** Elimina un prompt */
+
+/** Elimina un prompt in entrambe le aree (sync/local) e aggiorna l'indice. */
 export async function deletePrompt(id: string) {
-  await storageRemove("sync", promptByIdKey(id));
+  const key = promptByIdKey(id);
+  await removeLargeObject("sync", key);
+  await removeLargeObject("local", key);
   await upsertIndex(undefined, id);
 }
 
@@ -89,3 +92,33 @@ export async function getPrompt(area: StorageArea, id: string): Promise<Prompt |
   const res = await storageGet<Record<string, unknown>>(area, [key]);
   return res[key] as Prompt | undefined;
 }
+
+/**
+ * Sovrascrive TUTTI i Prompt:
+ * - rimuove quelli non presenti in `next`
+ * - imposta l'indice esatto
+ * - scrive i contenuti senza ritoccare l'indice durante il loop
+ */
+export async function overwriteAllPrompts(next: Prompt[]): Promise<void> {
+  const res = await storageGet<Record<string, unknown>>("sync", [PROMPTS_INDEX_KEY]).catch(() => ({} as Record<string, unknown>));
+  const currIds: string[] = Array.isArray(res[PROMPTS_INDEX_KEY]) ? (res[PROMPTS_INDEX_KEY] as string[]) : [];
+  const nextIds = next.map(p => p.id);
+  const nextSet = new Set(nextIds);
+
+  // 1) elimina i mancanti (sync + local)
+  const toDelete = currIds.filter(id => !nextSet.has(id));
+  for (const id of toDelete) {
+    const key = promptByIdKey(id);
+    await removeLargeObject("sync", key);
+    await removeLargeObject("local", key);
+  }
+
+  // 2) indice deterministico
+  await storageSet("sync", { [PROMPTS_INDEX_KEY]: nextIds });
+
+  // 3) scrivi i contenuti senza aggiornare l'indice (usa writeOnePrompt interno)
+  for (const p of next) {
+    await writeOnePrompt(p); // funzione già presente in questo file
+  }
+}
+

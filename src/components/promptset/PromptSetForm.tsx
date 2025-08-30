@@ -132,20 +132,24 @@ export default function PromptSetForm({ onSubmit, mode = "new" }: PromptSetFormP
 
   return (
     <div className="card">
+      <label htmlFor="set-title" className="form-label">Titolo del set</label>
       <input
-        placeholder="Inserisci il titolo del set"
-        value={title}
-        onChange={onTitleChange}
-        aria-label="Titolo set"
-        className="h3"
+      id="set-title"
+      placeholder="Inserisci il titolo del set"
+      value={title}
+      onChange={onTitleChange}
+      aria-label="Titolo set"
+      className="h3"
       />
 
+      <label htmlFor="set-description" className="form-label mt-2">Descrizione del set (opzionale)</label>
       <textarea
-        placeholder="Inserisci la descrizione del set (opzionale)"
-        value={description}
-        onChange={onDescChange}
-        rows={1}
-        aria-label="Descrizione set"
+      id="set-description"
+      placeholder="Inserisci la descrizione del set (opzionale)"
+      value={description}
+      onChange={onDescChange}
+      rows={1}
+      aria-label="Descrizione set"
       />
 
       <div className="divider" />
@@ -153,76 +157,76 @@ export default function PromptSetForm({ onSubmit, mode = "new" }: PromptSetFormP
       <h4 className="text-muted">Aggiungi prompt esistenti (opzionale)</h4>
 
       {!total ? (
-        <p className="text-muted">Non ci sono prompt salvati. Creane qualcuno e poi torna qui.</p>
+      <p className="text-muted">Non ci sono prompt salvati. Creane qualcuno e poi torna qui.</p>
       ) : (
 
-        <div className="flex-column">
-          {/* Nuovo: campo di ricerca */}
-          <input
-            type="text"
-            className="input input--sm multiselect-filter"
-            placeholder="Cerca prompt per titolo…"
-            value={filtro}
-            onChange={onFilterChange}
-            aria-label="Cerca i prompt per titolo"
-          />
+      <div className="flex-column">
+        <input
+        id="prompt-filter"
+        type="text"
+        className="input input--sm multiselect-filter"
+        placeholder="Filtra prompt per titolo…"
+        value={filtro}
+        onChange={onFilterChange}
+        aria-label="Filtra i prompt per titolo"
+        />
 
-          {/* Nuovo: lista checkbox al posto di <select multiple> */}
-          <div
-            className="multiselect-checkboxes"
-            role="listbox"
-            aria-multiselectable="true"
-            aria-label="Seleziona uno o più prompt"
-            style={{ maxHeight: `${listSize * 2.25}rem`, overflow: "auto" }}
-          >
-            {filteredPrompts.length === 0 ? (
-              <div className="text-muted small p-1">Nessun prompt corrispondente al filtro.</div>
-            ) : (
-              filteredPrompts.map(p => {
-                const id = String(p.id)
-                const checked = isChecked(id)
-                return (
-                  <label
-                    key={id}
-                    className={`multiselect-item ${checked ? "is-selected" : ""}`}
-                    role="option"
-                    aria-selected={checked}
-                  >
-                    <input
-                      type="checkbox"
-                      checked={checked}
-                      onChange={(e: ChangeEvent<HTMLInputElement>) => toggleId(id, e.target.checked)}
-                      className="multiselect-checkbox"
-                    />
-                    <span className="multiselect-item__label">{p.titolo}</span>
-                  </label>
-                )
-              })
-            )}
-          </div>
-
-          <div className="flex-row mt-2 gap-1">
-            <button type="button" className="btn-secondary" onClick={selectAll}>
-              Seleziona tutto
-            </button>
-            <button type="button" className="btn-secondary" onClick={clearAll}>
-              Deseleziona tutto
-            </button>
-          </div>
+        <div
+        className="multiselect-checkboxes"
+        role="listbox"
+        aria-multiselectable="true"
+        aria-label="Seleziona uno o più prompt"
+        style={{ maxHeight: `${listSize * 2.25}rem`, overflow: "auto" }}
+        >
+        {filteredPrompts.length === 0 ? (
+          <div className="text-muted small p-1">Nessun prompt corrispondente al filtro.</div>
+        ) : (
+          filteredPrompts.map(p => {
+          const id = String(p.id)
+          const checked = isChecked(id)
+          return (
+            <label
+            key={id}
+            className={`multiselect-item ${checked ? "is-selected" : ""}`}
+            role="option"
+            aria-selected={checked}
+            >
+            <input
+              type="checkbox"
+              checked={checked}
+              onChange={(e: ChangeEvent<HTMLInputElement>) => toggleId(id, e.target.checked)}
+              className="multiselect-checkbox"
+              aria-label={`Seleziona prompt: ${p.titolo}`}
+            />
+            <span className="multiselect-item__label">{p.titolo}</span>
+            </label>
+          )
+          })
+        )}
         </div>
+
+        <div className="flex-row mt-2 gap-1">
+        <button type="button" className="btn-secondary" onClick={selectAll}>
+          Seleziona tutto
+        </button>
+        <button type="button" className="btn-secondary" onClick={clearAll}>
+          Deseleziona tutto
+        </button>
+        </div>
+      </div>
 
       )}
 
       {mode === "edit" && !editingSet ? (
-        <div className="text-muted">Set da modificare non trovato. Torna all'elenco e riprova.</div>
+      <div className="text-muted">Set da modificare non trovato. Torna all'elenco e riprova.</div>
       ) : (
-        <button
-          onClick={handleSave}
-          className="btn"
-          disabled={!title.trim()}
-        >
-          {mode === "edit" ? "Salva modifiche" : "Salva nuovo set"}
-        </button>
+      <button
+        onClick={handleSave}
+        className="btn"
+        disabled={!title.trim()}
+      >
+        {mode === "edit" ? "Salva modifiche" : "Salva nuovo set"}
+      </button>
       )}
     </div>
   )

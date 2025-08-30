@@ -89,7 +89,7 @@ export function App() {
         className="edge-btn"
         onClick={() => navigate(VIEWS.chooseSet)}
       >
-        Cambia Set
+        <img className="change-set-icon" src="/images/change-set-icon.png" alt="Cambia Set" />
       </button>
     )
   } else {
@@ -107,7 +107,7 @@ export function App() {
           }
         }}
       >
-        ←
+        <img className="back-image-icon" src="/images/back-icon.png" alt="Indietro" />
       </button>
     )
   }

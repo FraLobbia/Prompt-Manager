@@ -1,5 +1,4 @@
 import { useSettings } from "../../store/hooks"
-import { getIcon, ICON_KEY } from "../../constants/icons"
 import { VIEWS } from "../../constants/views"
 type HeaderConfig = {
   title: string
@@ -26,14 +25,19 @@ export default function Header() {
       case VIEWS.settings:
         return {
           title: "Impostazioni",
-          buttons: [],
+          buttons: [
+            {
+              label: <img className="settings-icon" src="/images/settings.png" alt="icona impostazioni" />,
+              action: () => navigate(VIEWS.activeSet)
+            },
+          ],
         }
       case VIEWS.newPrompt:
         return {
           title: "Nuovo Prompt",
           buttons: [
             {
-              label: getIcon(ICON_KEY.settings),
+              label: <img className="settings-icon" src="/images/settings.png" alt="icona impostazioni" />,
               action: () => navigate(VIEWS.settings)
             },
           ],
@@ -43,7 +47,7 @@ export default function Header() {
           title: "Nuovo Set",
           buttons: [
             {
-              label: getIcon(ICON_KEY.settings),
+              label: <img className="settings-icon" src="/images/settings.png" alt="icona impostazioni" />,
               action: () => navigate(VIEWS.settings)
             },
           ],
@@ -62,7 +66,7 @@ export default function Header() {
               action: () => navigate(VIEWS.newSet)
             },
             {
-              label: getIcon(ICON_KEY.settings),
+              label:<img className="settings-icon" src="/images/settings.png" alt="icona impostazioni" />,
               action: () => navigate(VIEWS.settings)
             },
           ],
@@ -78,7 +82,8 @@ export default function Header() {
             },
             // { label: "Cambia Set", action: () => navigate(VIEWS.chooseSet) },
             {
-              label: getIcon(ICON_KEY.settings),
+              label:  <img className="settings-icon" src="/images/settings.png" alt="icona impostazioni" />,
+              // label: getIcon(ICON_KEY.settings),
               action: () => navigate(VIEWS.settings)
             },
           ],
@@ -90,16 +95,16 @@ export default function Header() {
 
   return (
     <div className="header" >
-      <h2>{title}</h2>
+      <h1>{title}</h1>
       <div className="header-buttons">
         {buttons.map((btn, i) => (
-          <button
+            <button
             key={i}
             onClick={btn.action}
             className="btn"
-          >
+            >
             {btn.label}
-          </button>
+            </button>
         ))}
       </div>
     </div>

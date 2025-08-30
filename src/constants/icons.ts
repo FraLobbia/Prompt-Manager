@@ -1,7 +1,8 @@
 
 
 export const ICONS = {
-  back: "←",
+  // back: "←",
+  back: "/images/icons-back.png",
   close: "❌",
   settings: "⚙️",
   add: "➕",

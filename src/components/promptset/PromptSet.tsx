@@ -4,6 +4,7 @@ import { useSettings, usePromptSets } from "../../store/hooks"
 import { DEFAULT_PROMPT_SET_ID, type PromptSet } from "../../types/PromptSet"
 import { VIEWS } from "../../constants/views"
 import AnimatedCollapse from "../common/AnimatedCollapse.tsx"
+import { copyPromptSetToClipboard, exportPromptSet } from "../../utils/utils.ts"
 
 export default function PromptSet({ promptSet }: { promptSet: PromptSet }) {
   /** Hooks a stato globale */
@@ -36,7 +37,7 @@ export default function PromptSet({ promptSet }: { promptSet: PromptSet }) {
   }, [removePromptSetAndSave, promptSet.id, promptSet.titolo])
 
   return (
-    <div>
+    <div style={{ width: "100%" }}>
       <div className="flex-column">
         <div className="flex-between">
           <h3>{promptSet.titolo}</h3>
@@ -61,6 +62,21 @@ export default function PromptSet({ promptSet }: { promptSet: PromptSet }) {
                   label: <span>Modifica</span>,
                   onClick: () => handleEdit(),
                   disabled: promptSet.id === DEFAULT_PROMPT_SET_ID
+                },
+                {
+                  key: 'export',
+                  label: <span>Esporta set</span>,
+                  onClick: () => exportPromptSet(promptSet, { includePrompts: true }),
+                  disabled: false
+                },
+                {
+                  key: 'copy-json',
+                  label: <span>Copia JSON del set</span>,
+                  onClick: async () => {
+                    const ok = await copyPromptSetToClipboard(promptSet, { includePrompts: true, pretty: true });
+                    alert(ok ? 'JSON copiato negli appunti.' : 'Copia negli appunti non riuscita.');
+                  },
+                  disabled: false
                 },
                 {
                   key: 'delete',

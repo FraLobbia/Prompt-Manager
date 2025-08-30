@@ -5,7 +5,6 @@ import { promptSelectors } from "../../store/selectors/promptSelectors.ts";
 import { useSettings } from "../../store/hooks"
 import { VIEWS } from "../../constants/views"
 
-
 export default function PromptSetList() {
   // Seleziona i PromptSet risolti dallo stato
   // I PromptSet risolti hanno i Prompt risolti
@@ -21,7 +20,6 @@ export default function PromptSetList() {
         return (
           <li
             key={set.id}
-            className={`card prompt-set-list__item m-3${isActive ? ' prompt-set--active' : ''}${isDefault ? ' prompt-set--default' : ''}`}
             onClick={() => {
               if (isActive) {
                 navigate(VIEWS.activeSet)
@@ -31,7 +29,10 @@ export default function PromptSetList() {
             }}
             title={isActive ? 'Clic per andare alla lista dei prompt' : 'Clic per rendere attivo'}
           >
-            <PromptSet promptSet={set} />
+            <div className={`card flex-row prompt-set-list__item m-3${isActive ? ' prompt-set--active' : ''}${isDefault ? ' prompt-set--default' : ''}`}>
+              <img className="prompt-set-list__item-image" src="/images/prompt-set-icon.jpeg" alt="immagine rappresentativa del set di prompt" />
+              <PromptSet promptSet={set} />
+            </div>
           </li>
         )
       })}
