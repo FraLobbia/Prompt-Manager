@@ -87,6 +87,8 @@ export function App() {
       <button
         id="cambia-set-button"
         className="edge-btn"
+        title="Cambia Set"
+        aria-label="Cambia Set"
         onClick={() => navigate(VIEWS.chooseSet)}
       >
         <img className="change-set-icon" src="/images/change-set-icon.png" alt="Cambia Set" />
@@ -97,6 +99,8 @@ export function App() {
       <button
         id="back-button"
         className="edge-btn"
+        title="Indietro"
+        aria-label="Indietro"
         onClick={() => {
           switch (view) {
             case VIEWS.settings:

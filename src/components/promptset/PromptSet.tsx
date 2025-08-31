@@ -82,7 +82,8 @@ export default function PromptSet({ promptSet }: { promptSet: PromptSet }) {
                   key: 'delete',
                   label: <span>Elimina</span>,
                   onClick: () => handleRemove(),
-                  disabled: isDefaultSet
+                  disabled: isDefaultSet,
+                  danger: true
                 },
               ]}
             />

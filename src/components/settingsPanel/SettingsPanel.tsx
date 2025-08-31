@@ -28,6 +28,7 @@ export default function SettingsPanel() {
       parsePromptSetJson(s);
       setValidationMsg("Valido ✓");
       return true;
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
     } catch (err: any) {
       setValidationMsg(err?.message || "JSON non valido");
       return false;
@@ -38,6 +39,7 @@ export default function SettingsPanel() {
     if (!validate(rawSetJson)) return;
     try {
       const res = await dispatch(importSinglePromptSetFromJson(rawSetJson));
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
       alert(`Set importato. Nuovo id: ${(res as any).newSetId}`);
       setRawSetJson("");
       setValidationMsg("");
@@ -89,7 +91,7 @@ export default function SettingsPanel() {
 
   return (
     <div className="card">
-      <div className="gap-1 flex-between">
+      <div className="gap-2 flex-between">
         <h2>Impostazioni generali</h2>
         <a
           id='buy-coffee'
@@ -153,7 +155,7 @@ export default function SettingsPanel() {
         </div>
 
         <div>
-          <div className="flex-row gap-1">
+          <div className="flex-row gap-3">
             <button className="btn" type="button" onClick={exportBackup}>
               {getIcon(ICON_KEY.save)} Esporta backup (JSON)
             </button>

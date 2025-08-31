@@ -101,7 +101,7 @@ export default function PromptItem({ prompt, onEdit }: PromptItemProps) {
         {anteprima}
         {hasMoreLines ? "…" : ""}
       </div>
-      <div className="flex-center gap-1 mt-1">
+      <div className="flex-center gap-3 mt-1">
         {primaryButtons.map((btn, i) => (
             <button
             key={i}

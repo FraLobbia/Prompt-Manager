@@ -22,6 +22,7 @@ export default function PromptSetForm({ onSubmit, mode = "new" }: PromptSetFormP
   const [selectedIds, setSelectedIds] = useState<string[]>(
     (editingSet?.promptIds ?? []).map(String)
   )
+  const [urlImage, setUrlImage] = useState<string>(editingSet?.urlImage ?? "")
   const [filtro, setFiltro] = useState<string>("")
 
   // Sincronizza i valori quando cambia la modalità o cambia il set in modifica
@@ -93,6 +94,7 @@ export default function PromptSetForm({ onSubmit, mode = "new" }: PromptSetFormP
       id: mode === "edit" && editingSet?.id ? editingSet.id : `set-${Date.now()}`,
       titolo,
       descrizione,
+      urlImage,
       promptIds: ids,
     }
 
@@ -152,6 +154,17 @@ export default function PromptSetForm({ onSubmit, mode = "new" }: PromptSetFormP
       aria-label="Descrizione set"
       />
 
+      <label htmlFor="set-image-url" className="form-label mt-2">URL immagine del set (opzionale)</label>
+      <input
+      id="set-image-url"
+      type="text"
+      placeholder="Inserisci l'URL dell'immagine del set (opzionale)"
+      value={urlImage}
+      onChange={(e) => setUrlImage(e.target.value)}
+      aria-label="URL immagine del set"
+      className="input"
+      />
+
       <div className="divider" />
 
       <h4 className="text-muted">Aggiungi prompt esistenti (opzionale)</h4>
@@ -205,7 +218,7 @@ export default function PromptSetForm({ onSubmit, mode = "new" }: PromptSetFormP
         )}
         </div>
 
-        <div className="flex-row mt-2 gap-1">
+        <div className="flex-row mt-2 gap-3">
         <button type="button" className="btn-secondary" onClick={selectAll}>
           Seleziona tutto
         </button>

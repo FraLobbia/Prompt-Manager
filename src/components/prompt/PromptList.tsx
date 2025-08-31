@@ -15,10 +15,12 @@ export default function PromptList() {
   if (prompts.length === 0) {
     return (
       <div className="card my-2">
-        <h3>Il set attivo non contiene prompt.</h3>
+        <h3>Il set attuale non contiene prompt.</h3>
         <button className="btn my-2"
-          onClick={() => navigate(VIEWS.chooseSet)}>
-          Scegli un altro set
+          onClick={() => navigate(VIEWS.newPrompt)}>
+          <strong>
+            Crea il tuo primo prompt
+          </strong>
         </button>
       </div>
     );
@@ -36,8 +38,8 @@ export default function PromptList() {
               <PromptForm mode="edit" prompt={p} onComplete={() => setEditId(null)} />
             ) : (
               <>
-                <div className="flex-center gap-1">
-                  <img className="prompt-list__item-image" src="/images/prompt-icon.jpeg" alt="immagine rappresentativa del set di prompt" />
+                <div className="flex-center gap-3">
+                  <img className="prompt-list__item-image" src={p.urlImage || "/images/prompt-icon.jpeg"} alt="immagine rappresentativa del set di prompt" />
                 </div>
                 <PromptItem prompt={p} onEdit={() => setEditId(p.id)} />
               </>

@@ -3,6 +3,9 @@ import { usePrompts, usePromptSets, useSettings } from "../../store/hooks"
 import type { Prompt } from "../../types/Prompt"
 import { getIcon, ICON_KEY } from "../../constants/icons"
 import { VIEWS } from "../../constants/views"
+import { DEFAULT_PROMPT_SET_ID, type PromptSet } from "../../types/PromptSet"
+import { useSelector } from "react-redux"
+import { promptSelectors } from "../../store/selectors/promptSelectors"
 
 type BaseProps = { onComplete?: () => void }
 type NewProps = BaseProps & { mode: "new" }
@@ -23,7 +26,11 @@ export default function PromptForm(props: PromptFormProps) {
   const [title, setTitle] = useState<string>(current?.titolo ?? "")
   const [text, setText] = useState<string>(current?.testo ?? "")
   const [addToActiveSet, setAddToActiveSet] = useState<boolean>(true) // solo per nuova creazione
+  const [urlImage, setUrlImage] = useState<string>(current?.urlImage ?? "")
 
+  /** Utility */
+  const set: PromptSet | undefined = useSelector(promptSelectors.selectResolvedPromptSets).find(set => set.id === activeSet);
+  
   /**
    * Ridimensiona l'area di testo in base al contenuto mentre si digita
   */
@@ -54,18 +61,18 @@ export default function PromptForm(props: PromptFormProps) {
     if (!trimmedTitle || !trimmedText) return
 
     if (isEdit && current) {
-      updatePrompt({ id: current.id, titolo: trimmedTitle, testo: trimmedText })
+      updatePrompt({ id: current.id, titolo: trimmedTitle, testo: trimmedText, urlImage })
       props.onComplete?.()
     } else {
       const newId = `${Date.now()}`
-      addPrompt({ id: newId, titolo: trimmedTitle, testo: trimmedText })
+      addPrompt({ id: newId, titolo: trimmedTitle, testo: trimmedText, urlImage })
       if (addToActiveSet && activeSet) {
         addPromptIdToSet(activeSet, newId)
       }
       resetNew()
       navigate(VIEWS.activeSet)
     }
-  }, [isEdit, current, title, text, updatePrompt, addPrompt, resetNew, navigate, props, addToActiveSet, activeSet, addPromptIdToSet])
+  }, [isEdit, current, title, text, updatePrompt, addPrompt, resetNew, navigate, props, addToActiveSet, activeSet, addPromptIdToSet, urlImage])
 
   /**
    * Gestisce la cancellazione del prompt in modalità modifica
@@ -88,7 +95,7 @@ export default function PromptForm(props: PromptFormProps) {
   }, [isEdit, handleSave, handleCancel])
 
   return (
-    <div className={`w-100 ${isEdit ? "" : "card"}`}>
+    <div className={` flex-column gap-1 w-100 ${isEdit ? "" : "card"}`}>
       <div className="flex-between">
         <h2>{isEdit ? "Modifica il tuo prompt" : "Crea un nuovo prompt"}</h2>
         <div className="prompt-form__buttons">
@@ -103,35 +110,57 @@ export default function PromptForm(props: PromptFormProps) {
           ))}
         </div>
       </div>
+      <hr />
+
+
+      <label htmlFor="set-title" className="form-label mt-2">Titolo</label>
       <input
-        placeholder={"Inserisci il titolo"}
+        id="set-title"
+        type="text"
+        placeholder="Inserisci un titolo"
         value={title}
-        onChange={(e: ChangeEvent<HTMLInputElement>) => setTitle(e.target.value)}
-        autoFocus={isEdit}
+        onChange={(e) => setTitle(e.target.value)}
+        aria-label="Titolo prompt"
         className="h3"
         style={isEdit ? { marginBottom: ".75rem" } : {}}
-        aria-label="Titolo prompt"
       />
-
+      <label htmlFor="set-text" className="form-label mt-2">Contenuto del prompt</label>
       <textarea
         ref={textareaRef} // per ridimensionamento
-        placeholder={"Inserisci il testo del tuo prompt"}
+        placeholder={"Inserisci il contenuto del tuo prompt"}
         value={text}
         onChange={(e: ChangeEvent<HTMLTextAreaElement>) => setText(e.target.value)}
         rows={1}
-        aria-label="Testo prompt"
+        aria-label="Contenuto prompt"
       />
 
-      {!isEdit && (
+      <hr />
+      <h4>Altri parametri</h4>
+      {!isEdit && activeSet != DEFAULT_PROMPT_SET_ID && (
         <label className="mt-2" style={{ display: "flex", alignItems: "center", gap: ".5rem" }}>
           <input
             type="checkbox"
             checked={addToActiveSet}
             onChange={(e: ChangeEvent<HTMLInputElement>) => setAddToActiveSet(e.target.checked)}
           />
-          <span>Aggiungi al set attivo</span>
+          <span>Aggiungi al set corrente: <strong>{set?.titolo}</strong></span>
         </label>
       )}
+
+      <div>
+        <label htmlFor="set-image-url" className="form-label mt-2">URL immagine del prompt (opzionale)
+        </label>
+      </div>
+      <small className="text-muted">Se non specificata verrà usata quella di default</small>
+      <input
+        id="set-image-url"
+        type="text"
+        placeholder="Inserisci l'URL dell'immagine del prompt (opzionale)"
+        value={urlImage}
+        onChange={(e) => setUrlImage(e.target.value)}
+        aria-label="URL immagine del prompt"
+        className="input"
+      />
 
 
     </div>

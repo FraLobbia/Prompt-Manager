@@ -16,8 +16,9 @@
 .ellipsis-menu__panel {
   position: absolute;
   top: 100%;
-  pointer-events: none;        /* 👈 il contenitore NON riceve click */
-  background: transparent;     /* 👈 invisibile */
+  // pointer-events: none;        /* 👈 il contenitore NON riceve click */
+  pointer-events: auto;        /* il contenitore intercetta gli eventi */
+  // background: transparent;     /* 👈 invisibile */
   border: none;
   padding: 0.25rem 0;
   margin-top: 0.25rem;
@@ -97,15 +98,3 @@
   color: #b00020;
 }
 
-/* --------------------------------------------------------------------------
-   Note di accessibilità/UX (facoltative, ma utili):
-   - Aggiungi focus styles coerenti al tuo design system se gli item possono
-     ricevere focus via tastiera:
-   -------------------------------------------------------------------------- */
-/*
-.ellipsis-menu__item:focus-visible {
-  outline: 2px solid rgba(74,144,226,.4);  // adatta al tuo tema
-  outline-offset: 2px;
-  border-radius: 10px;
-}
-*/

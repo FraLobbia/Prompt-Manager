@@ -1,6 +1,6 @@
 // src/utils/utils.ts
 import { loadSettings, loadPrompts, persistSettings, loadPromptSets, persistPromptSets } from "../persistence/storage";
-import { upsertPrompt, writePromptsBulk } from "../persistence/storage.prompts"; // ✅ nuovo: scrittura bulk granulare
+import { upsertPrompt, writePromptsBulk } from "../persistence/storage.prompts";
 import { setPrompts } from "../store/slices/promptSlice";
 import { setPromptSets } from "../store/slices/promptSetsSlice";
 import { setclipboardReplaceEnabled } from "../store/slices/settingsSlice";
@@ -201,11 +201,13 @@ export async function copyPromptSetToClipboard(
 }
 
 /** Type guard minimale per Prompt */
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
 function isPrompt(x: any): x is Prompt {
   return x && typeof x.id === "string" && typeof x.titolo === "string";
 }
 
 /** Type guard minimale per PromptSet (versione con prompts opzionali) */
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
 function isPromptSet(x: any): x is PromptSet {
   return x && typeof x.id === "string" && (typeof x.titolo === "string" || typeof x.titolo === "undefined");
 }
@@ -222,15 +224,19 @@ export function parsePromptSetJson(json: string): { set: PromptSet; prompts: Pro
   if (data && Array.isArray(data.promptSets) && data.promptSets.length > 0) {
     const set = data.promptSets[0];
     if (!isPromptSet(set)) throw new Error("promptSets[0] non è un PromptSet valido.");
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
     const prompts: Prompt[] = Array.isArray(data.prompts) ? data.prompts.filter(isPrompt) : Array.isArray((set as any).prompts) ? (set as any).prompts.filter(isPrompt) : [];
     // Normalizza: assicura la proprietà prompts sul set (può rimanere vuota)
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
     (set as any).prompts = prompts;
     return { set, prompts };
   }
 
   // Caso B: oggetto PromptSet singolo
   if (isPromptSet(data)) {
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
     const prompts: Prompt[] = Array.isArray((data as any).prompts) ? (data as any).prompts.filter(isPrompt) : [];
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
     (data as any).prompts = prompts;
     return { set: data as PromptSet, prompts };
   }

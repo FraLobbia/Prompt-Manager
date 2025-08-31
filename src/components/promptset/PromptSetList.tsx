@@ -30,7 +30,7 @@ export default function PromptSetList() {
             title={isActive ? 'Clic per andare alla lista dei prompt' : 'Clic per rendere attivo'}
           >
             <div className={`card flex-row prompt-set-list__item m-3${isActive ? ' prompt-set--active' : ''}${isDefault ? ' prompt-set--default' : ''}`}>
-              <img className="prompt-set-list__item-image" src="/images/prompt-set-icon.jpeg" alt="immagine rappresentativa del set di prompt" />
+              <img className="prompt-set-list__item-image" src={set.urlImage || "/images/prompt-set-icon.jpeg"} alt="immagine rappresentativa del set di prompt" />
               <PromptSet promptSet={set} />
             </div>
           </li>

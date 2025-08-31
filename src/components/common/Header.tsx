@@ -1,7 +1,10 @@
 import { useSettings } from "../../store/hooks"
 import { VIEWS } from "../../constants/views"
+import { useSelector } from "react-redux"
+import { promptSelectors } from "../../store/selectors/promptSelectors"
+import type { PromptSet } from "../../types/PromptSet"
 type HeaderConfig = {
-  title: string
+  title: React.ReactNode
   buttons: HeaderButton[]
 }
 
@@ -12,8 +15,8 @@ type HeaderButton = {
   action: () => void
 }
 export default function Header() {
-  const { view, navigate } = useSettings()
-
+  const { view, navigate, activeSet } = useSettings()
+  const set: PromptSet | undefined = useSelector(promptSelectors.selectResolvedPromptSets).find(set => set.id === activeSet);
   /**
    * Configurazione dell'header in base alla vista corrente.
    * Ritorna un oggetto contenente il titolo e i bottoni da visualizzare.
@@ -24,7 +27,7 @@ export default function Header() {
     switch (view) {
       case VIEWS.settings:
         return {
-          title: "Impostazioni",
+          title: <h1>Impostazioni</h1>,
           buttons: [
             {
               label: <img className="settings-icon" src="/images/settings.png" alt="icona impostazioni" />,
@@ -34,7 +37,7 @@ export default function Header() {
         }
       case VIEWS.newPrompt:
         return {
-          title: "Nuovo Prompt",
+          title: <h1>Nuovo Prompt</h1>,
           buttons: [
             {
               label: <img className="settings-icon" src="/images/settings.png" alt="icona impostazioni" />,
@@ -44,7 +47,7 @@ export default function Header() {
         }
       case VIEWS.newSet:
         return {
-          title: "Nuovo Set",
+          title: <h1>Nuovo Set</h1>,
           buttons: [
             {
               label: <img className="settings-icon" src="/images/settings.png" alt="icona impostazioni" />,
@@ -54,19 +57,19 @@ export default function Header() {
         }
       case VIEWS.editSet:
         return {
-          title: "Modifica Set",
+          title: <h1>Modifica Set</h1>,
           buttons: [],
         }
       case VIEWS.chooseSet:
         return {
-          title: "Scegli Set",
+          title: <h1>Scegli un Set</h1>,
           buttons: [
             {
-              label: "Crea nuovo Set",
+              label: <strong>Nuovo Set</strong>,
               action: () => navigate(VIEWS.newSet)
             },
             {
-              label:<img className="settings-icon" src="/images/settings.png" alt="icona impostazioni" />,
+              label: <img className="settings-icon" src="/images/settings.png" alt="icona impostazioni" />,
               action: () => navigate(VIEWS.settings)
             },
           ],
@@ -74,15 +77,15 @@ export default function Header() {
       case VIEWS.activeSet:
       default:
         return {
-          title: "Il tuo set di prompt",
+          title: <><label className="text-muted">Set attuale:</label> <h1>{set?.titolo || ""}</h1></>,
           buttons: [
             {
-              label: "Crea nuovo Prompt",
+              label: <strong>Nuovo Prompt</strong>,
               action: () => navigate(VIEWS.newPrompt)
             },
             // { label: "Cambia Set", action: () => navigate(VIEWS.chooseSet) },
             {
-              label:  <img className="settings-icon" src="/images/settings.png" alt="icona impostazioni" />,
+              label: <img className="settings-icon" src="/images/settings.png" alt="icona impostazioni" />,
               // label: getIcon(ICON_KEY.settings),
               action: () => navigate(VIEWS.settings)
             },
@@ -95,16 +98,18 @@ export default function Header() {
 
   return (
     <div className="header" >
-      <h1>{title}</h1>
+      <div className="flex-column">
+        {title}
+      </div>
       <div className="header-buttons">
         {buttons.map((btn, i) => (
-            <button
+          <button
             key={i}
             onClick={btn.action}
             className="btn"
-            >
+          >
             {btn.label}
-            </button>
+          </button>
         ))}
       </div>
     </div>
